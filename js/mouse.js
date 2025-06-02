@@ -389,9 +389,6 @@ var mouse =
 
             if(item.lifeCode != "dead" && Math.pow((mouse.x + game.offsetX * productionRatioX) - itemX, 2) + Math.pow((mouse.y + game.offsetY * productionRatio) - itemY, 2) < Math.pow(item.radius, 2))
             {
-                if(renderer.debugLastItemDetails)
-                    renderer.debugLastItemDetails.text = "Last Item Details: " + item.uid + ", X: " + item.x + ", Y: " + item.y + ", spriteX: " + item.sprite.x + ", spriteY: " + item.sprite.y;
-                
                 return item;
             }
         }

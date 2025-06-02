@@ -993,6 +993,7 @@ var renderer = {
         {
             for(var i = 0; i < game.level.additional_requirements.length; i++)
             {
+                console.log(game.level.additional_requirements[i].type);
                 var frames = window[game.level.additional_requirements[i].type].list[
                     game.level.additional_requirements[i].name].frames;
 
@@ -3291,17 +3292,17 @@ var renderer = {
     
     addItem:function(uids, itemDetails, pay=true, offsetY = display.maininterface.mapImageYOffset, gridOffsetY = 0)
     {
-        if(!game.inGame)
-        {
-            return;
-        }
+        // if(!game.inGame)
+        // {
+        //     return;
+        // }
 
-        if(!this.texturesMap.has(itemDetails.team + "_" + itemDetails.name))
-        {
-            console.log("%cCan not add item, check for additional_requirements",
-						'background: #000; color: #FF69B4');
-            return;
-        }
+        // if(!this.texturesMap.has(itemDetails.team + "_" + itemDetails.name))
+        // {
+        //     console.log("%cCan not add item, check for additional_requirements",
+		// 				'background: #000; color: #FF69B4');
+        //     return;
+        // }
         
         var item = {};
 
@@ -3437,22 +3438,6 @@ var renderer = {
             item.createPolygon();
 
         item.sprite.anchor.set(0.5);
-
-        if(item.camouflage)
-        {
-            this.applyCamouflage(item);
-        }
-        
-        if(itemDetails.buildable)
-        {
-            if(item.powerUsage != undefined)
-                game.setPowerUsage(item.powerUsage, item.team);
-            
-            if(item.powerOutput != undefined)
-                game.setPowerTotal(item.powerOutput, item.team);
-
-            game.addBuildingToPassableGrid(item);
-        }
             
         var selectionGraphic = new PIXI.Graphics();
 
@@ -3631,17 +3616,17 @@ var renderer = {
         //     this.otherContainer.addChild(item.collisionBubble);
         // }
 
-        if(item.cellCollisionMode)
-        {
-            cells.add(item.uid, item.x, item.y, item.radius / game.gridSize,
-                game.currentTerrainMapPassableGrid,
-                item.cellCollisionMode);
-        }
-        else
-        {
-            cells.add(item.uid, item.x, item.y, item.radius / game.gridSize,
-                game.currentTerrainMapPassableGrid);
-        }
+        // if(item.cellCollisionMode)
+        // {
+        //     cells.add(item.uid, item.x, item.y, item.radius / game.gridSize,
+        //         game.currentTerrainMapPassableGrid,
+        //         item.cellCollisionMode);
+        // }
+        // else
+        // {
+        //     cells.add(item.uid, item.x, item.y, item.radius / game.gridSize,
+        //         game.currentTerrainMapPassableGrid);
+        // }
 
         console.log("added item");
         physics.skipQuadTreeUpdate = false;
@@ -3683,8 +3668,6 @@ var renderer = {
             }
         }
 
-        game.setBuildingTotals();
-
         if(item.init)
             item.init();
 
@@ -3692,6 +3675,41 @@ var renderer = {
 
         // if(itemDetails.type == "ships")
         //     alert("4978 orders.to.y: " + item.orders.to.y)
+    },
+
+    setOrder:function(item, itemDetails)
+    {
+        if(itemDetails.order)
+        {
+            item.orders.type = itemDetails.order.type;
+
+            item.orders.to = {};
+
+            if(itemDetails.order.toX)
+            {
+                item.orders.to.x = itemDetails.order.toX * game.gridSize; // Convert x to graphics
+                item.orders.to.y = itemDetails.order.toY * game.gridSize; // Convert y to graphics
+
+                item.orders.to.x = item.orders.to.x - game.offsetX; // Subtract scroll map x from item's order's to x
+                item.orders.to.y = item.orders.to.y - game.offsetY; // Subtract scroll map y from item's order's to y
+
+                item.orders.to.x = item.orders.to.x * productionRatio; // Scale item's order's to x
+                item.orders.to.y = item.orders.to.y * productionRatio; // Scale item's order's to y
+            }
+
+            if(itemDetails.speed)
+                item.speed = itemDetails.speed;
+
+            if(itemDetails.order.toAirportUid)
+            {
+                item.orders.to.airportUid = itemDetails.order.toAirportUid;
+                item.orders.to.uid = itemDetails.order.toAirportUid;
+            }
+        }
+        else
+        {
+            item.orders.type = "stand";
+        }
     },
 
     setInGameSprite:function(item)
