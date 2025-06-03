@@ -8,8 +8,8 @@ var maps =
         "numberOfVerticalTiles":8,
         "backgroundWidth":6400,
         "backgroundHeight":4800,
-        "startX":0,
-        "startY":0,
+        "startX":40,
+        "startY":40,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
@@ -33,7 +33,7 @@ var maps =
                 return true;
             },     
 		    "action":() => {
-                renderer.setOrder(game.items[1], {"order":{"type":"move", "toX": 60, "toY": 60}});
+                renderer.setOrder(game.items[1], {"order":{"type":"search"}});
 		    } 
         }
         ]

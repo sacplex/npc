@@ -1584,6 +1584,7 @@ var renderer = {
             item.orders = {};
             item.orders.type = items[i].order ? items[i].order : "stand";
             item.state = {
+                searching:false,
                 attacking:false,
                 firing:false,
                 retreating:false,
@@ -1974,6 +1975,7 @@ var renderer = {
                 game.items[index].orders = items[i].orders;
                 game.items[index].orders.type = items[i].orders.type;
                 game.items[index].state = {
+                    searching:false,
                     attacking:false,
                     firing:false,
                     retreating:false,
@@ -3375,6 +3377,7 @@ var renderer = {
         //     alert("4978 orders.to.y: " + item.orders.to.y)
 
         item.state = {
+            searching:false,
             attacking:false,
             firing:false,
             retreating:false,

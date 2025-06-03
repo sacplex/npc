@@ -147,6 +147,12 @@ var students =
 				case "loading":
 					this.loading();
 					break;
+				case "search":
+					this.search();
+					break;
+				case "searching":
+					this.searching();
+					break;
 				case "move":
 					this.move();
 					break;
@@ -575,16 +581,37 @@ var students =
 			}
 		},
 
-		/**
-		 * Starts the movement of the infantry, ironically, no 
-		 * movement is done.
-		 * 
-		 * Instead the the infantry remove its collision tile(s), 
-		 * this needs to be done for whole platoon, before moving.
-		 * 
-		 * This prevents any infantry getting trapped by their
-		 * follow infantry men or women. 
-		 */
+		search: function() 
+		{
+			let maxTries = 100;
+			let gridWidth = game.level.mapGridWidth;
+			let gridHeight = game.level.mapGridHeight;
+
+			for (let i = 0; i < maxTries; i++) 
+			{
+				let randomX = Math.floor(Math.random() * gridWidth);
+				let randomY = Math.floor(Math.random() * gridHeight);
+
+				// Check if the grid cell is passable
+				if (game.currentTerrainMapPassableGrid[randomY][randomX] !== flags.CELL_COLLISION_MODE_FULL) 
+				{
+					this.state.searching = true;
+					this.orders.type = "moveTo";
+					this.orders.to = {
+						x: randomX,
+						y: randomY
+					};
+
+					console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY})`);
+					return;
+				}
+			}
+
+			// If no valid tile is found
+			console.warn(`Unit ${this.uid} couldn't find a valid search location`);
+			this.orders.type = "stand";
+		},
+		
 		move:function()
 		{
 			if (!this.orders.to || typeof this.orders.to.x != "number" || typeof this.orders.to.y != "number")
@@ -1088,6 +1115,12 @@ var students =
 				this.cellCollisionMode);
 
 			this.setFixedAnimation(0);
+
+			if(this.state.searching)
+			{
+				this.orders.type = "search";
+				return;
+			}
 
 			// Resume to original stand state
 			this.orders.type = "stand";
