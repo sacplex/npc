@@ -454,8 +454,11 @@ var renderer = {
             introStartStyle.fill = ['white'];
         });
 
-        this.startText.on('click', ()=> {
+        this.startText.on('click', (e)=> {
             singleplayer.currentLevel = 0;
+
+            mouse.x = Math.floor(e.data.global.x);
+            mouse.y = Math.floor(e.data.global.y);
 
             this.app.stage.removeChild(this.introContainer);
             this.disableIntroButtons();

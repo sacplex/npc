@@ -91,7 +91,7 @@ var display =
     },
     "maininterface":
     {
-        "mapImageXOffset":160,
+        "mapImageXOffset":0,
         "mapImageYOffset":0,
         "mapImageYGridOffset":4,
         "filenames":[],

@@ -85,7 +85,6 @@ var game = {
     multiAttackSelect:false,
     sortSelect:false,
     onlyInfantry:false,
-    cncDisplay:false,
     currentMapTerrainGrid:undefined, // 2D array
     currentMapIsleGrid:undefined, // 2D array
     currentFogGrid:undefined, // 2D array
@@ -144,7 +143,7 @@ var game = {
     {
         update.gameState();
         physics.update();
-        //game.handlePanning();
+        game.handlePanning();
         economy.update();
         mouse.update();
         sidebar.update();
@@ -269,7 +268,11 @@ var game = {
 
         if(mouse.y * productionInverseRatio <= game.panningThreshold + display.maininterface.mapImageYOffset ||
             keyboard.pan == flags.PAN_UP)
-        {
+        {  
+            console.log(mouse.y);
+            console.log(productionInverseRatio);
+            console.log(mouse.y * productionInverseRatio);
+             
             this.handleUpPanning();
         }
         else if (mouse.y * productionInverseRatio >= (productionHeight + nearFullScreenHeight) - game.panningThreshold ||
@@ -283,6 +286,8 @@ var game = {
     {
         if (game.offsetX>=game.panningSpeed)
         {
+            console.log("handle Left Panning");
+            
             this.handleUpdate = true;
 
             //background.moveLeftX();
@@ -290,11 +295,6 @@ var game = {
             game.offsetX -= (game.panningSpeed);
             game.offsetXIndex = Math.floor(game.offsetX / game.gridSize);
             renderer.backgroundContainer.x = renderer.backgroundContainer.x + game.panningSpeed;
-
-            if(renderer.cncCollisionRowsSprite)
-            {
-                renderer.cncCollisionRowsSprite.x = renderer.cncCollisionRowsSprite.x + game.panningSpeed;
-            }
             
             if(minimap.zoomOut)
             {
@@ -345,8 +345,7 @@ var game = {
             game.offsetX += game.panningSpeed;
             game.offsetXIndex = Math.floor(game.offsetX / game.gridSize);
             renderer.backgroundContainer.x = renderer.backgroundContainer.x - game.panningSpeed;
-            renderer.cncCollisionRowsSprite.x = renderer.cncCollisionRowsSprite.x - game.panningSpeed;
-
+            
             if(minimap.zoomOut)
             {
                 renderer.miniMapZoomInX = renderer.miniMapZoomInX - game.panningSpeed * (display.minimapScreen.dimension/display.gameplayScreen.width);
@@ -399,8 +398,7 @@ var game = {
             game.offsetY -= game.panningSpeed;
             game.offsetYIndex = Math.floor(game.offsetY / game.gridSize);
             renderer.backgroundContainer.y = renderer.backgroundContainer.y + game.panningSpeed;
-            renderer.cncCollisionRowsSprite.y = renderer.cncCollisionRowsSprite.y + game.panningSpeed;
-
+            
             if(minimap.zoomOut)
             {
                 renderer.miniMapZoomInY = renderer.miniMapZoomInY + game.panningSpeed * (display.minimapScreen.dimension/display.gameplayScreen.height);
@@ -451,8 +449,7 @@ var game = {
             game.offsetYIndex = Math.floor(game.offsetY / game.gridSize);
 
             renderer.backgroundContainer.y = renderer.backgroundContainer.y - game.panningSpeed;
-            renderer.cncCollisionRowsSprite.y = renderer.cncCollisionRowsSprite.y - game.panningSpeed;
-
+            
             if(minimap.zoomOut)
             {
                 renderer.miniMapZoomInY = renderer.miniMapZoomInY - game.panningSpeed * (display.minimapScreen.dimension/display.gameplayScreen.height);
@@ -1115,8 +1112,6 @@ var game = {
             // and then changes it from a one to a zero
             // one means that obstruction
             var obstruction = mapObstructed[i];
-            console.log(obstruction);
-            console.log(currentMapGrid);
             
             var t = -1;
             var x = 0;
@@ -1131,12 +1126,9 @@ var game = {
                 x = obstruction[1];
                 n = obstruction[2];
 
-                              
-
                 do
                 {
                     n--;
-                    //console.log("x: " + x + ", y: " + y);  
                     currentMapGrid[y][x] = 1;
 
                     x++;
