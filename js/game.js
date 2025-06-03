@@ -1,5 +1,5 @@
 window.addEventListener('load', function() {
-    const myText = "🎖️🛡️🌐🛰️🔫 Commencing Connection to War-of-Salvation 🌿🌸🍂🌻🌊";
+    const myText = "Bootcamp Simulator";
     const paddingSize = 0; // Number of spaces for padding
     
     // Create the padding by repeating spaces
@@ -7,33 +7,9 @@ window.addEventListener('load', function() {
 
     console.log("\n%c" + padding + myText + padding + "\n\n", "background: linear-gradient(to bottom, #C0C0C0, #1a1a1a); color: #AFEEEE; font-size: 20px;\n\n");
 
-    // if (/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    //     // User is on a mobile device
-    //     //window.location.href = "https://example.com/mobile-not-supported.html";
-    //     alert("redirect to mobile page");
-    //     return;
-    // }
-
-    if(debug.translateDialogue)
-    {
-        localise.init();
-    }
-
-    if (window.isRunningInCEF)
-    {
-        flags.CEF_ACCESS = true;
-        debug.skipToIntro = true;
-        debug.audio = true;
-        debug.fogOfWar = true;
-        network.init();
-        cloud.init();
-    }
-    else
-    {
         console.log("start game");
         renderer.init();    
         game.init();
-    }
 
     document.body.style.backgroundColor = 'black';
     
@@ -1139,6 +1115,9 @@ var game = {
             // and then changes it from a one to a zero
             // one means that obstruction
             var obstruction = mapObstructed[i];
+            console.log(obstruction);
+            console.log(currentMapGrid);
+            
             var t = -1;
             var x = 0;
             var y = 0;
@@ -1152,9 +1131,12 @@ var game = {
                 x = obstruction[1];
                 n = obstruction[2];
 
+                              
+
                 do
                 {
                     n--;
+                    //console.log("x: " + x + ", y: " + y);  
                     currentMapGrid[y][x] = 1;
 
                     x++;
