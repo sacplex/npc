@@ -142,7 +142,6 @@ var game = {
     update: function()
     {
         update.gameState();
-        physics.update();
         game.handlePanning();
         economy.update();
         mouse.update();
@@ -268,11 +267,7 @@ var game = {
 
         if(mouse.y * productionInverseRatio <= game.panningThreshold + display.maininterface.mapImageYOffset ||
             keyboard.pan == flags.PAN_UP)
-        {  
-            console.log(mouse.y);
-            console.log(productionInverseRatio);
-            console.log(mouse.y * productionInverseRatio);
-             
+        {               
             this.handleUpPanning();
         }
         else if (mouse.y * productionInverseRatio >= (productionHeight + nearFullScreenHeight) - game.panningThreshold ||

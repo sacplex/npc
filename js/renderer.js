@@ -718,7 +718,6 @@ var renderer = {
             this.container.addChild(this.gameInterfaceContainer);
             this.container.addChild(this.characterContainer);
 
-            physics.init();
             triggers.init();
                 
             if(game.level.ai)
@@ -1588,6 +1587,7 @@ var renderer = {
             item.orders.type = items[i].order ? items[i].order : "stand";
             item.state = {
                 searching:false,
+                talking:false,
                 attacking:false,
                 firing:false,
                 retreating:false,

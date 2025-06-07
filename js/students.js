@@ -94,9 +94,7 @@ var students =
 		scaleOuterCollision:1.00,
 		selectionRadius:100,
 		selectionBorderShape:"circle",
-		isArmy:true,
-		isNavy:false,
-		isAirforce:false,
+		isStudent:true,
 		hasCollided:false,
 		hasCollidedSkin:false,
 		hasCollidedStop:false,
@@ -153,6 +151,9 @@ var students =
 				case "searching":
 					this.searching();
 					break;
+				case "moveToTalk":
+					this.moveToTalk();
+					break;
 				case "move":
 					this.move();
 					break;
@@ -183,402 +184,11 @@ var students =
 		{
 			if(this.reloadTimeLeft > 0)
 				this.reloadTimeLeft--;
-
-			if(physics.skipQuadTreeUpdate)
-				physics.skipQuadTreeUpdate = this.orders.type == "stand";
-
-			if(debug.fogOfWar)
-				fog.setSubGrid(this.x, this.y, this.visionGrid, this.team, this.state, this.hidden);
 		},
 
 		init()
 		{
 			this.sprite.scale.set(2, 2);
-		},
-
-		defend:function()
-		{
-			this.state.attacking = true;
-
-			this.orders.type = "moveTo";
-		},
-
-		attack:function(destination)
-		{
-			this.removeInfantryFromTheCellTile();
-
-			// Target needs to be undefine if the previous
-			// target is on the same side
-
-			// Can happen capturing and attacking at the same time
-
-			if(this.target == undefined)
-			{
-				if(destination && destination.target)
-				{
-					this.target = target.searchForTarget(destination.target.uid);
-
-					if(!this.target)
-					{
-						this.orders.type = "standing";
-
-						return;
-					}
-
-					// target could be undefined, need to check
-
-					if(debug.logInfantry)
-						console.log('this.target.uid: ' + this.target.uid);
-
-					target.addItemToAttackedTarget(this.target.uid, this);
-				}
-			}
-		
-			this.state.attacking = true;
-			this.state.firing = false;
-			//this.retreating = false;
-
-			this.orders.type = "moveTo";
-		},
-
-		attacked:function()
-		{			
-			console.log("attacked");
-			
-			if(this.state.retreating)
-				return;
-
-			var friendlyInfantry = findFriendlyInfantry(
-				this.team,
-				this.near);
-
-			if(friendlyInfantry.length > 0)
-			{				
-				for(var i = 0; i < friendlyInfantry.length; i++)
-				{
-					if(friendlyInfantry[i].state.retreating)
-						continue;
-
-					if(friendlyInfantry[i].state.attacking)
-						continue;
-
-					if(!friendlyInfantry[i].canAttack)
-						continue;	
-
-					friendlyInfantry[i].target = this.target;
-					friendlyInfantry[i].orders.type = "assist";					
-				}
-			}
-			
-			if(this.state.attacking == false)
-			{	
-				this.state.attacking = true;
-				
-				target.addItemToAttackedTarget(this.target.uid, this);				
-
-				this.orders.type = "moveTo";
-			}
-
-			console.log("end attacked");
-		},
-
-		assist:function()
-		{	
-			if(this.state.attacking)
-				return;
-
-			if(!this.target)
-			{
-				var newTarget = findClosestGroundTarget(
-					this,
-					this.team,
-					this.near);
-
-				if(!newTarget)
-				{
-					this.orders.type = "standing";
-					return;
-				}
-				
-				// target may be undefined
-				if(newTarget)
-				{				
-					this.orders.type = "moveTo";
-
-					this.state.attacking = true;
-
-					this.target = newTarget;
-					//return;
-				}
-			}
-
-			this.orders.type = "moveTo";
-
-			this.state.attacking = true;
-		},
-
-		turnToFire:function()
-		{
-			if(this.direction == this.correctDirection)
-			{
-				this.state.firing = true;
-				this.orders.type = "firing";
-			}				
-			else
-			{	
-				this.correctDirection = findFiringAngle(this, this.target, this.directions);
-
-				this.direction = wrapDirection(this.correctDirection, this.directions);
-			}
-		},
-
-		firing:function()
-		{
-			if(this.target == undefined)
-			{
-				console.log("target is undefined");
-				console.log("uid: " + this.uid);
-				console.log("team: " + this.team);
-				console.log("type: " + this.type);
-				console.log("name: " + this.name);
-			}
-
-			if(this.target.team == this.team)
-			{
-				alert("this target is the same team")
-				this.state.attacking = false;
-				this.target = undefined;
-				this.orders.type = "standing";
-
-				return;
-			}
-
-			if(this.reloadTimeLeft == 0)
-			{
-				if(Math.pow(this.target.x - this.x, 2) + Math.pow(this.target.y - this.y, 2) >= Math.pow(this.sight, 2))
-				{
-					this.orders.type = "attack";
-				}
-				else
-				{
-					// Target is dead, resume standing
-					if(this.target.life <= 0)
-					{
-						this.target = undefined;
-						
-						this.state.attacking = false;
-
-						if(!this.target)
-						{
-							var newTarget = findClosestGroundTarget(
-								this,
-								this.team,
-								this.near);
-
-							if(!newTarget)
-							{
-								this.orders.type = "standing";
-								return;
-							}
-							
-							if(newTarget)
-							{				
-								this.orders.type = "attack";
-
-								this.target = newTarget;
-
-								return;
-							}
-						}
-					}					
-					else
-					{
-						if(this.ammo > 0)
-						{
-							this.orders.type = "fire";
-						}
-					}	
-				}
-			}
-		},
-
-		fire:function()
-		{
-			if(!this.bullet)
-			{	
-				var bulletIndex = 0;
-
-				var bulletLists = Object.keys(bullets.list);
-
-				for(var i = 0; i < bulletLists.length; i++)
-				{
-					if(bulletLists[i] == this.weaponType)
-					{
-						bulletIndex = i;
-						break;
-					}
-				}
-
-				console.log(game.bullets[bulletIndex]);
-
-				this.bullet = {};
-				this.bullet.name = game.bullets[bulletIndex].name;
-				this.bullet.produce = game.bullets[bulletIndex].produce;
-				this.bullet.damage = game.bullets[bulletIndex].damage;
-				this.bullet.directions = game.bullets[bulletIndex].directions;
-				this.bullet.speed = game.bullets[bulletIndex].speed;
-				this.bullet.turnSpeed = game.bullets[bulletIndex].turnSpeed;
-				this.bullet.frames = game.bullets[bulletIndex].frames;
-				this.bullet.bulletFrames = game.bullets[bulletIndex].bulletFrames;
-				this.bullet.animationCount = game.bullets[bulletIndex].animationCount;
-				this.bullet.drawSpeed = game.bullets[bulletIndex].drawSpeed;
-				this.bullet.spin = game.bullets[bulletIndex].spin;
-				this.bullet.aoe = game.bullets[bulletIndex].aoe;
-				this.bullet.aoeLimit = game.bullets[bulletIndex].aoeLimit;
-				this.bullet.suicide = game.bullets[bulletIndex].suicide;
-			}
-
-			this.bullet.x = this.x;
-			this.bullet.y = this.y;
-			this.bullet.flyCount = 0;
-			this.bullet.flyLimit = this.reloadTime || this.bullet.flyLimit;
-			this.bullet.targetThreshold = this.targetThreshold || this.bullet.targetThreshold;
-			this.bullet.speed = this.weaponSpeed || this.bullet.speed;
-			this.bullet.direction = this.direction;
-			this.bullet.animationCount = 0;
-			this.bullet.attacker = this;
-			this.bullet.target = this.target;
-
-			renderer.produceBullet(this.bullet);
-
-			this.bullet.update = window["bullets"].defaults.update;
-
-			sounds.play(this.soundType);
-
-			if(this.ammo > 0)
-				this.ammo--;
-
-			this.reloadTimeLeft = Math.floor(this.reloadTime * framerate.deltaMultiplierFactor) | 0;
-
-			if(this.bullet.areaOfEffectRadius != undefined)
-				this.bullet.targetPosition = {x:this.target.x, y:this.target.y};
-			
-			this.orders.type = "firing";
-		},
-
-		capture:function(destination)
-		{
-			this.removeInfantryFromTheCellTile();
-
-			if(this.target == undefined)
-			{
-				if(destination && destination.target)
-				{
-					this.target = target.searchForTarget(destination.target.uid);
-				}
-			}
-
-			this.state.capturing = true;
-
-			this.orders.type = "moveTo";
-		},
-
-		// captureBuilding:function()
-		// {
-		// 	renderer.removeItem(this);
-
-		// 	for(var i = 0; i < game.items.length; i++)
-		// 	{
-		// 		if(this.target.uid == game.items[i].uid)
-		// 		{
-		// 			target.removeItemFromTheAttackingTarget(this.target.name, this.target);
-
-		// 			renderer.swapItemTeam(game.items[i]);
-
-		// 			game.items[i].team = this.team;
-		// 			game.items[i].sprite.texture = renderer.texturesMap.get(
-		// 				this.team + "_" + this.target.name)[0];
-		// 			break;
-		// 		}
-		// 	}
-		// },
-
-		load:function(destination)
-		{
-			// Target needs to be undefine if the previous
-			// target is on the same side
-
-			// Can happen capturing and attacking at the same time
-
-			if(this.target == undefined)
-			{
-				if(destination && destination.target)
-				{
-					this.target = target.searchForTarget(destination.target.uid);
-
-					if(debug.logInfantry)
-						console.log('this.target.uid: ' + this.target.uid);
-				}
-			}
-
-			if(this.target)
-			{
-				if(Math.pow(this.target.x - this.x, 2) + Math.pow(this.target.y - this.y, 2) < this.target.loadThreshold)
-				{
-					if(this.target.loadable && this.target.transport.length < this.target.transportLimit)
-					{
-						this.removeInfantryFromTheCellTile();
-
-						this.target.transport.push(this);
-						this.sprite.visible = false;
-						this.lifeBarSprite.visible = false;
-						this.selectionSprite.visible = false;
-						this.selectionBorderSprite.visible = false;
-						this.lifeBarBorderSprite.visible = false;
-						this.selectable = false;
-						
-						renderer.deleteItem(this);
-					}
-
-					this.orders.type = "stand"; // Needs to be stand
-
-					return;
-				}
-				else
-				{
-					this.orders.type = "stand"; // Needs to be stand
-				}
-			}
-			else
-			{
-				this.state.loading = false;
-			}			
-		},
-
-		loading:function()
-		{
-			if(this.state.loading)
-			{
-				if(this.target)
-				{
-					if(Math.pow(this.target.x - this.x, 2) + Math.pow(this.target.y - this.y, 2) < 0.01)
-					{
-						if(this.target.loadable && this.target.transport.length < this.target.transportLimit)
-						{
-							this.target.transport.push(this.name);
-							renderer.removeItem(this, false);
-						}
-
-						this.orders.type = "standing";
-
-						return;
-					}
-				}
-				else
-				{
-					this.state.loading = false;
-				}
-			}
 		},
 
 		search: function() 
@@ -610,6 +220,11 @@ var students =
 			// If no valid tile is found
 			console.warn(`Unit ${this.uid} couldn't find a valid search location`);
 			this.orders.type = "stand";
+		},
+
+		moveToTalk:function()
+		{
+			this.orders.type = "moveTo";
 		},
 		
 		move:function()
@@ -667,30 +282,6 @@ var students =
 		 */
 		moveTo:function(destination)
 		{
-			if(debug.logMultiplayerStats)
-			{
-				console.log("%cstarting stats",
-				'background: #000; color: #6cbf27');
-
-				console.log("this.uid: " + this.uid);
-				console.log("this.x: " + this.x + ", " + this.y);
-				console.log("this.spriteX: " + this.sprite.x + ", " + this.sprite.y);
-				console.log("this.direction: " + this.direction);
-
-				console.log("%cend starting stats",
-				'background: #000; color: #6cbf27');
-			}
-
-			if(this.state.attacking)
-			{
-				if(!this.target)
-				{
-					console.log("return to stand");
-					this.orders.type = "standing";
-					return;
-				}
-			}
-
 			cells.remove(
 				this.uid,				
 				game.currentTerrainMapPassableGrid,
@@ -727,44 +318,12 @@ var students =
 				}
 			}
 
-			// destination.y -= display.maininterface.mapImageYOffset * productionRatio;
-
-			// destination.x *= productionInverseRatio / game.gridSize;
-			// destination.y *= productionInverseRatio / game.gridSize;
-
 			this.spreadDestination(destination);
 
 			this.end[0] = Math.floor(destination.x);
 			this.end[1] = Math.floor(destination.y);
 
-			//this.grid = $.extend([],game.currentTerrainMapPassableGrid);
 			this.grid = [...game.currentTerrainMapPassableGrid];
-
-			if(destination && destination.target)
-			{
-				// Allow destination to be "movable" so that algorithm can find a path
-				if(destination.target.type == "terrain")
-				{
-					//this.grid[Math.floor(destination.y)][Math.floor(destination.x)] = 0;
-				}
-				
-				if(destination.target.type == "buildings" || destination.target.type == "vehicles")
-				{
-					// Since building and vehicles have a large collision grid
-
-					// The a * search may not reach the target
-					// The range varialble increases the torlance
-					// at the end of the path
-
-					//if(this.grid[Math.floor(destination.y)][Math.floor(destination.x)] == 1)
-						range = 3;
-				}
-				else if(destination.target.type == "infantry")
-				{
-					//if(this.grid[Math.floor(destination.y)][Math.floor(destination.x)] == 1)
-						range = 2;
-				}		
-			}
 
 			// if infantry is outside bounds, just fly straight towards goal
 			if (this.start[1]<0||this.start[1]>=game.level.mapGridHeight||this.start[0]<0||this.start[0]>=game.level.mapGridWidth)
@@ -775,71 +334,15 @@ var students =
 			else
 			{
 				var path;
-				if(this.state.attacking)
-				{
-					var itemCollisionGrid = determineCollisionGrid(this);
-					var targetCollisionGrid = determineCollisionGrid(this.target);
+				
+				var t0 = performance.now();
 
-					var item_current_tiles = cells.take_snapshot(
-						this.x,
-						this.y,
-						itemCollisionGrid,
-						this.grid);
+				path = Tactical_AStar(this.uid,this.grid,this.end,this.start,heuristic.euclidean,this.cellCollisionMode,range);
 
-					var target_current_tiles = cells.take_snapshot(
-						this.target.x,
-						this.target.y,
-						targetCollisionGrid,
-						this.grid);
+				var t1 = performance.now();
 
-					var coords_current_tiles = cells.take_coords_snapshot(this.start,this.end,this.grid);
-
-					var t0 = performance.now();
-
-					path = Tactical_AStar(this.uid,this.grid,this.end,this.start, heuristic.euclidean, this.cellCollisionMode,range);
-					var t1 = performance.now();
-
-					cells.restore_coords_snapshot(coords_current_tiles,this.grid);
-
-					cells.restore_snapshot(
-						this.target.x,
-						this.target.y,
-						targetCollisionGrid,
-						this.grid,
-						target_current_tiles);
-
-					cells.restore_snapshot(
-						this.x,
-						this.y,
-						itemCollisionGrid,
-						this.grid,
-						item_current_tiles);
-				}
-				else if(this.state.capturing)
-				{
-					var t0 = performance.now();
-					path = nav.getPath(
-						this,this.grid,this.start,this.end,this.cellCollisionMode,range,this.pathIncrement);
-					var t1 = performance.now();
-				}
-				else if(this.state.loading)
-				{
-					var t0 = performance.now();
-					path = nav.getPath(
-						this,this.grid,this.start,this.end,this.cellCollisionMode,range,this.pathIncrement);
-					var t1 = performance.now();
-				}
-				else
-				{
-					var t0 = performance.now();
-
-					path = Tactical_AStar(this.uid,this.grid,this.end,this.start,heuristic.euclidean,this.cellCollisionMode,range);
-
-					var t1 = performance.now();
-
-					if(debug.logInfantry)
-						console.log(`nav.copyGrid() took ${t1 - t0} milliseconds.`);
-				}
+				if(debug.logInfantry)
+					console.log(`nav.copyGrid() took ${t1 - t0} milliseconds.`);
 
 				/**
 				 * Very important for additional movements.
@@ -1078,11 +581,9 @@ var students =
             this.x = (this.x +this.lastMovementX);
 			this.y = (this.y +this.lastMovementY);
 
-			if(debug.logSync)
-				logs.silentLog("infantry x: " + this.x + ", y:" +  this.y);
-
 			//this.checkForThresholds();
-			this.steering();
+			if(!this.state.talking)
+				this.steering();
 
 			this.collided = false;
 
@@ -1177,20 +678,6 @@ var students =
 				}
 			}
 		},
-		
-		// searchForNearTargets:function()
-		// {
-		// 	var targets = findTypeSortedTargets(
-		// 		this.team,
-		// 		this.type,
-		// 		this.radius,
-		// 		this.attackRange,
-		// 		this.exclusionRange,
-		// 		this.x,
-		// 		this.y);
-
-		// 	return targets;
-		// },
 
 		spreadDestination:function(destination)
 		{
@@ -1274,215 +761,27 @@ var students =
 			this.hasCollidedSkin = false;
 			this.hasCollidedStop = false;
 
-			studentsFound = physics.queryArmy(this.near);
-
-			console.log(studentsFound.length);
-
-			if(studentsFound && studentsFound.length > 0)
-			{	
-				var nearByItems = [];
-
-				for(var i = 0; i < studentsFound.length; i++)
-				{
-					if(studentsFound[i].uid == this.uid)
-						continue;
-
-					this.hasCollided = true;
-
-					// var item = game.items[lookup.get(vehiclesFound[i].uid)];
-
-					// if(item.type == "stdudents")
-					// 	continue;
-
-					// nearByItems.push(item);
-				}
-
-				if(nearByItems.length == 0)
-					return;				
-
-				// var collidedItems = physics.detect(this, nearByItems, "box", "box");
-
-				// for(var i = 0; i < collidedItems.length; i++)
-				// {
-				// 	// if(this.target == undefined)
-				// 	// {
-				// 		if(this.orders.to)
-				// 		{
-				// 			if(collidedItems[i].orders.to)
-				// 			{
-				// 				if(this.orders.to.id == collidedItems[i].orders.to.id &&
-				// 					collidedItems[i].orders.type == "stand" ||
-				// 					collidedItems[i].orders.type == "standing" ||
-				// 					collidedItems[i].orders.type == "turningToStand")
-				// 				{
-				// 					// Set to standing if the group as the same destination and
-				// 					// is stand or standing,
-				// 					// except if the target is undefined
-
-				// 					this.state.attacking = false;
-				// 					this.orders.type = "standing";
-
-				// 					return;
-				// 				}
-				// 			}
-				// 		}
-				// 	//}
-				// }
-
-				// for(var i = 0; i < collidedItems.length; i++)
-				// {
-				// 	this.hasCollidedSkin = true;
-
-				// 	var furtherVehicle = findLongestPath(this, collidedItems[i]);
-
-				// 	if(furtherVehicle)
-				// 	{						
-				// 		if(this.uid == furtherVehicle.uid)
-				// 		{	
-				// 			if(isMoving(this) && isMoving(collidedItems[i]))
-				// 			{
-				// 				if(collidedItems[i].speed < this.speed)
-				// 				{
-				// 					this.decelerate();
-				// 					this.state.detouring = true;
-				// 					return;
-				// 				}
-				// 			}
-				// 		}						
-				// 	}
-
-				// 	if(furtherVehicle)
-				// 	{
-				// 		if(this.uid == furtherVehicle.uid)
-				// 		{	
-				// 			if(isMoving(this) && isMoving(collidedItems[i]))
-				// 			{
-				// 				this.decelerate();
-				// 				this.state.detouring = true;
-				// 				return;
-				// 			}
-				// 		}
-				// 	}
-
-				// 	var collidedBodyItems = physics.detect(this, nearByItems, "body", "body");
-
-				// 	for(var j = 0; j < collidedBodyItems.length; j++)
-				// 	{
-				// 		this.hasCollided = true;
-
-				// 		var furtherVehicleBody = findLongestPath(this, collidedBodyItems[j]);
-
-				// 		if(this.state.attacking)
-				// 		{
-				// 			if(furtherVehicleBody)
-				// 			{
-				// 				if(this.uid == furtherVehicleBody.uid)
-				// 				{									
-				// 					this.stop();
-				// 				}
-				// 			}
-				// 		}
-				// 		else
-				// 		{
-				// 			if(furtherVehicleBody)
-				// 			{
-				// 				if(this.uid == furtherVehicleBody.uid)
-				// 				{									
-				// 					this.stop();
-				// 				}
-				// 			}
-				// 		}
-				// 	}		
-				// }
-			}
-		},
-
-		accelerate:function()
-		{
-			
-		},
-
-		decelerate:function()
-		{
-
-		},
-
-		stop:function()
-		{
-			//this.accelerationIndex = this.accelerationFactor.length - 1;
-		},
-
-		takeDamage:function(damage)
-		{
-			this.life = this.life - damage;
-
-			console.log("infantry: " + this.life);
-
-			this.lifeBarSprite.scale.set(1, 1);
-			this.lifeBarSprite.scale.set(this.pixelWidth * this.life / this.hitPoints / 100, 4 / 100);
-
-			this.lifeBarBorderSprite.scale.set(this.life / this.hitPoints, 1);
-
-			this.destroyed();
-		},
-
-		destroyed:function()
-		{
-			if(this.isAlive && this.life <= 0)
+			for(var i = 0; i < game.items.length; i++)
 			{
-				this.isAlive = false; 
+				if(game.items[i].uid == this.uid)
+					continue;
 
-				if(this.bullet)
-				{
-                    renderer.removeBullet(this.bullet.sprite);
-				}
+				if(game.items[i].type != "students")
+					continue;
 
-				if(this.state)
-					this.state.attacking = false;
-
-				renderer.removeItem(this);
-
-				//nav.deleteMarkers(this.cellCollisionMode, game.currentTerrainMapPassableGrid, this.path);
-
-				cells.remove(
-					this.uid,
-					game.currentTerrainMapPassableGrid,
-					this.cellCollisionMode);
-
-				cells.remove_tactical_grid(
-					this.uid,
-					game.currentTerrainMapPassableGrid,
-					this.cellCollisionMode
-				);
-			}
-		},
-
-		setNewTarget:function()
-		{
-			var newTarget = findClosestGroundTarget(
-				this,
-				this.team,
-				this.near);
+				let distanceToNPC = distance(this.x, this.y, game.items[i].x, game.items[i].y);
 				
-			if(!newTarget)
-			{
-				this.state.attacking = false;
-				this.target = undefined;
+				if(distanceToNPC < 10)
+				{
+					this.orders.type = "moveToTalk";
+					this.state.talking = true;
+					game.items[i].orders.type = "moveToTalk";
+					game.items[i].state.talking = true;
 
-				// No target found when searching for new target
-				// Set to standing
-
-				this.orders.type = "standing";
-				return;
-			}
-			
-			if(newTarget)
-			{				
-				console.log("new target found");
-				this.orders.type = "moveTo";
-				this.state.attacking = true;
-				this.target = newTarget;
-				return;
+					this.target = game.items[i];
+					game.items[i].target = this;
+					return;
+				}				
 			}
 		},
 		
@@ -1490,8 +789,6 @@ var students =
 		{
             if(this.orders.type != "stand" && this.orders.type != "firing" && !(this.waitForThreshold))
 				this.animate();
-
-			this.animateCollision();
 
 			if(this.bullet)
 				this.animateBullet();
@@ -1505,26 +802,6 @@ var students =
 			}
 		},
 		
-		/**
-		 * Creates the skin collision
-		 * 
-		 * Creates the body collision 
-		 */
-		 createPolygon()
-		 {
-			var tempTexture = renderer.texturesMap.get(this.team + "_" + this.name)[0];
-			var angle = wrapDirection(Math.round(this.direction),this.directions) * 22.5 * Math.PI / 180;
-			var cosAngle = Math.cos(angle);
-			var sinAngle = Math.sin(angle);	
-
-			this.body = [];
-			this.body.push((-tempTexture.width) * cosAngle); this.body.push((-tempTexture.height) * sinAngle);
-			this.body.push((+tempTexture.width) * cosAngle); this.body.push((-tempTexture.height) * sinAngle); 
-			this.body.push((+tempTexture.width) * cosAngle); this.body.push((+tempTexture.height) * sinAngle); 
-			this.body.push((-tempTexture.width) * cosAngle); this.body.push((+tempTexture.height) * sinAngle);
-
-			this.near = new QuadTree.Boundary();
-		 },
         
         animate:function()
         {
@@ -1562,50 +839,6 @@ var students =
             }   
             
 			this.animationSpeed++;
-		},
-
-		animateCollision:function()
-        {
-			if(this.direction == undefined)
-				console.log("this.direction is undefined");
-
-			var tempTexture = renderer.texturesMap.get(this.team + "_" + this.name)[0];
-			var angle = wrapDirection(Math.round(this.direction),this.directions) * 45 * Math.PI / 180;
-			var cosAngle = Math.cos(angle);
-			var sinAngle = Math.sin(angle);
-
-			var translateX = this.x * game.gridSize;
-			var translateY = this.y * game.gridSize;
-
-			let textureWidth = tempTexture.width * 7;
-			let textureHeight = tempTexture.height * 7;
-
-			this.body[0] = (-textureWidth * cosAngle) - (-textureHeight * sinAngle) + this.x * game.gridSize;
-			this.body[1] = (-textureWidth * sinAngle) + (-textureHeight * cosAngle) + this.y * game.gridSize;
-			this.body[2] = (+textureWidth * cosAngle) - (-textureHeight * sinAngle) + this.x * game.gridSize;
-			this.body[3] = (+textureWidth * sinAngle) + (-textureHeight * cosAngle) + this.y * game.gridSize; 
-			this.body[4] = (+textureWidth * cosAngle) - (+textureHeight * sinAngle) + this.x * game.gridSize;
-			this.body[5] = (+textureWidth * sinAngle) + (+textureHeight * cosAngle) + this.y * game.gridSize;
-			this.body[6] = (-textureWidth * cosAngle) - (+textureHeight * sinAngle) + this.x * game.gridSize;
-			this.body[7] = (-textureWidth * sinAngle) + (+textureHeight * cosAngle) + this.y * game.gridSize;
-
-			this.near.x = translateX - 600;
-			this.near.y = translateY - 600;
-			this.near.w = this.near.x + 600;
-			this.near.h = this.near.y + 600;
-			
-			this.bodyCollision.clear();
-				
-			if(this.hasCollided)
-			{
-				this.bodyCollision.lineStyle(1, 0xFFFF00, 1);
-			}
-			else
-			{
-				this.bodyCollision.lineStyle(1, 0x00FF00, 1);
-			}
-
-			renderer.drawPolygon(this.bodyCollision, this.body, game.offsetX, game.offsetY);
 		},
 		
 		animateBullet:function()

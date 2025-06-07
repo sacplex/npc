@@ -178,9 +178,6 @@ var player =
 			if(this.reloadTimeLeft > 0)
 				this.reloadTimeLeft--;
 
-			if(physics.skipQuadTreeUpdate)
-				physics.skipQuadTreeUpdate = this.orders.type == "stand";
-
 			if(debug.fogOfWar)
 				fog.setSubGrid(this.x, this.y, this.visionGrid, this.team, this.state, this.hidden);
 		},
