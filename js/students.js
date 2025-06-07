@@ -1274,56 +1274,60 @@ var students =
 			this.hasCollidedSkin = false;
 			this.hasCollidedStop = false;
 
-			vehiclesFound = physics.queryArmy(this.near);
+			studentsFound = physics.queryArmy(this.near);
 
-			if(vehiclesFound && vehiclesFound.length > 0)
+			console.log(studentsFound.length);
+
+			if(studentsFound && studentsFound.length > 0)
 			{	
 				var nearByItems = [];
 
-				for(var i = 0; i < vehiclesFound.length; i++)
+				for(var i = 0; i < studentsFound.length; i++)
 				{
-					if(vehiclesFound[i].uid == this.uid)
+					if(studentsFound[i].uid == this.uid)
 						continue;
 
-					var item = game.items[lookup.get(vehiclesFound[i].uid)];
+					this.hasCollided = true;
 
-					if(item.type == "infantry")
-						continue;
+					// var item = game.items[lookup.get(vehiclesFound[i].uid)];
 
-					nearByItems.push(item);
+					// if(item.type == "stdudents")
+					// 	continue;
+
+					// nearByItems.push(item);
 				}
 
 				if(nearByItems.length == 0)
 					return;				
 
-				var collidedItems = physics.detect(this, nearByItems, "skin", "skin");
+				// var collidedItems = physics.detect(this, nearByItems, "box", "box");
 
-				for(var i = 0; i < collidedItems.length; i++)
-				{
-					// if(this.target == undefined)
-					// {
-						if(this.orders.to)
-						{
-							if(collidedItems[i].orders.to)
-							{
-								if(this.orders.to.id == collidedItems[i].orders.to.id &&
-									collidedItems[i].orders.type == "stand" ||
-									collidedItems[i].orders.type == "standing" ||
-									collidedItems[i].orders.type == "turningToStand")
-								{
-									// Set to standing if the group as the same destination and
-									// is stand or standing,
-									// except if the target is undefined
+				// for(var i = 0; i < collidedItems.length; i++)
+				// {
+				// 	// if(this.target == undefined)
+				// 	// {
+				// 		if(this.orders.to)
+				// 		{
+				// 			if(collidedItems[i].orders.to)
+				// 			{
+				// 				if(this.orders.to.id == collidedItems[i].orders.to.id &&
+				// 					collidedItems[i].orders.type == "stand" ||
+				// 					collidedItems[i].orders.type == "standing" ||
+				// 					collidedItems[i].orders.type == "turningToStand")
+				// 				{
+				// 					// Set to standing if the group as the same destination and
+				// 					// is stand or standing,
+				// 					// except if the target is undefined
 
-									this.state.attacking = false;
-									this.orders.type = "standing";
+				// 					this.state.attacking = false;
+				// 					this.orders.type = "standing";
 
-									return;
-								}
-							}
-						}
-					//}
-				}
+				// 					return;
+				// 				}
+				// 			}
+				// 		}
+				// 	//}
+				// }
 
 				// for(var i = 0; i < collidedItems.length; i++)
 				// {
@@ -1499,14 +1503,6 @@ var students =
 				this.drawPath();
 				this.drawDebugPath();
 			}
-
-			if(game.cncDisplay)
-			{
-				this.drawIcon();
-			}
-
-			if(game.radarTotal > 0)
-				this.drawMiniMapMarker();
 		},
 		
 		/**
@@ -1516,55 +1512,16 @@ var students =
 		 */
 		 createPolygon()
 		 {
-			/*var tempTexture = renderer.texturesMap.get(this.team + "_" + this.name)[0];			
-
-			this.body = [];
-			this.skin = [];
-			this.bodyLineColor = 0xFFFFFF;
-			var a = this.direction * 22.5 * Math.PI / 180;
-			var cosAngle = Math.cos(a);
-			var sinAngle = Math.sin(a);
-
-			this.body.push(-tempTexture.width / 2 * cosAngle - -tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.body.push(-tempTexture.width / 2 * sinAngle + -tempTexture.height / 2 * cosAngle + this.sprite.y);
-			this.body.push(+tempTexture.width / 2 * cosAngle - -tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.body.push(+tempTexture.width / 2 * sinAngle + -tempTexture.height / 2 * cosAngle + this.sprite.y);
-			this.body.push(+tempTexture.width / 2 * cosAngle - +tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.body.push(+tempTexture.width / 2 * sinAngle + +tempTexture.height / 2 * cosAngle + this.sprite.y);
-			this.body.push(-tempTexture.width / 2 * cosAngle - +tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.body.push(-tempTexture.width / 2 * sinAngle + +tempTexture.height / 2 * cosAngle + this.sprite.y);
-
-			this.skin.push(-tempTexture.width / 2 * cosAngle - -tempTexture.height / 2 * sinAngle + this.sprite.x - 8);
-			this.skin.push(-tempTexture.width / 2 * sinAngle + -tempTexture.height / 2 * cosAngle + this.sprite.y - 8);
-			this.skin.push(+tempTexture.width / 2 * cosAngle - -tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.skin.push(+tempTexture.width / 2 * sinAngle + -tempTexture.height / 2 * cosAngle + this.sprite.y);
-			this.skin.push(+tempTexture.width / 2 * cosAngle - +tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.skin.push(+tempTexture.width / 2 * sinAngle + +tempTexture.height / 2 * cosAngle + this.sprite.y);
-			this.skin.push(-tempTexture.width / 2 * cosAngle - +tempTexture.height / 2 * sinAngle + this.sprite.x);
-			this.skin.push(-tempTexture.width / 2 * sinAngle + +tempTexture.height / 2 * cosAngle + this.sprite.y);*/
-
 			var tempTexture = renderer.texturesMap.get(this.team + "_" + this.name)[0];
 			var angle = wrapDirection(Math.round(this.direction),this.directions) * 22.5 * Math.PI / 180;
 			var cosAngle = Math.cos(angle);
 			var sinAngle = Math.sin(angle);	
 
 			this.body = [];
-			this.body.push((-tempTexture.width / 2) * cosAngle * this.scaleInnerCollision); this.body.push((-tempTexture.height / 1) * sinAngle * this.scaleInnerCollision);
-			this.body.push((+tempTexture.width / 2) * cosAngle * this.scaleInnerCollision); this.body.push((-tempTexture.height / 1) * sinAngle * this.scaleInnerCollision); 
-			this.body.push((+tempTexture.width / 2) * cosAngle * this.scaleInnerCollision); this.body.push((+tempTexture.height / 1) * sinAngle * this.scaleInnerCollision); 
-			this.body.push((-tempTexture.width / 2) * cosAngle * this.scaleInnerCollision); this.body.push((+tempTexture.height / 1) * sinAngle * this.scaleInnerCollision);
-
-			this.skin = [];
-			this.skin.push((-tempTexture.width / 2) * cosAngle * this.scaleOuterCollision); this.skin.push((-tempTexture.height / 1) * sinAngle * this.scaleOuterCollision);
-			this.skin.push((+tempTexture.width / 2) * cosAngle * this.scaleOuterCollision); this.skin.push((-tempTexture.height / 1) * sinAngle * this.scaleOuterCollision); 
-			this.skin.push((+tempTexture.width / 2) * cosAngle * this.scaleOuterCollision); this.skin.push((+tempTexture.height / 1) * sinAngle * this.scaleOuterCollision); 
-			this.skin.push((-tempTexture.width / 2) * cosAngle * this.scaleOuterCollision); this.skin.push((+tempTexture.height / 1) * sinAngle * this.scaleOuterCollision);
-
-			this.vision = [];
-			this.vision.push((-tempTexture.width / 2) * cosAngle * 1.0); this.vision.push((-tempTexture.height / 2) * sinAngle * 1.0);
-			this.vision.push((+tempTexture.width / 2) * cosAngle * 1.0); this.vision.push((-tempTexture.height / 2) * sinAngle * 1.0); 
-			this.vision.push((+tempTexture.width / 2) * cosAngle * 1.0); this.vision.push((+tempTexture.height / 2) * sinAngle * 1.0); 
-			this.vision.push((-tempTexture.width / 2) * cosAngle * 1.0); this.vision.push((+tempTexture.height / 2) * sinAngle * 1.0);
+			this.body.push((-tempTexture.width) * cosAngle); this.body.push((-tempTexture.height) * sinAngle);
+			this.body.push((+tempTexture.width) * cosAngle); this.body.push((-tempTexture.height) * sinAngle); 
+			this.body.push((+tempTexture.width) * cosAngle); this.body.push((+tempTexture.height) * sinAngle); 
+			this.body.push((-tempTexture.width) * cosAngle); this.body.push((+tempTexture.height) * sinAngle);
 
 			this.near = new QuadTree.Boundary();
 		 },
@@ -1617,87 +1574,38 @@ var students =
 			var cosAngle = Math.cos(angle);
 			var sinAngle = Math.sin(angle);
 
-			// this.body[0] = -tempTexture.width / 2 * cosAngle - -tempTexture.height / 2 * sinAngle + this.sprite.x;
-			// this.body[1] = -tempTexture.width / 2 * sinAngle + -tempTexture.height / 2 * cosAngle + this.sprite.y;
-			// this.body[2] = +tempTexture.width / 2 * cosAngle - -tempTexture.height / 2 * sinAngle + this.sprite.x;
-			// this.body[3] = +tempTexture.width / 2 * sinAngle + -tempTexture.height / 2 * cosAngle + this.sprite.y;
-			// this.body[4] = +tempTexture.width / 2 * cosAngle - +tempTexture.height / 2 * sinAngle + this.sprite.x;
-			// this.body[5] = +tempTexture.width / 2 * sinAngle + +tempTexture.height / 2 * cosAngle + this.sprite.y;
-			// this.body[6] = -tempTexture.width / 2 * cosAngle - +tempTexture.height / 2 * sinAngle + this.sprite.x;
-			// this.body[7] = -tempTexture.width / 2 * sinAngle + +tempTexture.height / 2 * cosAngle + this.sprite.y;
-			
-			// var skinOffset = 16;
-			// this.skin[0] = -(tempTexture.width + skinOffset) / 2 * cosAngle - -(tempTexture.height + skinOffset) / 2 * sinAngle + this.sprite.x;
-			// this.skin[1] = -(tempTexture.width + skinOffset) / 2 * sinAngle + -(tempTexture.height + skinOffset) / 2 * cosAngle + this.sprite.y;
-			// this.skin[2] = +(tempTexture.width + skinOffset) / 2 * cosAngle - -(tempTexture.height + skinOffset) / 2 * sinAngle + this.sprite.x;
-			// this.skin[3] = +(tempTexture.width + skinOffset) / 2 * sinAngle + -(tempTexture.height + skinOffset) / 2 * cosAngle + this.sprite.y;
-			// this.skin[4] = +(tempTexture.width + skinOffset) / 2 * cosAngle - +(tempTexture.height + skinOffset) / 2 * sinAngle + this.sprite.x;
-			// this.skin[5] = +(tempTexture.width + skinOffset) / 2 * sinAngle + +(tempTexture.height + skinOffset) / 2 * cosAngle + this.sprite.y;
-			// this.skin[6] = -(tempTexture.width + skinOffset) / 2 * cosAngle - +(tempTexture.height + skinOffset) / 2 * sinAngle + this.sprite.x;
-			// this.skin[7] = -(tempTexture.width + skinOffset) / 2 * sinAngle + +(tempTexture.height + skinOffset) / 2 * cosAngle + this.sprite.y;
-
 			var translateX = this.x * game.gridSize;
-			var translateY = this.y * game.gridSize + 80;
+			var translateY = this.y * game.gridSize;
 
-			this.body[0] = (-tempTexture.width / 2 * cosAngle * this.scaleInnerCollision) - (-tempTexture.height / 2 * sinAngle * this.scaleInnerCollision) + this.x * game.gridSize;
-			this.body[1] = (-tempTexture.width / 2 * sinAngle * this.scaleInnerCollision) + (-tempTexture.height / 2 * cosAngle * this.scaleInnerCollision) + this.y * game.gridSize + 80;
-			this.body[2] = (+tempTexture.width / 2 * cosAngle * this.scaleInnerCollision) - (-tempTexture.height / 2 * sinAngle * this.scaleInnerCollision) + this.x * game.gridSize;
-			this.body[3] = (+tempTexture.width / 2 * sinAngle * this.scaleInnerCollision) + (-tempTexture.height / 2 * cosAngle * this.scaleInnerCollision) + this.y * game.gridSize + 80; 
-			this.body[4] = (+tempTexture.width / 2 * cosAngle * this.scaleInnerCollision) - (+tempTexture.height / 2 * sinAngle * this.scaleInnerCollision) + this.x * game.gridSize;
-			this.body[5] = (+tempTexture.width / 2 * sinAngle * this.scaleInnerCollision) + (+tempTexture.height / 2 * cosAngle * this.scaleInnerCollision) + this.y * game.gridSize + 80;
-			this.body[6] = (-tempTexture.width / 2 * cosAngle * this.scaleInnerCollision) - (+tempTexture.height / 2 * sinAngle * this.scaleInnerCollision) + this.x * game.gridSize;
-			this.body[7] = (-tempTexture.width / 2 * sinAngle * this.scaleInnerCollision) + (+tempTexture.height / 2 * cosAngle * this.scaleInnerCollision) + this.y * game.gridSize + 80;
+			let textureWidth = tempTexture.width * 7;
+			let textureHeight = tempTexture.height * 7;
 
-			this.skin[0] = (-tempTexture.width / 2 * cosAngle * this.scaleOuterCollision) - (-tempTexture.height / 2 * sinAngle * this.scaleOuterCollision) + this.x * game.gridSize;
-			this.skin[1] = (-tempTexture.width / 2 * sinAngle * this.scaleOuterCollision) + (-tempTexture.height / 2 * cosAngle * this.scaleOuterCollision) + this.y * game.gridSize + 80;
-			this.skin[2] = (+tempTexture.width / 2 * cosAngle * this.scaleOuterCollision) - (-tempTexture.height / 2 * sinAngle * this.scaleOuterCollision) + this.x * game.gridSize;
-			this.skin[3] = (+tempTexture.width / 2 * sinAngle * this.scaleOuterCollision) + (-tempTexture.height / 2 * cosAngle * this.scaleOuterCollision) + this.y * game.gridSize + 80; 
-			this.skin[4] = (+tempTexture.width / 2 * cosAngle * this.scaleOuterCollision) - (+tempTexture.height / 2 * sinAngle * this.scaleOuterCollision) + this.x * game.gridSize;
-			this.skin[5] = (+tempTexture.width / 2 * sinAngle * this.scaleOuterCollision) + (+tempTexture.height / 2 * cosAngle * this.scaleOuterCollision) + this.y * game.gridSize + 80;
-			this.skin[6] = (-tempTexture.width / 2 * cosAngle * this.scaleOuterCollision) - (+tempTexture.height / 2 * sinAngle * this.scaleOuterCollision) + this.x * game.gridSize;
-			this.skin[7] = (-tempTexture.width / 2 * sinAngle * this.scaleOuterCollision) + (+tempTexture.height / 2 * cosAngle * this.scaleOuterCollision) + this.y * game.gridSize + 80;
+			this.body[0] = (-textureWidth * cosAngle) - (-textureHeight * sinAngle) + this.x * game.gridSize;
+			this.body[1] = (-textureWidth * sinAngle) + (-textureHeight * cosAngle) + this.y * game.gridSize;
+			this.body[2] = (+textureWidth * cosAngle) - (-textureHeight * sinAngle) + this.x * game.gridSize;
+			this.body[3] = (+textureWidth * sinAngle) + (-textureHeight * cosAngle) + this.y * game.gridSize; 
+			this.body[4] = (+textureWidth * cosAngle) - (+textureHeight * sinAngle) + this.x * game.gridSize;
+			this.body[5] = (+textureWidth * sinAngle) + (+textureHeight * cosAngle) + this.y * game.gridSize;
+			this.body[6] = (-textureWidth * cosAngle) - (+textureHeight * sinAngle) + this.x * game.gridSize;
+			this.body[7] = (-textureWidth * sinAngle) + (+textureHeight * cosAngle) + this.y * game.gridSize;
 
-			this.vision[0] = ((-tempTexture.width - 40) / 2 * cosAngle * 1.0) - ((-tempTexture.height - 40) / 2 * sinAngle * 1.0) + this.x * game.gridSize;
-			this.vision[1] = ((-tempTexture.width - 40) / 2 * sinAngle * 1.0) + ((-tempTexture.height - 40) / 2 * cosAngle * 1.0) + this.y * game.gridSize + 80;
-			this.vision[2] = ((+tempTexture.width + 40) / 2 * cosAngle * 1.0) - ((-tempTexture.height - 40) / 2 * sinAngle * 1.0) + this.x * game.gridSize;
-			this.vision[3] = ((+tempTexture.width + 40) / 2 * sinAngle * 1.0) + ((-tempTexture.height - 40) / 2 * cosAngle * 1.0) + this.y * game.gridSize + 80; 
-			this.vision[4] = ((+tempTexture.width + 40) / 2 * cosAngle * 1.0) - ((+tempTexture.height - 40) / 2 * sinAngle * 1.0) + this.x * game.gridSize;
-			this.vision[5] = ((+tempTexture.width + 40) / 2 * sinAngle * 1.0) + ((+tempTexture.height - 40) / 2 * cosAngle * 1.0) + this.y * game.gridSize + 80; 
-			this.vision[6] = ((-tempTexture.width - 40) / 2 * cosAngle * 1.0) - ((+tempTexture.height - 40) / 2 * sinAngle * 1.0) + this.x * game.gridSize;
-			this.vision[7] = ((-tempTexture.width - 40) / 2 * sinAngle * 1.0) + ((+tempTexture.height - 40) / 2 * cosAngle * 1.0) + this.y * game.gridSize + 80;
-
-			this.near.x = translateX - 100;
-			this.near.y = translateY - 100;
-			this.near.w = this.near.x + 200;
-			this.near.h = this.near.y + 200;
+			this.near.x = translateX - 600;
+			this.near.y = translateY - 600;
+			this.near.w = this.near.x + 600;
+			this.near.h = this.near.y + 600;
 			
 			this.bodyCollision.clear();
-			this.skinCollision.clear();
-			this.visionCollision.clear();
-			this.nearCollision.clear();
-
-			if(keyboard.collisionDebug)
-			{	
-				if(this.hasCollided)
-				{
-					this.bodyCollision.lineStyle(1, 0xFFFF00, 1);
-					this.skinCollision.lineStyle(1, 0xFF0000, 1);
-					this.visionCollision.lineStyle(1, 0xB200FF, 1);
-					this.nearCollision.lineStyle(1, 0x00FFB2, 1);
-				}
-				else
-				{
-					this.bodyCollision.lineStyle(1, 0x00FF00, 1);
-					this.skinCollision.lineStyle(1, 0x0000FF, 1);
-					this.visionCollision.lineStyle(1, 0xFF00B2, 1);
-					this.nearCollision.lineStyle(1, 0x00FFB2, 1);
-				}
-
-				// renderer.drawPolygon(this.bodyCollision, this.body, game.offsetX, game.offsetY);
-				// renderer.drawPolygon(this.skinCollision, this.skin, game.offsetX, game.offsetY);
-				// renderer.drawPolygon(this.visionCollision, this.vision, game.offsetX, game.offsetY);
-				// renderer.drawRectangle(this.nearCollision, this.near, 200, 200, game.offsetX, game.offsetY);
+				
+			if(this.hasCollided)
+			{
+				this.bodyCollision.lineStyle(1, 0xFFFF00, 1);
 			}
+			else
+			{
+				this.bodyCollision.lineStyle(1, 0x00FF00, 1);
+			}
+
+			renderer.drawPolygon(this.bodyCollision, this.body, game.offsetX, game.offsetY);
 		},
 		
 		animateBullet:function()
@@ -1733,92 +1641,6 @@ var students =
 
 			this.lifeBarBorderSprite.x = this.sprite.x;
 			this.lifeBarBorderSprite.y = this.sprite.y - game.lifeBarHeight;
-		},
-
-		drawIcon:function()
-		{
-			this.iconSprite.x = this.sprite.x;
-			this.iconSprite.y = this.sprite.y;
-
-			var angle = (wrapDirection(invertDirection(Math.round(this.direction), this.directions),this.directions) * 45 * Math.PI / 180);
-			
-			this.iconDirectionSprite.x = this.sprite.x;
-			this.iconDirectionSprite.y = this.sprite.y;
-			this.iconDirectionSprite.rotation = angle;
-		},
-
-		drawMiniMapMarker:function()
-		{	
-			this.miniMapMarker.visible = true;
-
-			if(minimap.zoomOut)
-			{
-				this.miniMapMarker.x = display.minimapScreen.x + 
-					((this.sprite.x + game.offsetX) / 20) /
-					game.level.mapGridWidth * 
-			   		display.minimapScreen.dimension;
-
-				this.miniMapMarker.y = display.minimapScreen.y + 
-					((this.sprite.y - display.maininterface.mapImageYOffset + game.offsetY) / 20) / 
-					game.level.mapGridHeight *
-					display.minimapScreen.dimension;
-			}
-			else
-			{
-				this.miniMapMarker.x = display.minimapScreen.x +
-					this.sprite.x / 
-		   			display.gameplayScreen.width *
-		   			display.minimapScreen.dimension;
-
-				this.miniMapMarker.y = display.minimapScreen.y + 
-					(this.sprite.y-display.maininterface.mapImageYOffset) / 
-					display.gameplayScreen.height *
-					display.minimapScreen.dimension;
-			}			
-
-			if(this.miniMapMarker.x < display.minimapScreen.x)
-				this.miniMapMarker.visible = false;
-
-			if(this.miniMapMarker.x > display.minimapScreen.x + display.minimapScreen.dimension + canvasWidthOffset)
-				this.miniMapMarker.visible = false;
-
-			if(this.miniMapMarker.y < display.minimapScreen.y)
-				this.miniMapMarker.visible = false;
-
-			if(this.miniMapMarker.y > display.minimapScreen.y + display.minimapScreen.dimension)
-				this.miniMapMarker.visible = false;
-		},
-
-		drawPath:function()
-		{
-			this.pathCNCLine.clear();
-
-			if(this.path && this.path.length > 0)
-			{				
-				this.pathCNCLine.moveTo(this.sprite.x, this.sprite.y);
-
-				for(var i = 0; i < this.path.length; i++)
-				{
-					this.pathCNCLine.lineStyle(1, 0xFFFFFF)
-						.lineTo((this.path[i].x * 20 - game.offsetX) + 0.5, (this.path[i].y * 20 + 80 - game.offsetY) + 0.5);
-				}
-			}
-		},
-
-		drawDebugPath:function()
-		{
-			this.pathLine.clear();
-
-			if(this.path && this.path.length > 0)
-			{				
-				this.pathLine.moveTo(this.sprite.x, this.sprite.y);
-
-				for(var i = 0; i < this.path.length; i++)
-				{
-					this.pathLine.lineStyle(1, 0x0000FF)
-						.lineTo((this.path[i].x * 20 - game.offsetX) + 0.5, (this.path[i].y * 20 + 80 - game.offsetY) + 0.5);
-				}
-			}
 		},
 
 		allInfantryStand:function()

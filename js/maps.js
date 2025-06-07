@@ -17,7 +17,8 @@ var maps =
         ],
         "items": [
             {"type":"player","name":"player","x":60,"y":60,"direction":0,"team":"characters","uid":-1},
-            {"type":"students","name":"student","x":80,"y":80,"direction":0,"team":"characters","uid":-2}
+            {"type":"students","name":"student","x":80,"y":80,"direction":0,"team":"characters","uid":-2},
+            {"type":"students","name":"student","x":90,"y":90,"direction":4,"team":"characters","uid":-3},
         ],
         "lights" : [
             // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
@@ -34,6 +35,7 @@ var maps =
             },     
 		    "action":() => {
                 renderer.setOrder(game.items[1], {"order":{"type":"search"}});
+                renderer.setOrder(game.items[2], {"order":{"type":"search"}});
 		    } 
         }
         ]
