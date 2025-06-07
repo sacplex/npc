@@ -86,6 +86,8 @@ var students =
 		hidden:false,
 		target:undefined,
 		bullet:undefined,
+		talkCount:0,
+		talkLimit:500,
 		attackRange:0.75,
 		exclusionRange:3,
 		reloadTimeLeft:0,
@@ -112,60 +114,28 @@ var students =
 		{
 			switch (this.orders.type)
 			{
-				case "defend":
-					this.defend();
-					break;
-				case "assist":
-					this.assist();
-					break;
-				case "attack":
-					this.attack(this.orders.to);
-					break;
-				case "turnToFire":
-					this.turnToFire();
-					break;
-				case "firing":
-					this.firing();
-					break;
-				case "fire":
-					this.fire();
-					break;
-				case "attacked":
-					this.attacked();
-					break;
-				case "capture":
-					this.capture(this.orders.to);
-					break;
-				case "captureBuilding":
-					this.captureBuilding(this.orders.to);
-					break;
-				case "load":
-					this.load(this.orders.to);
-					break;
-				case "loading":
-					this.loading();
-					break;
 				case "search":
 					this.search();
 					break;
 				case "searching":
 					this.searching();
 					break;
-				case "moveToTalk":
-					this.moveToTalk();
+				case "talk":
+					this.talk();
+					break;
+				case "talking":
+					this.talking();
 					break;
 				case "move":
 					this.move();
 					break;
 				case "moveTo":
-					// Move towards destination until distance from destination is less aircraft radius
                     this.moveTo(this.orders.to);
 					break;
 				case "turning":
 					this.turningTo();
 					break;
 				case "moving":
-					// Move towards destination until distance from destination is less aircraft radius
 					this.movingTo();
 					break;
 				case "wait":
@@ -191,8 +161,10 @@ var students =
 			this.sprite.scale.set(2, 2);
 		},
 
-		search: function() 
+		search:function() 
 		{
+			console.log("search");
+
 			let maxTries = 100;
 			let gridWidth = game.level.mapGridWidth;
 			let gridHeight = game.level.mapGridHeight;
@@ -212,29 +184,64 @@ var students =
 						y: randomY
 					};
 
-					console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY})`);
+					console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
 					return;
 				}
 			}
 
 			// If no valid tile is found
-			console.warn(`Unit ${this.uid} couldn't find a valid search location`);
+			console.log(`Unit ${this.uid} couldn't find a valid search location`);
 			this.orders.type = "stand";
 		},
 
-		moveToTalk:function()
+		talk:function()
 		{
-			this.orders.type = "moveTo";
+			console.log("talk!");
+			this.orders.type = "talking";
+		},
+
+		talking:function()
+		{
+			console.log(this.orders.type);
+
+			if(this.talkCount == this.talkLimit)
+			{
+				this.talkCount = 0;
+				console.log("end talking");
+				this.state.talking = false;
+				this.state.leaving = true;
+				this.target = undefined;
+
+				let maxTries = 100;
+				let gridWidth = game.level.mapGridWidth;
+				let gridHeight = game.level.mapGridHeight;
+
+				for (let i = 0; i < maxTries; i++) 
+				{
+					let randomX = Math.floor(Math.random() * gridWidth);
+					let randomY = Math.floor(Math.random() * gridHeight);
+
+					// Check if the grid cell is passable
+					if (game.currentTerrainMapPassableGrid[randomY][randomX] !== flags.CELL_COLLISION_MODE_FULL) 
+					{
+						this.state.searching = true;
+						this.orders.type = "moveTo";
+						this.orders.to = {
+							x: randomX,
+							y: randomY
+						};
+
+						console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
+						return;
+					}
+				}
+			}
+
+			this.talkCount++;
 		},
 		
 		move:function()
 		{
-			if (!this.orders.to || typeof this.orders.to.x != "number" || typeof this.orders.to.y != "number")
-			{
-				this.orders.type = "stand";
-				return;
-			}
-
 			this.orders.to.y = this.orders.to.y - display.maininterface.mapImageYOffset * productionRatio;
 
 			this.orders.to.x = this.orders.to.x * productionInverseRatio + game.offsetX;
@@ -242,28 +249,11 @@ var students =
 
 			this.orders.to.x = this.orders.to.x / game.gridSize;
 			this.orders.to.y = this.orders.to.y / game.gridSize;
-
-			if(game.currentTerrainMapPassableGrid[
-                Math.floor(this.orders.to.y)][Math.floor(this.orders.to.x)]
-                 == flags.CELL_COLLISION_MODE_FULL)
-            {
-				this.orders.type = "stand";
-                return;
-            }
 			
 			this.removeInfantryFromTheCellTile();
 
 			// Can happen when capturing and attacking at the same time
 			this.state.retreating = false;
-
-			if(this.state.attacking)
-			{
-				if(distance(this.x, this.y, this.orders.to.x, this.orders.to.y) > distance(this.x, this.y, this.target.x, this.target.y))
-				{
-					this.state.retreating = true;
-				}
-			}
-
 			this.state.attacking = false;
 			this.state.firing = false;
 			this.state.capturing = false;
@@ -272,7 +262,7 @@ var students =
 			// target is on the same side
 			this.target = undefined;
 
-			console.log("infantry move");
+			console.log("student move");
 			this.orders.type = "moveTo";
 		},
 
@@ -282,6 +272,7 @@ var students =
 		 */
 		moveTo:function(destination)
 		{
+			console.log("moveTo");
 			cells.remove(
 				this.uid,				
 				game.currentTerrainMapPassableGrid,
@@ -334,32 +325,8 @@ var students =
 			else
 			{
 				var path;
-				
-				var t0 = performance.now();
 
 				path = Tactical_AStar(this.uid,this.grid,this.end,this.start,heuristic.euclidean,this.cellCollisionMode,range);
-
-				var t1 = performance.now();
-
-				if(debug.logInfantry)
-					console.log(`nav.copyGrid() took ${t1 - t0} milliseconds.`);
-
-				/**
-				 * Very important for additional movements.
-				 * 
-				 * When infantry are grouped, often the non-leading
-				 * infantry wont be able to reach the destination.
-				 * 
-				 * Therefore it hold its previous next step and 
-				 * try to reach it.
-				 * 
-				 * However, typically a leading infantry will be
-				 * in place trying to the new destination.
-				 * 
-				 * Without the reset, two infantry or more will
-				 * result in an unbreakable collision 
-				 * 
-				 */ 
 
 				if(path)
 				{
@@ -451,24 +418,11 @@ var students =
 				var distanceFromDestinationSquared = Math.pow(this.x -
 					this.orders.to.x, 2) + Math.pow(this.y - this.orders.to.y, 2);
 
-				//console.log("distanceFromDestinationSquared: " + distanceFromDestinationSquared);
-					
 				if(distanceFromDestinationSquared < Math.pow(this.radius/(game.gridSize), 2))
 				{	
-					//nav.deleteMarker(this.cellCollisionMode, game.currentTerrainMapPassableGrid, this.path);
 					this.path.shift();
 				}
 
-				/*	Sometimes infantry can't find the exact point to stand.
-					As in they stand over it, with a slow turn speed,
-					infantry will spin.
-
-					The following if statement avoids that, by recording
-					the previous distances, and once the distance is greater
-					than the previous distance, the infantry have to stop.
-
-					The last step is removed.
-				*/
 				if(distanceFromDestinationSquared > this.previousDistance)
 				{
 					//nav.deleteMarker(this.cellCollisionMode, game.currentTerrainMapPassableGrid, this.path);
@@ -483,27 +437,8 @@ var students =
 			{
 				// Returns the previousDistance to a large number, a reset.
 				this.previousDistance = 100;
-
-				if(this.state.capturing)
-				{
-					this.captureBuilding();
-				}
-				else if(this.state.loading)
-				{
-					this.orders.type = "standing";
-				}
-				else
-				{
-					// Infantry stops here
-					if(debug.logMultiplayerStats)
-					{
-						console.log("vehicle stop here: " + this.uid);
-						console.log(this.x + " " + this.y);
-					}
-					
-					this.state.attacking = false;
-					this.orders.type = "standing";
-				}
+				this.state.leaving = false;
+				this.orders.type = "standing";
 
 				this.capturing = false;
 
@@ -511,34 +446,20 @@ var students =
 			}
 
 			// Once close enough to target, stop and attack
-			if(this.state.attacking)
+			if(this.state.talking)
 			{				
 				if(this.target)
-				{					
-					if(this.target.life <= 0)
-					{
-						if(this.target.destory)
-						{
-							this.target.destory();
-						}
-
-						this.setNewTarget();
-					}
-
-					if(this.target)
-					{
-						// In range to fire, standing first to add to grid, then fire!
-						if(Math.pow(this.target.x - this.x, 2) + Math.pow(this.target.y - this.y, 2) < Math.pow(this.sight, 2))
-						{	
-							this.state.attacking = true;
-							this.orders.type = "standing";
-							return;	
-						}
+				{
+					console.log("checking for In range to talk");
+					// In range to talk.
+					if(Math.pow(this.target.x - this.x, 2) + Math.pow(this.target.y - this.y, 2) < Math.pow(this.sight, 2))
+					{	
+						this.orders.type = "talk";
+						return;	
 					}
 				}
 				else
 				{
-					this.state.attacking = false;
 					this.orders.type = "standing";
 					return;	
 				}
@@ -581,17 +502,11 @@ var students =
             this.x = (this.x +this.lastMovementX);
 			this.y = (this.y +this.lastMovementY);
 
-			//this.checkForThresholds();
-			if(!this.state.talking)
-				this.steering();
+			if(!this.state.leaving)
+				if(!this.state.talking)
+					this.steering();
 
 			this.collided = false;
-
-			// Surrounding occurs when the first attacking vehicle is firing
-			// at a target. Other attacking vehicles of the same target,
-			// chance their behaviour
-
-			//this.checkForVehicles();
 			
 			if (Math.abs(difference)>turnAmount)
 				this.direction = wrapDirection(this.direction+turnAmount*Math.abs(difference)/difference,this.directions);		
@@ -599,15 +514,6 @@ var students =
 			return true;
 		},
 
-		/**
-		 * Once the first infantry has reached the destination,
-		 * the whole platoon stops.
-		 * 
-		 * Additionally, the infantry will occupy a series of 
-		 * collision cells and the sets then on.
-		 * 
-		 * This is true for the whole platoon. 
-		 */
 		standing:function()
 		{
 			// Add the cells to the grid
@@ -627,9 +533,6 @@ var students =
 			this.orders.type = "stand";
 		}, 
 		
-		/**
-		 * Default state of the infantry
-		 */
 		stand:function()
 		{
 							
@@ -650,9 +553,6 @@ var students =
 		{
 			this.path = path;
 
-			//if(nav.multiType)
-				nav.createMarkers(this.cellCollisionMode, game.currentTerrainMapPassableGrid, this.path);
-
 			this.nextStep = undefined;
 
 			if(debug.logInfantry)
@@ -667,15 +567,8 @@ var students =
 				this.orders.type = "turning";
 			}
 			else
-			{
-				if(this.state.attacking)
-				{						
-					this.orders.type = "attacking";
-				}
-				else
-				{
-					this.orders.type = "moving";
-				}
+			{	
+				this.orders.type = "moving";				
 			}
 		},
 
@@ -773,9 +666,9 @@ var students =
 				
 				if(distanceToNPC < 10)
 				{
-					this.orders.type = "moveToTalk";
+					this.orders.type = "moveTo";
 					this.state.talking = true;
-					game.items[i].orders.type = "moveToTalk";
+					game.items[i].orders.type = "moveTo";
 					game.items[i].state.talking = true;
 
 					this.target = game.items[i];
@@ -787,7 +680,7 @@ var students =
 		
 		draw:function()
 		{
-            if(this.orders.type != "stand" && this.orders.type != "firing" && !(this.waitForThreshold))
+            if(this.orders.type != "stand" && this.orders.type != "talking" && !(this.waitForThreshold))
 				this.animate();
 
 			if(this.bullet)
@@ -874,17 +767,6 @@ var students =
 
 			this.lifeBarBorderSprite.x = this.sprite.x;
 			this.lifeBarBorderSprite.y = this.sprite.y - game.lifeBarHeight;
-		},
-
-		allInfantryStand:function()
-		{
-			for(var i = 0; i < game.items.length; i++)
-			{
-				if(game.items[i].type == "infantry")
-				{
-					game.items[i].orders = {type:"stand"};
-				}
-			}
 		},
 
 		resetState:function()

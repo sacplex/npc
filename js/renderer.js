@@ -1588,15 +1588,7 @@ var renderer = {
             item.state = {
                 searching:false,
                 talking:false,
-                attacking:false,
-                firing:false,
-                retreating:false,
-                roaming:false,
-                capturing:false,
-                extracting:false,
-                flying:false,
-                takingOff:false,
-                approaching:false
+                leaving:false
             };
 
             item.isAlive = true;

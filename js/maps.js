@@ -34,8 +34,10 @@ var maps =
                 return true;
             },     
 		    "action":() => {
-                renderer.setOrder(game.items[1], {"order":{"type":"search"}});
-                renderer.setOrder(game.items[2], {"order":{"type":"search"}});
+                game.items[1].orders.type = "search";
+                game.items[2].orders.type = "search";
+                //renderer.setOrder(game.items[1], {"order":{"type":"search"}});
+                //renderer.setOrder(game.items[2], {"order":{"type":"search"}});
 		    } 
         }
         ]
