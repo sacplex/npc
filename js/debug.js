@@ -18,6 +18,7 @@ var debug =
     logNarration:false,
     logKeyboard:false,
     drawTiles:false,
+    network:true,
     audio:true,
     audioMusic:true,
     audioVoice:true,

@@ -7,9 +7,16 @@ window.addEventListener('load', function() {
 
     console.log("\n%c" + padding + myText + padding + "\n\n", "background: linear-gradient(to bottom, #C0C0C0, #1a1a1a); color: #AFEEEE; font-size: 20px;\n\n");
 
-        console.log("start game");
-        renderer.init();    
-        game.init();
+    console.log("start game");
+    conversations.init();
+    renderer.init();    
+    game.init();
+
+    if(debug.network)
+    {
+        console.log("client init");
+        client.init();
+    }
 
     document.body.style.backgroundColor = 'black';
     

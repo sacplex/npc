@@ -223,28 +223,10 @@ var keyboard =
                 }
             }
 
-            if(e.key == 't') // Show Debug Grid
+            if(e.key == 't')
             {   
-                if(debug.logKeyboard)
-                {
-                    if(!this.textInputAdded)
-                    {
-                        debug.drawTiles = !debug.drawTiles;
-                        if(!debug.drawTiles)
-                        {
-                            renderer.debugContainer.visible = false;
-    
-                            for(var i = 0; i < game.items.length; i++)
-                            {
-                                if(game.items[i].pathLine)
-                                {
-                                    game.items[i].pathLine.visible = renderer.debugContainer.visible;
-                                    game.items[i].endLine.visible = renderer.debugContainer.visible;
-                                }
-                            }
-                        }
-                    }
-                }    
+                console.log("pressing t");
+                conversations.generate(conversations.generateNetworkUid(), conversations.generateNetworkUid());
             }
 
             if(e.key == 'u') // Print Silent Log

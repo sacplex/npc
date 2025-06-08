@@ -671,6 +671,11 @@ var students =
 					game.items[i].orders.type = "moveTo";
 					game.items[i].state.talking = true;
 
+					console.log(this.networkUid);
+					console.log(game.items[i].networkUid);
+
+					conversations.generate(this.networkUid, game.items[i].networkUid);
+
 					this.target = game.items[i];
 					game.items[i].target = this;
 					return;

@@ -1461,68 +1461,6 @@ var renderer = {
 
     assignGameItems:function(textures, images, resources, items)
     {
-        if(resources)
-        {
-            this.resourcesContainer.removeChildren();
-
-            for(var i=0; i < resources.length; i++)
-            {
-                game.items.push({});
-
-                var resourcesIndex = game.items.length-1;
-
-                console.log(resourcesIndex);
-                console.log(window["resources"].list);
-                console.log(resources);
-
-                // $.extend(game.items[resourcesIndex],window["resources"].list[resources[i].name]);
-                // $.extend(game.items[resourcesIndex],window["resources"].defaults);
-                
-                Object.assign(game.items[resourcesIndex], window["resources"].list[resources[i].name]);
-                Object.assign(game.items[resourcesIndex], window["resources"].defaults);
-
-                game.items[resourcesIndex].uid = this.itemUID++;
-                game.items[resourcesIndex].type = resources[i].type;
-                game.items[resourcesIndex].name = resources[i].name;
-                game.items[resourcesIndex].x = resources[i].x /*+ Math.floor(game.items[terrainIndex].passableGrid[0].length / 2); */
-                game.items[resourcesIndex].y = resources[i].y /*+ Math.floor(game.items[terrainIndex].passableGrid.length / 2);*/
-
-                game.items[resourcesIndex].isAlive = false;
-
-                let spriteTextures = [];
-
-                for(var j = this.indexes.get(resources[i].name).index; 
-                    j < this.indexes.get(resources[i].name).index +
-                    this.indexes.get(resources[i].name).frames;
-                    j++)
-                {
-                    spriteTextures.push(textures[images[j]]);    
-                }
-
-                if(spriteTextures.length > 0)
-                    this.texturesMap.set(resources[i].name, spriteTextures);
-
-                if(resources[i].direction)
-                    game.items[resourcesIndex].sprite = PIXI.Sprite.from(
-                            this.texturesMap.get(resources[i].name)[resources[i].direction]
-                        );
-                else
-                    game.items[resourcesIndex].sprite = PIXI.Sprite.from(
-                            this.texturesMap.get(resources[i].name)[0]
-                        );
-
-                game.items[resourcesIndex].sprite.anchor.set(0.5);
-
-                game.items[resourcesIndex].sprite.x =
-                    resources[i].x * game.gridSize - this.cameraOffsetX;
-
-                game.items[resourcesIndex].sprite.y =
-                    resources[i].y * game.gridSize + display.maininterface.mapImageYOffset - this.cameraOffsetY;
-
-                this.resourcesContainer.addChild(game.items[resourcesIndex].sprite);
-            }
-        }
-
         if(items == undefined)
         {
             console.log("%cThis level's game items are undefined and can not be assigned, check maps.js",
@@ -1572,6 +1510,7 @@ var renderer = {
             this.debugUIDs.add(items[i].uid);
 
             item.uid = items[i].uid;
+            item.networkUid = conversations.generateNetworkUid();
             //item.uid = this.itemUID++;
             item.type = items[i].type;
             item.name = items[i].name;
