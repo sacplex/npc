@@ -86,8 +86,9 @@ var students =
 		hidden:false,
 		target:undefined,
 		bullet:undefined,
+		contact:false,
 		talkCount:0,
-		talkLimit:500,
+		talkLimit:240,
 		attackRange:0.75,
 		exclusionRange:3,
 		reloadTimeLeft:0,
@@ -197,44 +198,48 @@ var students =
 		talk:function()
 		{
 			console.log("talk!");
+			
 			this.orders.type = "talking";
 		},
 
 		talking:function()
 		{
-			console.log(this.orders.type);
-
 			if(this.talkCount == this.talkLimit)
 			{
-				this.talkCount = 0;
-				console.log("end talking");
-				this.state.talking = false;
-				this.state.leaving = true;
-				this.target = undefined;
-
-				let maxTries = 100;
-				let gridWidth = game.level.mapGridWidth;
-				let gridHeight = game.level.mapGridHeight;
-
-				for (let i = 0; i < maxTries; i++) 
+				if(conversations.get(this.conversationsUid, this.contact))
 				{
-					let randomX = Math.floor(Math.random() * gridWidth);
-					let randomY = Math.floor(Math.random() * gridHeight);
-
-					// Check if the grid cell is passable
-					if (game.currentTerrainMapPassableGrid[randomY][randomX] !== flags.CELL_COLLISION_MODE_FULL) 
+					console.log("end talking");
+					this.state.talking = false;
+					this.state.leaving = true;
+					this.target = undefined;
+		
+					let maxTries = 100;
+					let gridWidth = game.level.mapGridWidth;
+					let gridHeight = game.level.mapGridHeight;
+		
+					for (let i = 0; i < maxTries; i++) 
 					{
-						this.state.searching = true;
-						this.orders.type = "moveTo";
-						this.orders.to = {
-							x: randomX,
-							y: randomY
-						};
-
-						console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
-						return;
+						let randomX = Math.floor(Math.random() * gridWidth);
+						let randomY = Math.floor(Math.random() * gridHeight);
+		
+						// Check if the grid cell is passable
+						if (game.currentTerrainMapPassableGrid[randomY][randomX] !== flags.CELL_COLLISION_MODE_FULL) 
+						{
+							this.state.searching = true;
+							this.orders.type = "moveTo";
+							this.orders.to = {
+								x: randomX,
+								y: randomY
+							};
+		
+							renderer.displayConversationText(false);
+							console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
+							return;
+						}
 					}
 				}
+
+				this.talkCount = 0;
 			}
 
 			this.talkCount++;
@@ -668,13 +673,15 @@ var students =
 				{
 					this.orders.type = "moveTo";
 					this.state.talking = true;
+					this.contact = true;
 					game.items[i].orders.type = "moveTo";
 					game.items[i].state.talking = true;
+					game.items[i].contact = false;
 
-					console.log(this.networkUid);
-					console.log(game.items[i].networkUid);
+					this.conversationsUid = conversations.generateConversationUid(this.networkUid, game.items[i].networkUid);
+					game.items[i].conversationsUid = this.conversationsUid;
 
-					conversations.generate(this.networkUid, game.items[i].networkUid);
+					conversations.generate(this.conversationsUid);
 
 					this.target = game.items[i];
 					game.items[i].target = this;

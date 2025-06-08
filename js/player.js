@@ -102,6 +102,7 @@ var player =
 		hasCollidedStop:false,
 		index:undefined,
 		grid:undefined,
+		messages:[],
 		path:[],
 		start:[],
 		end:[],

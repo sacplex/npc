@@ -108,6 +108,8 @@ var renderer = {
     skirmishMapPreview:undefined,
     skirmishMapPreviewPaths:[],
     currentMapPreviewPath:undefined,
+    conversationMessages:[],
+    conversationText:undefined,
     powerText:undefined,
     cashText:undefined,
     missionFailureText:undefined,
@@ -628,7 +630,7 @@ var renderer = {
         this.setCharacters();
         this.setNightTime();
         this.setMenu();
-        this.setTexts();
+        this.setConversationText();
 
         if(!this.resourceMasterSet.has(game.level.mapImages))
         {
@@ -708,6 +710,8 @@ var renderer = {
             this.container.addChild(this.lightsSpxContainer);
 
             this.assignMenu(textures);
+
+            this.gameInterfaceContainer.addChild(this.conversationText);
 
             this.assignSidebar(this.buttonImages, game.level.sidebar);
             this.assignCharacters(textures, this.imageNames);
@@ -1406,11 +1410,24 @@ var renderer = {
         // }
     },
 
-    setTexts:function()
+    addConversationText:function(message)
     {
-        // this.powerText = new PIXI.Text("", powereStyle);
-        // this.powerText.x = productionWidth - 300;
-        // this.powerText.y = 35;
+        this.conversationText.text = message;
+    },
+
+    setConversationText:function()
+    {
+        this.conversationText = new PIXI.Text("", conversationStyle);
+        this.conversationText.x = productionWidth / 2;
+        this.conversationText.y = 35;
+        this.conversationText.visible = false;
+        this.conversationText.anchor.set(0.5, 0);
+    },
+
+    displayConversationText:function(visible)
+    {
+        this.conversationText.visible = visible;
+        console.log(this.conversationText);
     },
 
     assignBackground:function(textures)
@@ -1511,6 +1528,7 @@ var renderer = {
 
             item.uid = items[i].uid;
             item.networkUid = conversations.generateNetworkUid();
+            item.conversationUid = 0;
             //item.uid = this.itemUID++;
             item.type = items[i].type;
             item.name = items[i].name;

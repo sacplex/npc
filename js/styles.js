@@ -3,6 +3,12 @@ var styles =
     
 }
 
+const conversationStyle = new PIXI.TextStyle({
+    fontFamily: 'Courier',
+    fontSize: 14,
+    fill: ['#FFFFFF'], // gradient
+});
+
 const introStartStyle = new PIXI.TextStyle({
     fontFamily: 'Courier',
     fontSize: 48,

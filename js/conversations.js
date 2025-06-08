@@ -3,7 +3,7 @@ var conversations =
     networkRegistry:undefined,
     registry:undefined,
     dialogue:undefined,
-
+    
     init:function()
     {
         this.networkRegistry = new Set();
@@ -33,12 +33,12 @@ var conversations =
         return conversationUid;
     },
 
-    generate:function(uid1, uid2)
+    generate:function(conversationUid)
     {
-        console.log("Generate conversation for " + uid1 + ", and " + uid2);
+        console.log("Generate conversation for " + conversationUid);
 
         const message = {
-            id: uid1 * uid2,
+            id: conversationUid,
             sendTo: "smart",
             topic: "Discussing their plans for an upcoming exam.",
             duration: "medium",
@@ -53,7 +53,8 @@ var conversations =
 
     add:function(conversationId, message)
     {
-        if(!this.dialogue.has(conversationId))
+        console.log("add conversationId: " + conversationId);
+        if(!conversations.dialogue.has(conversationId))
         {
             let messages = [];
             messages.push(message);
@@ -65,6 +66,40 @@ var conversations =
             messages.push(message);
             this.dialogue.set(conversationId, messages);
         }
+        console.log(this.dialogue.get(conversationId)[0]);
+    },
+
+    get:function(conversationId, contact)
+    {
+        console.log("conversationId: " + conversationId);
+        console.log(this.dialogue);
+        let messages = this.dialogue.get(conversationId);
+        let message = undefined;
+        
+        if(contact)
+        {
+            message = messages.pop(0);
+
+            if(messages.length == 0)
+            {
+                this.dialogue.delete(conversationId);
+                return true;
+            }
+        }
+
+        if(messages == undefined)
+        {
+            return true;
+        }
+
+        if(contact)
+        {
+            console.log("message: " + message);
+            renderer.displayConversationText(true);
+            renderer.addConversationText(message);  
+        }
+
+        return false;        
     },
 
     hasConversationUid:function(networkUid1, networkUid2)
