@@ -45,61 +45,79 @@ var conversations =
             names: ["Jack", "Jill"],
             roles: ["student", "student"],
             collaboration: -0.8,
-            emotion: "negative"
+            emotion: "negative",
+            conversationType:"static"
         };
 
         client.sendMessage(message);
     },
 
-    add:function(conversationId, message)
+    add: function(conversationId, message)
     {
         console.log("add conversationId: " + conversationId);
-        if(!conversations.dialogue.has(conversationId))
+
+        if (!this.dialogue.has(conversationId))
         {
-            let messages = [];
-            messages.push(message);
-            this.dialogue.set(conversationId, messages);
+            this.dialogue.set(conversationId, []);
         }
-        else
-        {
-            let messages = this.dialogue.get(conversationId);
-            messages.push(message);
-            this.dialogue.set(conversationId, messages);
-        }
+
+        this.dialogue.get(conversationId).push(message);
+
         console.log(this.dialogue.get(conversationId)[0]);
     },
 
-    get:function(conversationId, contact)
+    get: function(conversationId, contact)
     {
-        console.log("conversationId: " + conversationId);
+        console.log("conversationId:", conversationId);
         console.log(this.dialogue);
-        let messages = this.dialogue.get(conversationId);
-        let message = undefined;
-        
-        if(contact)
-        {
-            message = messages.pop(0);
 
-            if(messages.length == 0)
+        const messages = this.dialogue.get(conversationId);
+
+        if (!messages || messages.length === 0)
+        {
+            this.dialogue.delete(conversationId); // Safe cleanup
+            return true; // No more messages
+        }
+
+        if (contact)
+        {
+            const message = messages.shift();
+            console.log("message:", message);
+
+            // const msg = new SpeechSynthesisUtterance(message);
+            // msg.lang = "en-US";
+            // msg.rate = 1;
+            // msg.pitch = 1;
+            // msg.volume = 1;
+
+            // // Wait until voices are loaded, then choose a better one
+            // const setVoiceAndSpeak = () => {
+            //     const voices = speechSynthesis.getVoices();
+            //     const preferred = voices.find(v =>
+            //         v.name.includes("Google") || v.name.includes("Natural") || v.lang === "en-US"
+            //     );
+            //     if (preferred) msg.voice = preferred;
+
+            //     speechSynthesis.speak(msg);
+            // };
+
+            // if (speechSynthesis.getVoices().length === 0) {
+            //     speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
+            // } else {
+            //     setVoiceAndSpeak();
+            // }
+
+            renderer.displayConversationText(true);
+            renderer.addConversationText(message);
+
+            if (messages.length === 0)
             {
                 this.dialogue.delete(conversationId);
                 return true;
             }
         }
 
-        if(messages == undefined)
-        {
-            return true;
-        }
-
-        if(contact)
-        {
-            console.log("message: " + message);
-            renderer.displayConversationText(true);
-            renderer.addConversationText(message);  
-        }
-
-        return false;        
+        return false;
     },
 
     hasConversationUid:function(networkUid1, networkUid2)
