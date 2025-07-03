@@ -9,6 +9,12 @@ const conversationStyle = new PIXI.TextStyle({
     fill: ['#FFFFFF'], // gradient
 });
 
+const clockStyle = new PIXI.TextStyle({
+    fontFamily: 'Courier',
+    fontSize: 18,
+    fill: ['#FFFFFF'], // gradient
+});
+
 const introStartStyle = new PIXI.TextStyle({
     fontFamily: 'Courier',
     fontSize: 48,

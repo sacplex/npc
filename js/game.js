@@ -148,8 +148,16 @@ var game = {
 
     update: function()
     {
-        update.gameState();
         game.handlePanning();
+        renderer.clock.update();
+
+        if(renderer.clock.expired())
+        {
+            game.endLevel();
+            game.nextLevel();
+            return;
+        }
+
         economy.update();
         mouse.update();
         sidebar.update();
@@ -698,32 +706,6 @@ var game = {
         //     }
         // }
     },
-    
-    showMessage:function(message, op)
-    {
-        setTimeout(() => {
-            this.showMessages.splice(0, 1);
-
-            renderer.showMessageText.text = "";
-
-            for(var i = 0; i < this.showMessages.length; i++)
-            {
-                // renderer.showMessageText.text =
-                //     renderer.showMessageText.text + this.showMessages[i] + "\n";
-
-                renderer.showMessageText.text = renderer.showMessageText.text + this.showMessages[i] + "\n";
-            }
-        }, 6000);
-
-        if(PIXI.TextMetrics.measureText(
-            renderer.showMessageText.text,
-            showMessageStyle, true).lines.length <= 1)
-        {
-            this.showMessages.push(message);
-
-            renderer.showMessageText.text = renderer.showMessageText.text + message + "\n";
-        }
-    },
 
     addDialogue:function(message, character)
     {
@@ -754,10 +736,6 @@ var game = {
     clearDialogue:function()
     {
         narration.stop();
-        renderer.showMessageText.text = "";
-        music.setVolume(0.1);
-        renderer.hideCharacter();
-        this.showMessages.length = 0;
         triggers.setBlockActiveTrigger(false);
         narration.clear();
     },
@@ -1281,30 +1259,21 @@ var game = {
         return exit;
     },
 
-    calculateLevelTime: function()
-    {
-        if (game.elapsedTime && game.elapsedTime > 0)
-        {
-            var hours = Math.floor(game.elapsedTime / 3600); // 1 hour = 3600 seconds
-            var minutes = Math.floor((game.elapsedTime % 3600) / 60); // remaining minutes
-            var seconds = game.elapsedTime % 60; // remaining seconds
-
-            // Format time as HH:MM:SS
-            var formattedTime = hours.toString().padStart(2, '0') + ":" + 
-                                minutes.toString().padStart(2, '0') + ":" + 
-                                seconds.toString().padStart(2, '0');
-
-            // Remove previous Mission Completion Time line if present
-            webpages["personnel"]["body"] = webpages["personnel"]["body"].replace(/(\n\n)?Mission Completion Time:.*$/, '');
-
-            // Append new line
-            webpages["personnel"]["body"] += "\n\nMission Completion Time: " + formattedTime;
-        }
-    },
-
     resetItems:function()
     {
         game.items = game.items.filter(item => item !== null && item !== undefined);
+    },
+
+    nextLevel:function()
+    {
+        singleplayer.currentLevel++;
+
+        if(singleplayer.currentLevel == maps.singleplayer.length)
+            singleplayer.currentLevel = 0;
+
+        this.level = maps.singleplayer[singleplayer.currentLevel];
+        renderer.setCamera();
+        renderer.level();
     },
     
     endLevel:function()
@@ -1320,28 +1289,14 @@ var game = {
 
         this.clearSelection();
         this.clearDialogue();
-
-        this.calculateLevelTime();
-
-        timer.reset();
-
-        music.stop();
-
-        if(controller.active)
-            controller.currentState = "ui";
         
         if(game.level.ai)
             ai.end();
 
-        renderer.removeBackground();
         renderer.removeAllItems();
+        renderer.removeClock();
         renderer.removeTerrain();
-        renderer.removeFogOfWar();
-        renderer.removeAllBullet();
         renderer.removeThreshold();
-        renderer.removeSidebar();
-        renderer.removePowerText();
-        renderer.removeCharacters();
         renderer.removeLights();
         renderer.removeEmitters();
         renderer.removeDebug();
@@ -1358,7 +1313,6 @@ var game = {
         renderer.hideMenu();
 
         renderer.pause = false;
-        renderer.missionFailureText.visible = false;
 
         renderer.reset();
         renderer.resetCamera();

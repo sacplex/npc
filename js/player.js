@@ -1053,7 +1053,7 @@ var player =
 				logs.silentLog("infantry x: " + this.x + ", y:" +  this.y);
 
 			//this.checkForThresholds();
-			this.steering();
+			//this.steering();
 
 			this.collided = false;
 
@@ -1239,8 +1239,6 @@ var player =
 			this.hasCollidedSkin = false;
 			this.hasCollidedStop = false;
 
-			vehiclesFound = physics.queryArmy(this.near);
-
 			if(vehiclesFound && vehiclesFound.length > 0)
 			{	
 				var nearByItems = [];
@@ -1261,100 +1259,29 @@ var player =
 				if(nearByItems.length == 0)
 					return;				
 
-				var collidedItems = physics.detect(this, nearByItems, "skin", "skin");
-
 				for(var i = 0; i < collidedItems.length; i++)
 				{
-					// if(this.target == undefined)
-					// {
-						if(this.orders.to)
+					if(this.orders.to)
+					{
+						if(collidedItems[i].orders.to)
 						{
-							if(collidedItems[i].orders.to)
+							if(this.orders.to.id == collidedItems[i].orders.to.id &&
+								collidedItems[i].orders.type == "stand" ||
+								collidedItems[i].orders.type == "standing" ||
+								collidedItems[i].orders.type == "turningToStand")
 							{
-								if(this.orders.to.id == collidedItems[i].orders.to.id &&
-									collidedItems[i].orders.type == "stand" ||
-									collidedItems[i].orders.type == "standing" ||
-									collidedItems[i].orders.type == "turningToStand")
-								{
-									// Set to standing if the group as the same destination and
-									// is stand or standing,
-									// except if the target is undefined
+								// Set to standing if the group as the same destination and
+								// is stand or standing,
+								// except if the target is undefined
 
-									this.state.attacking = false;
-									this.orders.type = "standing";
+								this.state.attacking = false;
+								this.orders.type = "standing";
 
-									return;
-								}
+								return;
 							}
 						}
-					//}
+					}
 				}
-
-				// for(var i = 0; i < collidedItems.length; i++)
-				// {
-				// 	this.hasCollidedSkin = true;
-
-				// 	var furtherVehicle = findLongestPath(this, collidedItems[i]);
-
-				// 	if(furtherVehicle)
-				// 	{						
-				// 		if(this.uid == furtherVehicle.uid)
-				// 		{	
-				// 			if(isMoving(this) && isMoving(collidedItems[i]))
-				// 			{
-				// 				if(collidedItems[i].speed < this.speed)
-				// 				{
-				// 					this.decelerate();
-				// 					this.state.detouring = true;
-				// 					return;
-				// 				}
-				// 			}
-				// 		}						
-				// 	}
-
-				// 	if(furtherVehicle)
-				// 	{
-				// 		if(this.uid == furtherVehicle.uid)
-				// 		{	
-				// 			if(isMoving(this) && isMoving(collidedItems[i]))
-				// 			{
-				// 				this.decelerate();
-				// 				this.state.detouring = true;
-				// 				return;
-				// 			}
-				// 		}
-				// 	}
-
-				// 	var collidedBodyItems = physics.detect(this, nearByItems, "body", "body");
-
-				// 	for(var j = 0; j < collidedBodyItems.length; j++)
-				// 	{
-				// 		this.hasCollided = true;
-
-				// 		var furtherVehicleBody = findLongestPath(this, collidedBodyItems[j]);
-
-				// 		if(this.state.attacking)
-				// 		{
-				// 			if(furtherVehicleBody)
-				// 			{
-				// 				if(this.uid == furtherVehicleBody.uid)
-				// 				{									
-				// 					this.stop();
-				// 				}
-				// 			}
-				// 		}
-				// 		else
-				// 		{
-				// 			if(furtherVehicleBody)
-				// 			{
-				// 				if(this.uid == furtherVehicleBody.uid)
-				// 				{									
-				// 					this.stop();
-				// 				}
-				// 			}
-				// 		}
-				// 	}		
-				// }
 			}
 		},
 

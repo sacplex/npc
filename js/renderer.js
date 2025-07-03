@@ -57,6 +57,7 @@ var renderer = {
     skirmishDropdownContainer:undefined,
     lobbyContainer:undefined,
     backgroundContainer:undefined,
+    dialogueContainer:undefined,
     resourcesContainer:undefined,
     thresholdContainer:undefined,
     lightsContainer:undefined,
@@ -107,6 +108,10 @@ var renderer = {
     skirmishDownButton:undefined,
     skirmishMapPreview:undefined,
     skirmishMapPreviewPaths:[],
+    dialogueSprite:undefined,
+    input:undefined,
+    inputField:undefined,
+    clock:undefined,
     currentMapPreviewPath:undefined,
     conversationMessages:[],
     conversationText:undefined,
@@ -185,7 +190,6 @@ var renderer = {
     maininterfaceVerticalScale:undefined,
     selectionBox:undefined,
     texturesMap:undefined,
-    showMessageText:undefined,
     buttonTexturesMap:undefined,
     indexes:undefined,
     overallFrames:0,
@@ -242,6 +246,7 @@ var renderer = {
         this.skirmishDropdownContainer = new PIXI.Container();
         this.lobbyContainer = new PIXI.Container();
         this.backgroundContainer = new PIXI.Container();
+        this.dialogueContainer = new PIXI.Container();
         this.resourcesContainer = new PIXI.Container();
         this.thresholdContainer = new PIXI.Container();
         this.lightsContainer = new PIXI.Container();
@@ -355,52 +360,16 @@ var renderer = {
 
     intro:function()
     {
-        if(debug.skipIntro)
-        {
-            if(debug.skipUI)
-            {
-                renderer.missionbriefing();
-            }
-            else
-            {
-                briefings.level = singleplayer.currentLevel - 12;
-                ui.init(this.app);
+        PIXI.Assets.add(display.intro.getFileName(), display.intro.getFileName());
 
-                mouse.dragPressed = false; 
-            }
-            return;
-        }
+        this.resourceMasterSet.add(display.intro.getFileName());
 
-        if(renderer.introLoaded)
-        {
-            renderer.initialiseIntro();
-        }
-        else
-        {
-            if(!debug.production)
-            {
-                PIXI.Loader.shared
-                    .add(display.intro.getFileName())
-                    .load(()=>{
-                        renderer.initialiseIntro();
+        const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
 
-                        renderer.introLoaded = true;
-                    });
-            }
-            else
-            {
-                PIXI.Assets.add(display.intro.getFileName(), display.intro.getFileName());
-
-                this.resourceMasterSet.add(display.intro.getFileName());
-
-                const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
-
-                texturesPromise.then((textures) => {
-                    renderer.initialiseIntro(textures);
-                    renderer.introLoaded = true;
-                });
-            }
-        }
+        texturesPromise.then((textures) => {
+            renderer.initialiseIntro(textures);
+            renderer.introLoaded = true;
+        });
     },
 
     initialiseIntro:function(textures)
@@ -417,36 +386,6 @@ var renderer = {
         this.setIntroButtonsHeight();
 
         this.enableIntroButtons();
-
-        this.campaignText.on('pointerover', ()=> {
-            introCampaignStyle.fill = ['gold'];
-        });
-
-        this.campaignText.on('pointerout', ()=> {
-            introCampaignStyle.fill = ['white'];
-        });
-
-        this.campaignText.on('click', ()=> {
-            this.app.stage.removeChild(this.introContainer);
-            this.disableIntroButtons();
-            
-            if(debug.production)
-            {
-                canvasWidthOffset = screen.width /** window.devicePixelRatio*/ - canvasWidth;
-                canvasHeightOffset = screen.height /** window.devicePixelRatio*/- canvasHeight;
-        
-                document.querySelector("body").requestFullscreen()
-                    .then(function() {
-                        // element has entered fullscreen mode successfully
-                        interface.windowedOffsetY = 0;
-                    })
-                    .catch(function(error) {
-                        // element could not enter fullscreen mode
-                    });
-            }   
-            
-            renderer.teamSelection();
-        });
 
         this.startText.on('pointerover', ()=> {
             introStartStyle.fill = ['gold'];
@@ -625,7 +564,6 @@ var renderer = {
         this.setGameResources();
         this.setLights();
         this.setThresholds(game.level.thresholds);
-
         this.setSidebar(game.level.sidebar);
         this.setCharacters();
         this.setNightTime();
@@ -664,6 +602,14 @@ var renderer = {
             }
         }
 
+        let dialogueFilename = display.dialogue.getFileName();
+
+        if(!this.resourceMasterSet.has(dialogueFilename))
+        {
+            PIXI.Assets.add(dialogueFilename, dialogueFilename);
+            this.resourceMasterSet.add(dialogueFilename);
+        }
+
         const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
 
         texturesPromise.then((textures) =>
@@ -674,6 +620,8 @@ var renderer = {
             this.assignLights(textures, this.imageNames, game.level.lights);
             this.assignAdditionalRequirements(textures, this.imageNames);
             this.assignGameItems(textures, this.imageNames, game.level.resources, game.level.items);
+            this.assignClock(game.level.clock);
+            this.assignDialogue(textures);
             this.assignEmitter(game.level.emitters);
             this.assignShaders(game.level.shaders);
             
@@ -696,6 +644,7 @@ var renderer = {
             this.itemsContainer.addChild(this.emittersContainer);
 
             this.gameplayContainer.addChild(this.itemsContainer);
+            this.gameplayContainer.addChild(this.dialogueContainer); 
 
             if(debug.production)
             {
@@ -729,13 +678,13 @@ var renderer = {
                 ai.init();
             }                    
 
-            if(game.mode == "multiplayer")
-            {
-                this.removeLobbyScreen();
-                setInterval(() => {
-                    game.tick++
-                }, 1);
-            }
+            // if(game.mode == "multiplayer")
+            // {
+            //     this.removeLobbyScreen();
+            //     setInterval(() => {
+            //         game.tick++
+            //     }, 1);
+            // }
 
             this.app.ticker.maxFPS = 60;
 
@@ -748,15 +697,15 @@ var renderer = {
 
             //this.addTextInput();
 
-            if(debug.mouseCoords)
-            {
-                this.container.addChild(this.debugMouseX);
-                this.container.addChild(this.debugMouseY);
-                this.container.addChild(this.debugMouseDetails);
-                this.container.addChild(this.debugOffsetX);
-                this.container.addChild(this.debugOffsetY);
-                //this.container.addChild(this.debugPathLength);
-            }
+            // if(debug.mouseCoords)
+            // {
+            //     this.container.addChild(this.debugMouseX);
+            //     this.container.addChild(this.debugMouseY);
+            //     this.container.addChild(this.debugMouseDetails);
+            //     this.container.addChild(this.debugOffsetX);
+            //     this.container.addChild(this.debugOffsetY);
+            //     //this.container.addChild(this.debugPathLength);
+            // }
 
             this.pause = false;
             this.skip = false;
@@ -827,6 +776,8 @@ var renderer = {
             if(debug.fpsCounter)
                 this.measureFPS();
 
+            this.updateClockDisplay();
+
             if(this.displacementSprite)
                 this.displacementSprite.x++;
         });
@@ -847,6 +798,7 @@ var renderer = {
 
         this.setAdditionalRequirements();
         this.setGameItems(savedData.items);
+        
         this.setGameResources();
         this.setLights();
         this.setThresholds(savedData.thresholds);
@@ -1338,22 +1290,6 @@ var renderer = {
         }
     },
 
-    showDialogue:function(message)
-    {
-        if(debug.hideNarration)
-            return;
-
-        if(debug.hideDialogue)
-            return;
-
-        this.showMessageText.text = "";
-
-        if(localise.language == "english")
-            this.showMessageText.text = this.showMessageText.text + message + "\n";
-        else
-            this.showMessageText.text = this.showMessageText.text + localise.get(message) + "\n";
-    },
-
     showCharacter:function(name)
     {
         if(debug.hideNarration)
@@ -1476,6 +1412,125 @@ var renderer = {
         this.gameplayContainer.addChild(this.backgroundContainer); 
     },
 
+    assignDialogue: function(textures)
+    {
+        // --- Setup Dialogue ---
+        this.dialogueContainer.removeChildren();
+
+        const textureName = display.dialogue.getFileName();
+        const dialogueTexture = textures?.[textureName] || PIXI.Texture.from(textureName);
+
+        this.dialogueSprite = new PIXI.Sprite(dialogueTexture);
+        this.dialogueSprite.visible = false;
+        this.dialogueSprite.x = productionWidth / 2;
+        this.dialogueSprite.y = productionHeight / 2;
+        this.dialogueSprite.anchor.set(0.5, 0.5);
+
+        this.dialogueContainer.addChild(this.dialogueSprite);
+
+        // --- Setup Hardcoded Text Input ---
+        this.input = new TextInputDetails();
+
+        this.input.x = 460;
+        this.input.y = 840;
+
+        this.input.inputWidth = "1000px";
+        this.input.inputFontSize = "20px";
+        this.input.placeholder = "Enter your Text...";
+        this.input.password = false;
+
+        // Ensure these are all present for PIXI.TextInput
+        this.input.inputPadding = 10;
+        this.input.inputColor = "#ffffff";
+
+        this.input.boxDefaultFill = "#515151";
+        this.input.boxFocusedFill = "#515151";
+
+        this.input.boxDefaultStrokeColor = "#969696";
+        this.input.boxFocusedStrokeColor = "#969696";
+
+        this.input.boxDefaultStrokeWidth = 2;
+        this.input.boxFocusedStrokeWidth = 2;
+
+        this.inputField = this.generateTextInput(this.input);
+        this.inputField.visible = false;
+        this.inputField.interactive = true;
+        this.inputField.on('keydown', (keycode) => {
+            if (keycode === 13) { // 13 is the keycode for Enter
+                alert("send text to LLM")
+                this.inputField.text = '';
+            }
+        });
+        
+        this.dialogueContainer.addChild(this.inputField);
+    },
+
+    generateTextInput:function(details)
+    {
+        let temp = new TextInput({
+            input: {
+                fontSize: details.inputFontSize,
+                padding: details.inputPadding,
+                width: details.inputWidth, // Is 1000px but actually not resizing
+                color: details.inputColor,
+            },
+            box: {
+                default: {fill: details.boxDefaultFill, rounded: 6, stroke: {color: details.boxDefaultStrokeColor, width: details.boxDefaultStrokeWidth}},
+                focused: {fill: details.boxFocusedFill, rounded: 6, stroke: {color: details.boxFocusedStrokeColor, width: details.boxFocusedStrokeWidth}},
+                disabled: {fill: details.boxDisabledFill, rounded: 6}
+            }
+        });
+
+        const dropShadowFilter = new PIXI.filters.DropShadowFilter({
+                rotation: 45,
+                distance: 5,
+                blur: 5, // Shadow blur amount in pixels
+                alpha: 0.7, // Shadow opacity (0 to 1)
+                color: 0, // Shadow color (black in this case)
+        });
+
+        temp.filters = [dropShadowFilter];
+
+        if(details.anchor)
+        {
+            temp.anchor.set(details.anchor);
+        }
+        else
+        {
+            if(details.anchorX && details.anchorY)
+            {
+                temp.anchor.set(details.anchorX, details.anchorY);
+            }
+            else
+            {
+                if(details.anchorX)
+                {
+                    temp.anchor.set(details.anchorX, 0);
+                }
+
+                if(details.anchorY)
+                {
+                    temp.anchor.set(0, details.anchorY);
+                }
+            }                    
+        }
+
+        if(details.password)
+            temp._dom_input.type = 'password';
+
+        if(details.placeholder)
+            temp.placeholder = details.placeholder;
+
+        console.log(details);
+
+        if (typeof details.x === "number") temp.x = details.x;
+        if (typeof details.y === "number") temp.y = details.y;
+
+        console.log(temp);
+
+        return temp;
+    },
+
     assignGameItems:function(textures, images, resources, items)
     {
         if(items == undefined)
@@ -1545,6 +1600,7 @@ var renderer = {
             item.state = {
                 searching:false,
                 talking:false,
+                talkingToTutor:false,
                 leaving:false
             };
 
@@ -1810,6 +1866,28 @@ var renderer = {
         this.container.addChild(this.masks);
     },
 
+    assignClock:function(clockData)
+    {
+        this.clock = {};
+        Object.assign(this.clock, window["clock"]);
+        this.clock.timer = clockData.timer;
+
+        this.clock.spriteText = new PIXI.Text("Clock", clockStyle);
+        this.clock.spriteText.x = 35;
+        this.clock.spriteText.y = 35;
+        this.clock.spriteText.text = "Clock: " + Math.floor(this.clock.timer);
+
+        this.gameplayContainer.addChild(this.clock.spriteText);
+    },
+
+    updateClockDisplay: function()
+    {
+        if (this.clock && this.clock.spriteText)
+        {
+            this.clock.spriteText.text = "Clock: " + Math.floor(this.clock.timer);
+        }
+    },
+
     assignInterface:function()
     {
         if(!this.maininterfaceDiagonal)
@@ -1999,8 +2077,6 @@ var renderer = {
 
             this.addMiniMapMarker(game.items[index]);
 
-            //this.playerContainer.addChild(game.items[index].sprite);
-
             if(game.items[index].team == game.team)
             {
                 if(game.items[index].layer && game.items[index].layer == "surface")
@@ -2011,23 +2087,6 @@ var renderer = {
                     this.addToContainer(game.items[index], this.submergedItemsContainer);
                 else
                     this.addToContainer(game.items[index], this.playerContainer);
-
-                // this.playerContainer.addChild(this.submergedItemsContainer);
-                // this.playerContainer.addChild(this.surfaceItemsContainer);
-                // this.playerContainer.addChild(this.airItemsContainer);
-
-                // this.playerContainer.addChild(game.items[index].lifeBar);
-                // this.playerContainer.addChild(game.items[index].selectionGraphic);
-                // this.playerContainer.addChild(game.items[index].selectionGraphicBorder);
-                // this.playerContainer.addChild(game.items[index].sprite);
-                // this.playerContainer.addChild(game.items[index].bodyCollision);
-                // this.playerContainer.addChild(game.items[index].rightCollision);
-                // this.playerContainer.addChild(game.items[index].leftCollision);
-                // this.playerContainer.addChild(game.items[index].skinCollision);
-                // this.playerContainer.addChild(game.items[index].visionCollision);
-                // this.playerContainer.addChild(game.items[index].bumperCollision);
-                // this.playerContainer.addChild(game.items[index].nearCollision);
-                // this.playerContainer.addChild(game.items[index].collisionBubble);
             }
             else
             {
@@ -2039,22 +2098,6 @@ var renderer = {
                     this.addToContainer(game.items[index], this.submergedItemsContainer);
                 else
                     this.addToContainer(game.items[index], this.otherContainer);
-
-                // this.otherContainer.addChild(this.submergedItemsContainer);
-                // this.otherContainer.addChild(this.surfaceItemsContainer);
-                // this.otherContainer.addChild(this.airItemsContainer);
-                // this.otherContainer.addChild(game.items[index].lifeBar);
-                // this.otherContainer.addChild(game.items[index].selectionGraphic);
-                // this.otherContainer.addChild(game.items[index].selectionGraphicBorder);
-                // this.otherContainer.addChild(game.items[index].sprite);
-                // this.otherContainer.addChild(game.items[index].bodyCollision);
-                // this.otherContainer.addChild(game.items[index].rightCollision);
-                // this.otherContainer.addChild(game.items[index].leftCollision);
-                // this.otherContainer.addChild(game.items[index].skinCollision);
-                // this.otherContainer.addChild(game.items[index].visionCollision);
-                // this.otherContainer.addChild(game.items[index].bumperCollision);
-                // this.otherContainer.addChild(game.items[index].nearCollision);
-                // this.otherContainer.addChild(game.items[index].collisionBubble);
             }
             
             game.items[index].outputTest();
@@ -2063,7 +2106,6 @@ var renderer = {
             {
                 this.container.addChild(this.debugMouseX);
                 this.container.addChild(this.debugMouseY);
-                //this.container.addChild(this.debugPathLength);
             }
         }
 
@@ -2086,9 +2128,6 @@ var renderer = {
                 game.items.push({});
 
                 var thresholdIndex = game.items.length-1;
-
-                // $.extend(game.items[thresholdIndex],window["thresholds"].list[thresholds[i].name]);
-                // $.extend(game.items[thresholdIndex],window["thresholds"].defaults);
 
                 Object.assign(game.items[thresholdIndex], window["thresholds"].list[thresholds[i].name]);
                 Object.assign(game.items[thresholdIndex], window["thresholds"].defaults);   
@@ -3491,24 +3530,6 @@ var renderer = {
                 this.addToContainer(item, this.submergedItemsContainer);
             else
                 this.addToContainer(item, this.playerContainer);
-
-            // this.playerContainer.addChild(this.submergedItemsContainer);
-            // this.playerContainer.addChild(this.surfaceItemsContainer);
-            // this.playerContainer.addChild(this.airItemsContainer);
-
-            // this.playerContainer.addChild(item.lifeBarSprite);
-            // this.playerContainer.addChild(item.lifeBarBorderSprite);
-            // this.playerContainer.addChild(item.selectionSprite);
-            // this.playerContainer.addChild(item.selectionBorderSprite);
-            // this.playerContainer.addChild(item.sprite);
-            // this.playerContainer.addChild(item.bodyCollision);
-            // this.playerContainer.addChild(item.rightCollision);
-            // this.playerContainer.addChild(item.leftCollision);
-            // this.playerContainer.addChild(item.skinCollision);
-            // this.playerContainer.addChild(item.visionCollision);
-            // this.playerContainer.addChild(item.bumperCollision);
-            // this.playerContainer.addChild(item.nearCollision);
-            // this.playerContainer.addChild(item.collisionBubble);
         }
         else
         {
@@ -3520,68 +3541,9 @@ var renderer = {
                 this.addToContainer(item, this.submergedItemsContainer);
             else
                 this.addToContainer(item, this.otherContainer);
-
-            // this.otherContainer.addChild(item.lifeBarSprite);
-            // this.otherContainer.addChild(item.lifeBarBorderSprite);
-            // this.otherContainer.addChild(item.selectionSprite);
-            // this.otherContainer.addChild(item.selectionBorderSprite);
-            // this.otherContainer.addChild(item.sprite);
-            // this.otherContainer.addChild(item.bodyCollision);
-            // this.otherContainer.addChild(item.rightCollision);
-            // this.otherContainer.addChild(item.leftCollision);
-            // this.otherContainer.addChild(item.skinCollision);
-            // this.otherContainer.addChild(item.visionCollision);
-            // this.otherContainer.addChild(item.bumperCollision);
-            // this.otherContainer.addChild(item.nearCollision);
-            // this.otherContainer.addChild(item.collisionBubble);
         }  
 
         item.outputTest();
-        
-        // if(item.team == game.team)
-        // {
-        //     this.playerContainer.addChild(item.lifeBarSprite);
-        //     this.playerContainer.addChild(item.lifeBarBorderSprite);
-        //     this.playerContainer.addChild(item.selectionSprite);
-        //     this.playerContainer.addChild(item.selectionBorderSprite);
-        //     this.playerContainer.addChild(item.sprite);
-        //     this.playerContainer.addChild(item.bodyCollision);
-        //     this.playerContainer.addChild(item.rightCollision);
-        //     this.playerContainer.addChild(item.leftCollision);
-        //     this.playerContainer.addChild(item.skinCollision);
-        //     this.playerContainer.addChild(item.visionCollision);
-        //     this.playerContainer.addChild(item.bumperCollision);
-        //     this.playerContainer.addChild(item.nearCollision);
-        //     this.playerContainer.addChild(item.collisionBubble);
-        // }
-        // else
-        // {
-        //     this.otherContainer.addChild(item.lifeBarSprite);
-        //     this.otherContainer.addChild(item.lifeBarBorderSprite);
-        //     this.otherContainer.addChild(item.selectionSprite);
-        //     this.otherContainer.addChild(item.selectionBorderSprite);
-        //     this.otherContainer.addChild(item.sprite);
-        //     this.otherContainer.addChild(item.bodyCollision);
-        //     this.otherContainer.addChild(item.rightCollision);
-        //     this.otherContainer.addChild(item.leftCollision);
-        //     this.otherContainer.addChild(item.skinCollision);
-        //     this.otherContainer.addChild(item.visionCollision);
-        //     this.otherContainer.addChild(item.bumperCollision);
-        //     this.otherContainer.addChild(item.nearCollision);
-        //     this.otherContainer.addChild(item.collisionBubble);
-        // }
-
-        // if(item.cellCollisionMode)
-        // {
-        //     cells.add(item.uid, item.x, item.y, item.radius / game.gridSize,
-        //         game.currentTerrainMapPassableGrid,
-        //         item.cellCollisionMode);
-        // }
-        // else
-        // {
-        //     cells.add(item.uid, item.x, item.y, item.radius / game.gridSize,
-        //         game.currentTerrainMapPassableGrid);
-        // }
 
         console.log("added item");
         physics.skipQuadTreeUpdate = false;
@@ -3811,12 +3773,6 @@ var renderer = {
         game.items.length = 0;
     },
 
-    removeCharacters:function()
-    {
-        game.characters.length = 0;
-        this.characterContainer.removeChildren();
-    },
-
     hideMenu:function()
     {
         if(!this.menu)
@@ -3825,13 +3781,13 @@ var renderer = {
         }
 
         this.menu.visible = false;
-        this.menuSaveButton.visible = false;
-        this.menuLoadButton.visible = false;        
-        this.menuRestartButton.visible = false;
-        this.menuResumeButton.visible = false;
-        this.menuDesktopButton.visible = false;
-        this.menuFullscreenButton.visible = false;
-        this.menuExitButton.visible = false;
+        // this.menuSaveButton.visible = false;
+        // this.menuLoadButton.visible = false;        
+        // this.menuRestartButton.visible = false;
+        // this.menuResumeButton.visible = false;
+        // this.menuDesktopButton.visible = false;
+        // this.menuFullscreenButton.visible = false;
+        // this.menuExitButton.visible = false;
 
         return true;
     },
@@ -3978,91 +3934,16 @@ var renderer = {
         }
     },
 
-    toggleCommandAndControl:function()
+    showDialogue:function()
     {
-        this.backgroundContainer.visible = !this.backgroundContainer.visible;
-        this.playerContainer.visible = !this.playerContainer.visible;
-        this.otherContainer.visible = !this.otherContainer.visible;
-        this.thresholdContainer.visible = !this.thresholdContainer.visible;
-        this.lightsContainer.visible = !this.lightsContainer.visible;
-        this.lightsSpxContainer.visible = !this.lightsSpxContainer.visible;
-
-        game.cncDisplay = !game.cncDisplay;
-
-        this.cncContrainer.visible = !this.cncContrainer.visible;
-        this.cncText.visible = this.cncContrainer.visible;
-
-        for(var i = 0; i < game.items.length; i++)
-        {
-            if(game.items[i] && game.items[i].pathLine)
-            {
-                game.items[i].pathCNCLine.visible = this.cncContrainer.visible;
-            }
-        }
+        this.dialogueSprite.visible = true;
+        this.inputField.visible = true;
     },
 
-    toggleDarkVision:function()
+    hideDialogue:function()
     {
-        this.isDarkVisionOn = !this.isDarkVisionOn;
-        this.gameplayContainer.filters = this.isDarkVisionOn ? [this.darkVisionFilter] : [];
-    },
-
-    toggleNightVision:function()
-    {
-        this.gameplayContainer.filters = [this.shaderFilters.get("nightVision").shader];
-    },
-
-    toggleBlackAndWhite:function()
-    {
-        const shaderData = this.shaderFilters.get("blackAndWhite");
-    
-        if (shaderData)
-        {
-            shaderData.shader.uniforms.time = 0.0; // Reset the time
-            this.blackAndWhiteFilter = shaderData.shader; // Store reference for animation
-            this.gameplayContainer.filters = [shaderData.shader];
-        }
-    },
-
-    assignInfraredVision:function()
-    {
-        this.infraredFilter = new PIXI.Filter(null, shaders.infraredFragment.get(), {
-            time: 0,
-        });
-    },
-
-    toggleInfraredVision:function()
-    {
-        this.isInfraredVisionOn = !this.isInfraredVisionOn;
-        this.gameplayContainer.filters = this.isInfraredVisionOn ? [this.infraredFilter] : [];
-    },
-
-    assignUltravioletVision:function()
-    {
-        this.ultravioletFilter = new PIXI.Filter(null, shaders.staticFragment.get(), {
-            time: 0,
-        });
-    },
-
-    toggleUltravioletVision:function()
-    {
-        this.isUltravioletVisionOn = !this.isUltravioletVisionOn;
-        this.itemsContainer.filters = this.isUltravioletVisionOn ? [this.ultravioletFilter] : [];
-    },
-
-    toggleUI:function()
-    {
-        if(this.pause)
-        {
-            ui.resume(this.app);
-            narration.pause();
-        }
-        else
-        {
-            ui.screenName = "home";
-            ui.removeScreen();
-            narration.resume();
-        }
+        this.dialogueSprite.visible = false;
+        this.inputField.visible = false;
     },
 
     gameOver:function()
@@ -4073,7 +3954,6 @@ var renderer = {
         narration.stop();
         narration.clear();
         this.hideCharacter();
-        this.showMessageText.text = "";
         this.toggleBlackAndWhite();
 
         setTimeout(() => {
@@ -4196,7 +4076,6 @@ var renderer = {
         this.gameInterfaceContainer.removeChild(this.powerText);
         this.gameInterfaceContainer.removeChild(this.cashText);
         this.gameInterfaceContainer.removeChild(this.missionFailureText);
-        this.gameInterfaceContainer.removeChild(this.showMessageText);
     },
 
     removeTerrain:function()
@@ -4209,14 +4088,15 @@ var renderer = {
         this.container.removeChild(this.maininterface);
     },
 
-    removePowerText:function()
-    {
-        this.container.removeChild(this.powerText);
-    },
-
     removeBackground:function()
     {
+        this.backgroundContainer.removeChildren();
         this.container.removeChild(this.backgroundContainer);
+    },
+
+    removeClock:function()
+    {
+        this.gameplayContainer.removeChild(this.clock.spriteText);
     },
 
     removeDebug:function()

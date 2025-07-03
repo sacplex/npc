@@ -110,6 +110,15 @@ var display =
             return display.maininterface.filenames;
         }
     },
+    "dialogue":
+    {
+        getFileName:function()
+        {
+            var filename = "images/dialogue/dialogue.png";
+
+            return filename;
+        }
+    },
     "gameplayScreen":
     {
         "width":1760,

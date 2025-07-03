@@ -1,0 +1,19 @@
+const TICK_RATE = 1000 / 60 / 1000;
+
+var clock =
+{
+    timer:300,
+
+    update:function()
+    {
+        //console.log(this.timer);
+        //alert()
+        this.timer = this.timer - TICK_RATE;
+        
+    },
+
+    expired: function()
+    {
+        return this.timer <= 0;
+    }
+}

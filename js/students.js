@@ -80,9 +80,10 @@ var students =
 		layer:"surface",
 		orders:{type:"stand"},
 		destination:undefined,
-		waitForThreshold:false,	
+		waitForThreshold:false,
+		isStudent:true,	
 		selected:false,
-		selectable:false,
+		selectable:true,
 		hidden:false,
 		target:undefined,
 		bullet:undefined,
@@ -118,8 +119,17 @@ var students =
 				case "search":
 					this.search();
 					break;
+				case "leave":
+					this.leave();
+					break;
 				case "searching":
 					this.searching();
+					break;
+				case "talkingToTutor":
+					this.talkingToTutor();
+					break;
+				case "talkToTutor":
+					this.talkToTutor();
 					break;
 				case "talk":
 					this.talk();
@@ -195,11 +205,46 @@ var students =
 			this.orders.type = "stand";
 		},
 
+		leave:function()
+		{
+			let maxTries = 100;
+			let gridWidth = game.level.mapGridWidth;
+			let gridHeight = game.level.mapGridHeight;
+
+			for (let i = 0; i < maxTries; i++) 
+			{
+				let randomX = Math.floor(Math.random() * gridWidth);
+				let randomY = Math.floor(Math.random() * gridHeight);
+
+				// Check if the grid cell is passable
+				if (game.currentTerrainMapPassableGrid[randomY][randomX] !== flags.CELL_COLLISION_MODE_FULL) 
+				{
+					this.state.searching = true;
+					this.orders.type = "moveTo";
+					this.orders.to = {
+						x: randomX,
+						y: randomY
+					};
+
+					renderer.displayConversationText(false);
+					console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
+					return;
+				}
+			}
+		},
+
 		talk:function()
 		{
 			console.log("talk!");
-			
-			this.orders.type = "talking";
+
+			if(this.state.talkingToTutor)
+			{
+				this.orders.type = "talkingToTutor";
+			}
+			else
+			{
+				this.orders.type = "talking";
+			}
 		},
 
 		talking:function()
@@ -212,37 +257,33 @@ var students =
 					this.state.talking = false;
 					this.state.leaving = true;
 					this.target = undefined;
+
+					this.talkCount = 0;
 		
-					let maxTries = 100;
-					let gridWidth = game.level.mapGridWidth;
-					let gridHeight = game.level.mapGridHeight;
-		
-					for (let i = 0; i < maxTries; i++) 
-					{
-						let randomX = Math.floor(Math.random() * gridWidth);
-						let randomY = Math.floor(Math.random() * gridHeight);
-		
-						// Check if the grid cell is passable
-						if (game.currentTerrainMapPassableGrid[randomY][randomX] !== flags.CELL_COLLISION_MODE_FULL) 
-						{
-							this.state.searching = true;
-							this.orders.type = "moveTo";
-							this.orders.to = {
-								x: randomX,
-								y: randomY
-							};
-		
-							renderer.displayConversationText(false);
-							console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
-							return;
-						}
-					}
+					this.orders.type = "leave";
+					return;
 				}
 
 				this.talkCount = 0;
 			}
 
 			this.talkCount++;
+		},
+
+		talkToTutor:function()
+		{
+			this.orders.type = "moveTo";
+			this.state.talking = true;
+			this.state.talkingToTutor = true;
+			this.contact = true;
+
+			this.target = game.items[0];
+		},
+
+		talkingToTutor:function()
+		{
+			console.log("talkToTutor - dialogue box should appear");
+			renderer.showDialogue();			
 		},
 		
 		move:function()
@@ -288,8 +329,10 @@ var students =
 			this.path = undefined;
 
 			// First find path to destination
-			this.start[0] = Math.floor(this.x)
+			this.start[0] = Math.floor(this.x);
 			this.start[1] = Math.floor(this.y);
+
+			console.log(this.start);
 
 			var range = 0;
 
@@ -318,6 +361,8 @@ var students =
 
 			this.end[0] = Math.floor(destination.x);
 			this.end[1] = Math.floor(destination.y);
+
+			console.log(this.end);
 
 			this.grid = [...game.currentTerrainMapPassableGrid];
 
@@ -692,7 +737,7 @@ var students =
 		
 		draw:function()
 		{
-            if(this.orders.type != "stand" && this.orders.type != "talking" && !(this.waitForThreshold))
+            if(this.orders.type != "stand" && this.orders.type != "talking" && this.orders.type != "talkingToTutor" && !(this.waitForThreshold))
 				this.animate();
 
 			if(this.bullet)
@@ -706,7 +751,6 @@ var students =
 				this.drawDebugPath();
 			}
 		},
-		
         
         animate:function()
         {

@@ -11,12 +11,8 @@ var singleplayer =
     },
     
     startCurrentLevel:function(savedData = undefined)
-	{      
-        console.log("startCurrentLevel"); 
-        console.log("this.currentLevel: " + this.currentLevel); 
-        console.log(maps.singleplayer);
-        console.log(maps.singleplayer[0]);
-        game.level = maps.singleplayer[0];
+	{
+        game.level = maps.singleplayer[this.currentLevel];
 
         console.log(game.level);
 

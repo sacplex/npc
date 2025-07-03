@@ -248,117 +248,39 @@ var mouse =
         var selection = [];
         var uids = [];
 
-        if(debug.itemCoords)
-        {
-            if(game.selectedItems.length > 0)
-            {
-                console.log(game.selectedItems[0].x, game.selectedItems[0].y);
-            }
-        }
-
         for(var i = 0; i < game.selectedItems.length; i++)
         {
             var item = game.selectedItems[i];
 
-            if(game.onlyInfantry)
-            {
-                uids.push(item.uid);
-                selection.push({uid:item.uid,
-                                x:item.x,
-                                y:item.y,
-                                type:item.type,
-                                direction:item.direction,
-                                animationCount:item.animationCount,
-                                animationSpeed:item.animationSpeed,                                
-                                accelerationIndex:item.accelerationIndex,
-                                spriteX:item.sprite.x,
-                                spriteY:item.sprite.y});
-            }
-            else
-            {
-                if(selection.length > 12)
-                    break;
-
-                uids.push(item.uid);
-                selection.push({uid:item.uid,
-                                x:item.x,
-                                y:item.y,
-                                type:item.type,
-                                direction:item.direction,
-                                animationCount:item.animationCount,
-                                animationSpeed:item.animationSpeed,                                
-                                accelerationIndex:item.accelerationIndex,
-                                spriteX:item.sprite.x,
-                                spriteY:item.sprite.y});
-            }
+            uids.push(item.uid);
+            selection.push({uid:item.uid,
+                            x:item.x,
+                            y:item.y,
+                            type:item.type,
+                            direction:item.direction,
+                            animationCount:item.animationCount,
+                            animationSpeed:item.animationSpeed,                                
+                            accelerationIndex:item.accelerationIndex,
+                            spriteX:item.sprite.x,
+                            spriteY:item.sprite.y});
         }
 
         if(clickItem)
         {
-            if(clickItem.team == game.team)
+            if(clickItem.isStudent)
             {
-                this.clickedUid = clickItem.uid;
-
-                if(clickItem.airCompatible)
-                {
-                    for(var i=0; i < game.selectedItems.length; i++)
-                    {
-                        if(game.selectedItems[i].type == "aircrafts")
-                        {
-                            if(!game.selectedItems[i].orders.to)
-                                game.selectedItems[i].orders.to = {};
-    
-                            if(!game.selectedItems[i].takeOffPosition)
-                                game.selectedItems[i].takeOffPosition = {};
-                        }
-                    }
-    
-                    game.sendCommand(uids,{type:"approach",
-                        to:{airportUid:this.clickedUid,                        
-                            takeOffPositionX:clickItem.x, 
-                            takeOffPositionY:clickItem.y},
-                        selected:true, from:selection});
-    
-                    return;
-                }
-            }
-        }
-
-        if(clickItem)
-        {
-            if(clickItem.team)
-            {
-                if(game.team != clickItem.team)
-                {
-                    this.offensive(clickItem);      
-                }
-                else
-                {
-                    if(clickItem.loadable)
-                    {
-                        this.load(clickItem);
-                    }
-                }
-            }
-            else
-            {
-                if(clickItem.type == "resources")
-                {
-                    this.extract(clickItem);
-                }
+                this.talkToTutor(clickItem);
             }
         }
         else
         {
-            if(mouse.unloadItem)
-            {
-                this.unload()
-            }
-            else
-            {
-                this.move(uids, selection);
-            }
+            this.move(uids, selection);
         }
+    },
+
+    talkToTutor:function(student)
+    {
+        student.orders.type = "talkToTutor";
     },
 
     /**
