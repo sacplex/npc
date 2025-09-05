@@ -102,15 +102,15 @@ var narration =
                 //     localise.sendMessage(payload);
                 // }
 
-                if(game.showMessages.length > 0)
-                {
-                    game.showDialogue();
-                }
-                else
-                {
-                    game.clearDialogue();
-                    game.nextCampaignLevel();
-                }
+                // if(game.showMessages.length > 0)
+                // {
+                //     game.showDialogue();
+                // }
+                // else
+                // {
+                //     game.clearDialogue();
+                //     game.nextCampaignLevel();
+                // }
             },
         });        
     },

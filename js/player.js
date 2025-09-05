@@ -94,6 +94,17 @@ var player =
 		scaleOuterCollision:1.00,
 		selectionRadius:100,
 		selectionBorderShape:"circle",
+		id:undefined,
+		displayLectureThreshold:30,
+		distanceToNarratorThreshold:30,
+		displayTutorThreshold:30,
+		distanceToLibrarianThreshold:30,
+		distanceToLecturer:0,
+		distanceToNarrator:0,
+		distanceToTutor:0,
+		distanceToLibrarian:0,
+		currentStudent:undefined,
+		currentTeacher:undefined,
 		isArmy:true,
 		isNavy:false,
 		isAirforce:false,
@@ -181,6 +192,53 @@ var player =
 
 			if(debug.fogOfWar)
 				fog.setSubGrid(this.x, this.y, this.visionGrid, this.team, this.state, this.hidden);
+
+			renderer.displayLecturerText(false);
+			renderer.displayNarratorText(false);
+
+			if(game.lecturer)
+			{
+				this.distanceToLecturer = findDistanceToLecturer(this, game.lecturer);
+
+				if(this.distanceToLecturer < this.displayLectureThreshold)
+				{
+					renderer.displayLecturerText(true);
+					economy.lecturerTime++;
+				} 
+			}
+
+			if(game.narrator)
+			{
+				this.distanceToNarrator = findDistanceToNarrator(this, game.narrator);
+
+				if(this.distanceToNarrator < this.distanceToNarratorThreshold) 
+				{
+					renderer.displayNarratorText(true);
+					economy.narratorTime++;
+				}
+			}
+
+			if(game.tutor)
+			{
+				this.distanceToTutor = findDistanceToTutor(this, game.lecturer);
+
+				if(this.distanceToTutor < this.displayTutorThreshold) 
+				{
+					economy.tutorTime++;
+				}
+			}
+
+			if(game.librarian)
+			{
+				this.distanceToLibrarian = findDistanceToLibrarian(this, game.librarian);
+
+				if(this.distanceToLibrarian < this.distanceToLibrarianThreshold) 
+				{
+					economy.librarianTime++;
+				}
+			}
+
+			conversations.display(this);
 		},
 
 		init()
@@ -628,7 +686,6 @@ var player =
 			// target is on the same side
 			this.target = undefined;
 
-			console.log("infantry move");
 			this.orders.type = "moveTo";
 		},
 
@@ -1568,28 +1625,28 @@ var player =
 			this.visionCollision.clear();
 			this.nearCollision.clear();
 
-			if(keyboard.collisionDebug)
-			{	
-				if(this.hasCollided)
-				{
-					this.bodyCollision.lineStyle(1, 0xFFFF00, 1);
-					this.skinCollision.lineStyle(1, 0xFF0000, 1);
-					this.visionCollision.lineStyle(1, 0xB200FF, 1);
-					this.nearCollision.lineStyle(1, 0x00FFB2, 1);
-				}
-				else
-				{
-					this.bodyCollision.lineStyle(1, 0x00FF00, 1);
-					this.skinCollision.lineStyle(1, 0x0000FF, 1);
-					this.visionCollision.lineStyle(1, 0xFF00B2, 1);
-					this.nearCollision.lineStyle(1, 0x00FFB2, 1);
-				}
+			// if(keyboard.collisionDebug)
+			// {	
+			// 	if(this.hasCollided)
+			// 	{
+			// 		this.bodyCollision.lineStyle(1, 0xFFFF00, 1);
+			// 		this.skinCollision.lineStyle(1, 0xFF0000, 1);
+			// 		this.visionCollision.lineStyle(1, 0xB200FF, 1);
+			// 		this.nearCollision.lineStyle(1, 0x00FFB2, 1);
+			// 	}
+			// 	else
+			// 	{
+			// 		this.bodyCollision.lineStyle(1, 0x00FF00, 1);
+			// 		this.skinCollision.lineStyle(1, 0x0000FF, 1);
+			// 		this.visionCollision.lineStyle(1, 0xFF00B2, 1);
+			// 		this.nearCollision.lineStyle(1, 0x00FFB2, 1);
+			// 	}
 
-				// renderer.drawPolygon(this.bodyCollision, this.body, game.offsetX, game.offsetY);
-				// renderer.drawPolygon(this.skinCollision, this.skin, game.offsetX, game.offsetY);
-				// renderer.drawPolygon(this.visionCollision, this.vision, game.offsetX, game.offsetY);
-				// renderer.drawRectangle(this.nearCollision, this.near, 200, 200, game.offsetX, game.offsetY);
-			}
+			// 	// renderer.drawPolygon(this.bodyCollision, this.body, game.offsetX, game.offsetY);
+			// 	// renderer.drawPolygon(this.skinCollision, this.skin, game.offsetX, game.offsetY);
+			// 	// renderer.drawPolygon(this.visionCollision, this.vision, game.offsetX, game.offsetY);
+			// 	// renderer.drawRectangle(this.nearCollision, this.near, 200, 200, game.offsetX, game.offsetY);
+			// }
 		},
 		
 		animateBullet:function()

@@ -200,26 +200,6 @@ function turnToClosetCorrectDirection(d1, d2, directions, correctDirection)
 		return true;
 }
 
-function canUnload()
-{
-	if (!game.selectedItems.length) return false;
-    
-    const selectedItem = game.selectedItems[0];
-	
-    if (!selectedItem.loadable || !selectedItem.transport || !selectedItem.transport.length) return false;
-
-    let terrainIndexY = Math.floor((mouse.y * productionInverseRatio + game.offsetY) / game.gridSize) - display.maininterface.mapImageYGridOffset;
-    let terrainIndexX = Math.floor((mouse.x * productionInverseRatioX + game.offsetX) / game.gridSize);
-
-    terrainIndexY = Math.max(terrainIndexY, 0);
-
-    const distanceSquared = (terrainIndexX - selectedItem.x) ** 2 + (terrainIndexY - selectedItem.y) ** 2;
-    const isWithinLoadThreshold = distanceSquared < selectedItem.loadThreshold;
-    const isPassable = game.currentTerrainMapPassableGrid[terrainIndexY][terrainIndexX] === flags.CELL_COLLISION_MODE_OFF;
-    
-    return isWithinLoadThreshold && isPassable;
-}
-
 function distance(itemX, itemY, x, y)
 {
 	var distance = Math.sqrt(
@@ -234,6 +214,57 @@ function distanceBetweenTwoPoints(startX, startY, endX, endY)
 	var y = startY - endY;
 
 	return Math.sqrt(x * x + y * y);
+}
+
+function findDistanceToLecturer(player, teacher)
+{
+	return distance(player.x, player.y, teacher.x, teacher.y);
+}
+
+function findDistanceToNarrator(player, teacher)
+{
+	return distance(player.x, player.y, teacher.x, teacher.y);
+}
+
+function findDistanceToTutor(player, teacher)
+{
+	return distance(player.x, player.y, teacher.x, teacher.y);
+}
+
+function findDistanceToLibrarian(player, teacher)
+{
+	return distance(player.x, player.y, teacher.x, teacher.y);
+}
+
+function findDistanceToClosestConversation(player) 
+{
+    let minDistance = Infinity;
+    let closestMessage = null;
+    const threshold = 10; // units
+
+    for (const [uid, data] of conversations.locations)
+    {
+        const loc = data.location || data;
+        const dx = loc.x - player.x;
+        const dy = loc.y - player.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < minDistance)
+        {
+            minDistance = distance;
+            closestMessage = data.message || data;
+        }
+    }
+
+    // Check threshold
+    if (minDistance <= threshold)
+    {
+        return closestMessage;
+    }
+    else
+    {
+        return null; // no conversation close enough
+    }
 }
 
 function doCirclesOverlap(x1, y1, r1, x2, y2, r2)
@@ -543,6 +574,8 @@ function findShortestDistance(item, collidedItem, end)
 	
 	return false;
 }
+
+
 
 function findLongestDistance(item, collidedItem, end)
 {

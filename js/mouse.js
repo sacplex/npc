@@ -105,23 +105,6 @@ var mouse =
             if(renderer.pause)
                 return;
 
-            console.log(game.deployBuilding)
-            //this.build(this.clickedUid, game.deployBuilding);
-
-            if(!game.deployBuilding)
-            {
-                this.building = false;
-
-                if(!keyboard.textInputAdded)
-                {
-                    this.setStartingPointSelectionBox();
-                }
-            }
-            else
-            {
-                this.build(this.clickedUid, game.deployBuilding);
-            }
-
             if(mouse.specialPhoto)
             {
                 mouse.specialPhoto = false;
@@ -192,6 +175,11 @@ var mouse =
         renderer.app.view.addEventListener('mousemove', () => {
             var item = this.itemUnderMouse();
 
+            if(item)
+            {
+                console.log(item.selectable);                    
+            }
+
             if(item && item.selectable)
             {
                 document.body.style.cursor = selectionIcon;                      
@@ -205,8 +193,8 @@ var mouse =
 
     click:function(ev)
     {
-        if(keyboard.textInputAdded)
-            return;
+        // if(keyboard.textInputAdded)
+        //     return;
 
         if(this.placement)
             return;
@@ -244,6 +232,7 @@ var mouse =
         }
 
         console.log('rightClick');
+        
 
         var selection = [];
         var uids = [];
@@ -271,6 +260,18 @@ var mouse =
             {
                 this.talkToTutor(clickItem);
             }
+            else if(clickItem.name == "tutor")
+            {
+                this.talkToTeacherTutor(clickItem);
+            }
+            else if(clickItem.name == "librarian")
+            {
+                this.talkToTeacherLibrarian(clickItem);
+            }
+            else if(clickItem.name == "desk")
+            {
+                renderer.textbookContainer.visible = true;
+            }
         }
         else
         {
@@ -281,6 +282,24 @@ var mouse =
     talkToTutor:function(student)
     {
         student.orders.type = "talkToTutor";
+        player.currentStudent = student;
+        player.currentTeacher = undefined;
+    },
+
+    talkToTeacherTutor:function(teacher)
+    {
+        //teacher.orders.type = "talkToTeacher";
+        renderer.showDialogue();
+        player.currentTeacher = teacher;
+        player.currentStudent = undefined;
+    },
+
+    talkToTeacherLibrarian:function(teacher)
+    {
+        //teacher.orders.type = "talkToLibrarian";
+        renderer.showDialogue();
+        player.currentTeacher = teacher;
+        player.currentStudent = undefined;
     },
 
     /**
@@ -290,13 +309,13 @@ var mouse =
      */
 
     itemUnderMouse:function()
-    {        
-        if(keyboard.textInputAdded)
-            return;
-
+    {
         if(mouse.x >= (canvasWidth + canvasWidthOffset - display.maininterface.mapImageXOffset))
+        {
+            console.log("outside of canvas");
             return;
-            
+        }
+
         for(var i = game.items.length -1; i >= 0; i--)
         {
             var item = game.items[i];
@@ -309,7 +328,7 @@ var mouse =
             
             itemY = itemY - item.radius / 2;
 
-            if(item.lifeCode != "dead" && Math.pow((mouse.x + game.offsetX * productionRatioX) - itemX, 2) + Math.pow((mouse.y + game.offsetY * productionRatio) - itemY, 2) < Math.pow(item.radius, 2))
+            if(Math.pow((mouse.x + game.offsetX * productionRatioX) - itemX, 2) + Math.pow((mouse.y + game.offsetY * productionRatio) - itemY, 2) < Math.pow(item.radius, 2))
             {
                 return item;
             }

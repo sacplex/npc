@@ -2,33 +2,21 @@ var students =
 {
 	list:
 	{
-        "student":
+        "adam":
 		{
-			name:"student",
-			canAttack:true,
-			canExtract:false,
-			canLoad:true,
+			name:"adam",
+			personality: "Adam comes across as grounded and reliable, a person with a strong sense of duty. He embodies practicality and thoughtfulness, often taking responsibility seriously, reflecting his Western and biblical roots.",
 			pixelWidth:17,
             pixelHeight:16,
-			weaponType:"bullet",
-			soundType:"bullet1",	
-			targetThreshold:0.1,
-			weaponSpeed:20,		
 			radius:20,
 			speed:3,
 			runningSpeed:1,
 			sight:4,
 			vision:154,
 			nearVision:9,
-			reloadTime:120,
-			cost:100,
-			limit:120,
 			wait:false,
 			done:false,
-			ammoCapacity:100,
-			ammo:100,
-			resource:"none",
-    	    hitPoints:25,
+			hitPoints:25,
             turnSpeed:4,
             frames:24,
 			scale:2.0,
@@ -43,26 +31,435 @@ var students =
 			direction:0,
 			directions:8,
 			iconColor:0xFFFF00,
-			iconShape:"tri",
-			shadowColor:[0x000000],
-			shadowAngle:45,
-			shadowDistance:5,
-			camouflage:{				
-				"grass": {
-					"r": 0.44313725490196076,
-					"g": 0.875,
-					"b": 0.3058823529411765
-				},
-				"snow": {
-					"r": 0.75,
-					"g": 0.75,
-					"b": 0.75
-				},
-				filterId:-1				
-			},
-			spriteImages:[
-				{name:"stand",count:1,directions:frames}
+			buildableGrid:[
+				[1]
 			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"alice":
+		{
+			name:"alice",
+			personality: "Alice is naturally curious and imaginative, with a friendly and approachable demeanor. She loves exploring new ideas and experiences, reflecting her Western English heritage and creative spirit.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"andrew":
+		{
+			name:"andrew",
+			personality: "Andrew is confident and analytical, combining loyalty with a strong sense of initiative. He is dependable and often takes charge when needed, drawing from his Western Greek-origin background.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"emma":
+		{
+			name:"emma",
+			personality: "Emma is charismatic and compassionate, with an organized and approachable nature. Her social skills and empathy make her a natural connector, influenced by her Western Germanic roots.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"jack":
+		{
+			name:"jack",
+			personality: "Jack is adventurous and quick-witted, with a playful energy that draws others in. He thrives on challenges and humor, reflecting his Western English cultural background.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"li":
+		{
+			name:"li",
+			personality: "Li is disciplined and intelligent, highly adaptable and thoughtful in his actions. With a focus on harmony and strategy, he embodies the values of Chinese culture and wisdom.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"max":
+		{
+			name:"max",
+			personality: "Max exudes energy and confidence, curious and bold in his approach to life. He enjoys leading projects and taking on new adventures, shaped by his Western Latin heritage.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"maya":
+		{
+			name:"maya",
+			personality: "Maya is creative and intuitive, with a deep sense of spirituality and imagination. She is expressive and often sees beyond the obvious, reflecting her Sanskrit and Latin American roots.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"mohamed":
+		{
+			name:"mohamed",
+			personality: "Mohamed carries wisdom and diplomacy, taking responsibility seriously and often guiding others. His character reflects the thoughtful and respected qualities of Arabic and Islamic culture.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"momo":
+		{
+			name:"momo",
+			personality: "Momo is friendly, playful, and loyal, bringing lightness and warmth to every interaction. Whether in Japanese or African contexts, Momo’s approachable nature stands out.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"rohan":
+		{
+			name:"rohan",
+			personality: "Rohan is intelligent, ambitious, and curious, constantly seeking knowledge and personal growth. His drive and thoughtful nature reflect his Indian and Sanskrit heritage.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
+			buildableGrid:[
+				[1]
+			],
+			passableGrid:[
+				[1]
+			],
+			visionGridX:10,
+			visionGridY:10,
+			visionGrid:undefined,
+		},
+		"zoe":
+		{
+			name:"zoe",
+			personality: "Zoe is vibrant and energetic, full of creativity and optimism. She inspires those around her with her lively personality, rooted in her Greek cultural background.",
+			pixelWidth:17,
+            pixelHeight:16,
+			radius:20,
+			speed:3,
+			runningSpeed:1,
+			sight:4,
+			vision:154,
+			nearVision:9,
+			wait:false,
+			done:false,
+			hitPoints:25,
+            turnSpeed:4,
+            frames:24,
+			scale:2.0,
+            animationCount:1,
+            animationLimit:2,
+			animationSpeed:0,
+            animationSpeedLimit:6,
+            animationSlowSpeed:0,
+            animationSlowSpeedLimit:30,
+			animationIndex:0,
+			animationTable:[0,1],
+			direction:0,
+			directions:8,
+			iconColor:0xFFFF00,
 			buildableGrid:[
 				[1]
 			],
@@ -98,7 +495,6 @@ var students =
 		scaleOuterCollision:1.00,
 		selectionRadius:100,
 		selectionBorderShape:"circle",
-		isStudent:true,
 		hasCollided:false,
 		hasCollidedSkin:false,
 		hasCollidedStop:false,
@@ -243,6 +639,8 @@ var students =
 			}
 			else
 			{
+				//conversations.locations.set(this.uid, {"x":this.x,"y":this.y, "conversationsUid":this.conversationsUid});
+				console.log("this.conversationsUid: " + this.conversationsUid);
 				this.orders.type = "talking";
 			}
 		},
@@ -251,18 +649,34 @@ var students =
 		{
 			if(this.talkCount == this.talkLimit)
 			{
-				if(conversations.get(this.conversationsUid, this.contact))
-				{
-					console.log("end talking");
-					this.state.talking = false;
-					this.state.leaving = true;
-					this.target = undefined;
+				const closestConversationUid = findDistanceToClosestConversation(game.player);
 
-					this.talkCount = 0;
-		
-					this.orders.type = "leave";
-					return;
-				}
+				console.log(closestConversationUid, this.uid);
+
+				//if(this.uid === closestConversationUid) // ✅ Only if this NPC is the closest
+				//{
+					if(conversations.get(this.conversationsUid, this.contact, {"x":this.x,"y":this.y}))
+					{
+						console.log("end talking");
+						//conversations.locations.delete(this.uid);
+						this.state.talking = false;
+						this.state.leaving = true;
+						this.talkCount = 0;
+						this.orders.type = "leave";
+
+						let targetUid = this.target.uid;
+						let targetIndex = lookup.get(targetUid);
+						game.items[targetIndex].state.talking = false;
+						game.items[targetIndex].state.leaving = true;
+						game.items[targetIndex].talkCount = 0;
+						game.items[targetIndex].target = undefined;
+						game.items[targetIndex].orders.type = "leave";
+
+						this.target = undefined;
+
+						return;
+					}
+				//}
 
 				this.talkCount = 0;
 			}
@@ -716,6 +1130,16 @@ var students =
 				
 				if(distanceToNPC < 10)
 				{
+					if(game.items[i].state.talking)
+					{
+						continue;
+					}
+
+					if(player.currentStudent && player.currentStudent.uid == game.items[i].uid)
+					{
+						continue;
+					}
+
 					this.orders.type = "moveTo";
 					this.state.talking = true;
 					this.contact = true;
@@ -726,7 +1150,11 @@ var students =
 					this.conversationsUid = conversations.generateConversationUid(this.networkUid, game.items[i].networkUid);
 					game.items[i].conversationsUid = this.conversationsUid;
 
-					conversations.generate(this.conversationsUid);
+					conversations.generate(
+						this.conversationsUid,
+						this.name, game.items[i].name,
+						"student", "student"
+					);
 
 					this.target = game.items[i];
 					game.items[i].target = this;

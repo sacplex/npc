@@ -3,12 +3,15 @@ var conversations =
     networkRegistry:undefined,
     registry:undefined,
     dialogue:undefined,
+    locations:undefined,
     
     init:function()
     {
         this.networkRegistry = new Set();
         this.registry = new Set();
         this.dialogue = new Map();
+
+        this.locations = new Map();
     },
 
     generateNetworkUid:function()
@@ -33,17 +36,23 @@ var conversations =
         return conversationUid;
     },
 
-    generate:function(conversationUid)
+    generate:function(conversationUid,
+        contactName, contacteeName,
+        contactRole, contacteeRole)
     {
         console.log("Generate conversation for " + conversationUid);
+        console.log("game.player.id " + game.player.id);
 
         const message = {
             id: conversationUid,
+            type: "conversation",
             sendTo: "smart",
+            code:game.player.id,
+            clock:clock.day,
             topic: "Discussing their plans for an upcoming exam.",
             duration: "medium",
-            names: ["Jack", "Jill"],
-            roles: ["student", "student"],
+            names: [contactName, contacteeName],
+            roles: [contactRole, contacteeRole],
             collaboration: -0.8,
             emotion: "negative",
             conversationType:"static"
@@ -52,7 +61,7 @@ var conversations =
         client.sendMessage(message);
     },
 
-    add: function(conversationId, message)
+    add:function(conversationId, message)
     {
         console.log("add conversationId: " + conversationId);
 
@@ -66,7 +75,7 @@ var conversations =
         console.log(this.dialogue.get(conversationId)[0]);
     },
 
-    get: function(conversationId, contact)
+    get:function(conversationId, contact, location)
     {
         console.log("conversationId:", conversationId);
         console.log(this.dialogue);
@@ -83,41 +92,30 @@ var conversations =
         {
             const message = messages.shift();
             console.log("message:", message);
-
-            // const msg = new SpeechSynthesisUtterance(message);
-            // msg.lang = "en-US";
-            // msg.rate = 1;
-            // msg.pitch = 1;
-            // msg.volume = 1;
-
-            // // Wait until voices are loaded, then choose a better one
-            // const setVoiceAndSpeak = () => {
-            //     const voices = speechSynthesis.getVoices();
-            //     const preferred = voices.find(v =>
-            //         v.name.includes("Google") || v.name.includes("Natural") || v.lang === "en-US"
-            //     );
-            //     if (preferred) msg.voice = preferred;
-
-            //     speechSynthesis.speak(msg);
-            // };
-
-            // if (speechSynthesis.getVoices().length === 0) {
-            //     speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
-            // } else {
-            //     setVoiceAndSpeak();
-            // }
-
-            renderer.displayConversationText(true);
-            renderer.addConversationText(message);
+            this.locations.delete(conversationId);
+            this.locations.set(conversationId, {"location":location,"message":message});
 
             if (messages.length === 0)
             {
+                this.locations.delete(conversationId);
                 this.dialogue.delete(conversationId);
                 return true;
             }
         }
 
         return false;
+    },
+
+    // Only called by the player
+    display:function(player)
+    {
+        const message = findDistanceToClosestConversation(player)
+
+        if(message)
+        {
+            renderer.displayConversationText(true);
+            renderer.addConversationText(message);
+        }
     },
 
     hasConversationUid:function(networkUid1, networkUid2)

@@ -1,0 +1,47 @@
+var buttons =
+{
+    list:
+	{
+        "confirm":
+		{
+            name:"confirm",
+            frames:1,
+            visible:0
+        },
+        "rent":
+        {
+            name:"rent",
+            frames:2,
+            visible:0,
+            cost:40
+        },
+        "heat_aircon":
+        {
+            name:"heat_aircon",
+            frames:2,
+            visible:0,
+            cost:10
+        },
+        "food_noodles":
+        {
+            name:"food_noodles",
+            frames:2,
+            visible:0,
+            cost:5
+        },
+        "social_friends":
+        {
+            name:"social_friends",
+            frames:2,
+            visible:0,
+            cost:15
+        },
+        "family":
+        {
+            name:"family",
+            frames:2,
+            visible:0,
+            cost:20
+        }
+    }
+}

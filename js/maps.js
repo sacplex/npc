@@ -3,21 +3,175 @@ var maps =
     "singleplayer":[
     {
         "name":"university",
+        "mode":"learning",
         "mapImages":"images/maps/university/",
         "miniMapImage":"images/minimaps/university/",        
         "numberOfHorizontalTiles":10,
         "numberOfVerticalTiles":8,
         "backgroundWidth":6400,
         "backgroundHeight":4800,
-        "startX":40,
-        "startY":40,
+        // "startX":80,
+        // "startY":80,
+        "startX":180,
+        "startY":50,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
-            {"type":"students","name":"student","team":"characters"},
         ],
         "items": [
-            {"type":"player","name":"player","x":60,"y":60,"direction":0,"team":"characters","uid":-1},
+            {"type":"player","name":"player","x":240,"y":70,"direction":0,"team":"characters","uid":-1},
+            // {"type":"player","name":"player","x":120,"y":120,"direction":0,"team":"characters","uid":-1},
+            {"type":"teachers","name":"lecturer","x":103,"y":56,"direction":0,"team":"characters","uid":-2},
+            {"type":"teachers","name":"librarian","x":240,"y":58,"direction":0,"team":"characters","uid":-3},
+            {"type":"teachers","name":"tutor","x":260,"y":170,"direction":0,"team":"characters","uid":-4},
+            {"type":"teachers","name":"narrator","x":85.5,"y":178,"direction":0,"team":"characters","uid":-5},
+
+            {"type":"students","name":"adam","x":-20,"y":-20,"direction":0,"team":"characters","uid":-6},
+            {"type":"students","name":"max","x":-20,"y":-20,"direction":4,"team":"characters","uid":-7},
+            {"type":"students","name":"alice","x":-20,"y":-20,"direction":0,"team":"characters","uid":-8},
+            {"type":"students","name":"zoe","x":-20,"y":-20,"direction":4,"team":"characters","uid":-9},
+            {"type":"students","name":"maya","x":-20,"y":-20,"direction":0,"team":"characters","uid":-10},
+            {"type":"students","name":"jack","x":-20,"y":-20,"direction":4,"team":"characters","uid":-11},
+            {"type":"students","name":"andrew","x":-20,"y":-20,"direction":0,"team":"characters","uid":-12},
+            {"type":"students","name":"mohamed","x":-20,"y":-20,"direction":4,"team":"characters","uid":-13},
+            {"type":"students","name":"rohan","x":-20,"y":-20,"direction":0,"team":"characters","uid":-14},
+            {"type":"students","name":"momo","x":-20,"y":-20,"direction":4,"team":"characters","uid":-15},
+            {"type":"students","name":"emma","x":-20,"y":-20,"direction":0,"team":"characters","uid":-16},
+            {"type":"students","name":"li","x":-20,"y":-20,"direction":4,"team":"characters","uid":-17},
+
+            {"type":"library","name":"desk","x":252,"y":80,"direction":0,"team":"props","uid":-18},
+        ],
+        "materials" : [
+            {"name":"slides","x":55,"y":35},
+            {"name":"notes","x":85,"y":65},
+            {"name":"textbook","x":85,"y":35},
+        ],
+        "props" : [
+            {"type":"classroom","name":"blue_desk","x":240,"y":170},
+            {"type":"classroom","name":"red_desk","x":250,"y":175},
+            {"type":"classroom","name":"green_desk","x":235,"y":180},
+            {"type":"library","name":"bookshelf","x":230,"y":80},
+            {"type":"library","name":"bookshelf","x":230,"y":66},
+            {"type":"library","name":"bookshelf_2","x":260,"y":66},
+            {"type":"hall","name":"chair","x":60,"y":60},
+            {"type":"hall","name":"chair","x":62,"y":60},
+            {"type":"hall","name":"chair","x":64,"y":60},
+            {"type":"hall","name":"chair","x":66,"y":60},
+            {"type":"hall","name":"chair","x":68,"y":60},
+            {"type":"hall","name":"chair","x":70,"y":60},
+            {"type":"hall","name":"chair","x":72,"y":60},
+            {"type":"hall","name":"chair","x":74,"y":60},
+            {"type":"hall","name":"chair","x":76,"y":60},
+            {"type":"hall","name":"chair","x":80,"y":60},
+            {"type":"hall","name":"chair","x":82,"y":60},
+            {"type":"hall","name":"chair","x":84,"y":60},
+            {"type":"hall","name":"chair","x":88,"y":60},
+            {"type":"hall","name":"chair","x":90,"y":60},
+            {"type":"hall","name":"chair","x":92,"y":60},
+            {"type":"hall","name":"chair","x":94,"y":60},
+            {"type":"hall","name":"chair","x":96,"y":60},
+            {"type":"hall","name":"chair","x":98,"y":60},
+            {"type":"hall","name":"chair","x":100,"y":60},
+
+            {"type":"hall","name":"chair","x":60,"y":63},
+            {"type":"hall","name":"chair","x":62,"y":63},
+            {"type":"hall","name":"chair","x":64,"y":63},
+            {"type":"hall","name":"chair","x":66,"y":63},
+            {"type":"hall","name":"chair","x":68,"y":63},
+            {"type":"hall","name":"chair","x":70,"y":63},
+            {"type":"hall","name":"chair","x":72,"y":63},
+            {"type":"hall","name":"chair","x":74,"y":63},
+            {"type":"hall","name":"chair","x":76,"y":63},
+            {"type":"hall","name":"chair","x":80,"y":63},
+            {"type":"hall","name":"chair","x":82,"y":63},
+            {"type":"hall","name":"chair","x":84,"y":63},
+            {"type":"hall","name":"chair","x":88,"y":63},
+            {"type":"hall","name":"chair","x":90,"y":63},
+            {"type":"hall","name":"chair","x":92,"y":63},
+            {"type":"hall","name":"chair","x":94,"y":63},
+            {"type":"hall","name":"chair","x":96,"y":63},
+            {"type":"hall","name":"chair","x":98,"y":63},
+            {"type":"hall","name":"chair","x":100,"y":63},
+
+            {"type":"hall","name":"chair","x":60,"y":66},
+            {"type":"hall","name":"chair","x":62,"y":66},
+            {"type":"hall","name":"chair","x":64,"y":66},
+            {"type":"hall","name":"chair","x":66,"y":66},
+            {"type":"hall","name":"chair","x":68,"y":66},
+            {"type":"hall","name":"chair","x":70,"y":66},
+            {"type":"hall","name":"chair","x":72,"y":66},
+            {"type":"hall","name":"chair","x":74,"y":66},
+            {"type":"hall","name":"chair","x":76,"y":66},
+            {"type":"hall","name":"chair","x":80,"y":66},
+            {"type":"hall","name":"chair","x":82,"y":66},
+            {"type":"hall","name":"chair","x":84,"y":66},
+            {"type":"hall","name":"chair","x":88,"y":66},
+            {"type":"hall","name":"chair","x":90,"y":66},
+            {"type":"hall","name":"chair","x":92,"y":66},
+            {"type":"hall","name":"chair","x":94,"y":66},
+            {"type":"hall","name":"chair","x":96,"y":66},
+            {"type":"hall","name":"chair","x":98,"y":66},
+            {"type":"hall","name":"chair","x":100,"y":66},
+
+            {"type":"hall","name":"chair","x":60,"y":72},
+            {"type":"hall","name":"chair","x":62,"y":72},
+            {"type":"hall","name":"chair","x":64,"y":72},
+            {"type":"hall","name":"chair","x":66,"y":72},
+            {"type":"hall","name":"chair","x":68,"y":72},
+            {"type":"hall","name":"chair","x":70,"y":72},
+            {"type":"hall","name":"chair","x":72,"y":72},
+            {"type":"hall","name":"chair","x":74,"y":72},
+            {"type":"hall","name":"chair","x":76,"y":72},
+            {"type":"hall","name":"chair","x":80,"y":72},
+            {"type":"hall","name":"chair","x":82,"y":72},
+            {"type":"hall","name":"chair","x":84,"y":72},
+            {"type":"hall","name":"chair","x":88,"y":72},
+            {"type":"hall","name":"chair","x":90,"y":72},
+            {"type":"hall","name":"chair","x":92,"y":72},
+            {"type":"hall","name":"chair","x":94,"y":72},
+            {"type":"hall","name":"chair","x":96,"y":72},
+            {"type":"hall","name":"chair","x":98,"y":72},
+            {"type":"hall","name":"chair","x":100,"y":72},
+
+            {"type":"hall","name":"chair","x":60,"y":75},
+            {"type":"hall","name":"chair","x":62,"y":75},
+            {"type":"hall","name":"chair","x":64,"y":75},
+            {"type":"hall","name":"chair","x":66,"y":75},
+            {"type":"hall","name":"chair","x":68,"y":75},
+            {"type":"hall","name":"chair","x":70,"y":75},
+            {"type":"hall","name":"chair","x":72,"y":75},
+            {"type":"hall","name":"chair","x":74,"y":75},
+            {"type":"hall","name":"chair","x":76,"y":75},
+            {"type":"hall","name":"chair","x":80,"y":75},
+            {"type":"hall","name":"chair","x":82,"y":75},
+            {"type":"hall","name":"chair","x":84,"y":75},
+            {"type":"hall","name":"chair","x":88,"y":75},
+            {"type":"hall","name":"chair","x":90,"y":75},
+            {"type":"hall","name":"chair","x":92,"y":75},
+            {"type":"hall","name":"chair","x":94,"y":75},
+            {"type":"hall","name":"chair","x":96,"y":75},
+            {"type":"hall","name":"chair","x":98,"y":75},
+            {"type":"hall","name":"chair","x":100,"y":75},
+
+            {"type":"hall","name":"chair","x":60,"y":81},
+            {"type":"hall","name":"chair","x":62,"y":81},
+            {"type":"hall","name":"chair","x":64,"y":81},
+            {"type":"hall","name":"chair","x":66,"y":81},
+            {"type":"hall","name":"chair","x":68,"y":81},
+            {"type":"hall","name":"chair","x":70,"y":81},
+            {"type":"hall","name":"chair","x":72,"y":81},
+            {"type":"hall","name":"chair","x":74,"y":81},
+            {"type":"hall","name":"chair","x":76,"y":81},
+            {"type":"hall","name":"chair","x":80,"y":81},
+            {"type":"hall","name":"chair","x":82,"y":81},
+            {"type":"hall","name":"chair","x":84,"y":81},
+            {"type":"hall","name":"chair","x":88,"y":81},
+            {"type":"hall","name":"chair","x":90,"y":81},
+            {"type":"hall","name":"chair","x":92,"y":81},
+            {"type":"hall","name":"chair","x":94,"y":81},
+            {"type":"hall","name":"chair","x":96,"y":81},
+            {"type":"hall","name":"chair","x":98,"y":81},
+            {"type":"hall","name":"chair","x":100,"y":81},
         ],
         "lights" : [
             // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
@@ -27,7 +181,9 @@ var maps =
         ],
         "clock":
         {
-            "timer":5
+            //"timer":180            
+            "timer":10
+            //timer:120
         },
         "triggers" : [
         {
@@ -36,23 +192,37 @@ var maps =
     },
     {
         "name":"university",
+        "mode":"social",
         "mapImages":"images/maps/university/",
         "miniMapImage":"images/minimaps/university/",        
         "numberOfHorizontalTiles":10,
         "numberOfVerticalTiles":8,
         "backgroundWidth":6400,
         "backgroundHeight":4800,
-        "startX":40,
-        "startY":40,
+        "startX":80,
+        "startY":80,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
-            {"type":"students","name":"student","team":"characters"},
         ],
         "items": [
-            {"type":"player","name":"player","x":60,"y":60,"direction":0,"team":"characters","uid":-1},
-            {"type":"students","name":"student","x":80,"y":80,"direction":0,"team":"characters","uid":-2},
-            {"type":"students","name":"student","x":90,"y":90,"direction":4,"team":"characters","uid":-3},
+            {"type":"player","name":"player","x":120,"y":120,"direction":0,"team":"characters","uid":-1},
+
+            // {"type":"students","name":"adam","x":125,"y":125,"direction":0,"team":"characters","uid":-2},
+            // {"type":"students","name":"max","x":130,"y":130,"direction":4,"team":"characters","uid":-3},
+
+            {"type":"students","name":"adam","x":190,"y":110,"direction":0,"team":"characters","uid":-2},
+            {"type":"students","name":"max","x":150,"y":150,"direction":4,"team":"characters","uid":-3},
+            {"type":"students","name":"alice","x":190,"y":140,"direction":0,"team":"characters","uid":-4},
+            {"type":"students","name":"zoe","x":200,"y":150,"direction":4,"team":"characters","uid":-5},
+            {"type":"students","name":"maya","x":170,"y":110,"direction":0,"team":"characters","uid":-6},
+            {"type":"students","name":"jack","x":190,"y":120,"direction":4,"team":"characters","uid":-7},
+            {"type":"students","name":"andrew","x":130,"y":130,"direction":0,"team":"characters","uid":-8},
+            {"type":"students","name":"mohamed","x":110,"y":125,"direction":4,"team":"characters","uid":-9},
+            {"type":"students","name":"rohan","x":140,"y":140,"direction":0,"team":"characters","uid":-10},
+            {"type":"students","name":"momo","x":190,"y":150,"direction":4,"team":"characters","uid":-11},
+            {"type":"students","name":"emma","x":160,"y":120,"direction":0,"team":"characters","uid":-12},
+            {"type":"students","name":"li","x":170,"y":135,"direction":4,"team":"characters","uid":-13},
         ],
         "lights" : [
             // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
@@ -62,7 +232,8 @@ var maps =
         ],
         "clock":
         {
-            "timer":10
+            "timer":300
+            //"timer":180
         },
         
         "triggers" : [
@@ -74,10 +245,83 @@ var maps =
 		    "action":() => {
                 game.items[1].orders.type = "search";
                 game.items[2].orders.type = "search";
+                game.items[3].orders.type = "search";
+                game.items[4].orders.type = "search";
+                game.items[5].orders.type = "search";
+                game.items[6].orders.type = "search";
+                game.items[7].orders.type = "search";
+                game.items[8].orders.type = "search";
+                game.items[9].orders.type = "search";
+                game.items[10].orders.type = "search";
+                game.items[11].orders.type = "search";
+                game.items[12].orders.type = "search";
+                
                 //renderer.setOrder(game.items[1], {"order":{"type":"search"}});
                 //renderer.setOrder(game.items[2], {"order":{"type":"search"}});
 		    } 
         }
         ]
-    }      
+    },
+    {
+        "name":"payslip",
+        "mapImages":"images/maps/payslip/",       
+        "numberOfHorizontalTiles":3,
+        "numberOfVerticalTiles":3,
+        "backgroundWidth":1920,
+        "backgroundHeight":1080,
+        "startX":0,
+        "startY":0,
+        "mapGridWidth":96,
+        "mapGridHeight":54,
+        "additional_requirements":[
+        ],
+        "items": [
+
+        ],
+        "lights" : [
+            // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
+        ],
+        "thresholds":[
+            //{"type":"thresholds","name":"auto_door","x":117,"y":53,"direction":0,"uid":-151}
+        ],
+        "text":[
+            {"type":"text", "name":"pay", "x":900, "y":100}
+        ],
+        "buttons":[
+            {"type":"buttons", "name":"confirm", "x":900, "y":900, "action":()=>{
+                economy.send();
+            }},
+            {"type":"buttons", "name":"rent", "text":"Rent", "x":1100, "y":300, "action":()=>{
+                renderer.toggleButton("rent");
+                economy.toggle("rent");
+            }},
+            {"type":"buttons", "name":"heat_aircon", "text":"Heat/Aircon", "x":1100, "y":400, "action":()=>{
+                renderer.toggleButton("heat_aircon");
+                economy.toggle("heat_aircon");
+            }},
+            {"type":"buttons", "name":"food_noodles", "text":"Eat Noodles", "x":1100, "y":500, "action":()=>{
+                renderer.toggleButton("food_noodles");
+                economy.toggle("food_noodles");
+            }},
+            {"type":"buttons", "name":"social_friends", "text":"Socialise with Friends", "x":1100, "y":600, "action":()=>{
+                renderer.toggleButton("social_friends");
+                economy.toggle("social_friends");
+            }},
+            {"type":"buttons", "name":"family", "text":"Give money to family", "x":1100, "y":700, "action":()=>{
+                renderer.toggleButton("family");
+                economy.toggle("family");
+            }}
+        ],    
+        "triggers" : [
+        {
+            "type":"conditional",
+            "condition":() => {
+                return false;
+            },     
+		    "action":() => {
+
+		    } 
+        }
+        ]
+    },      
 ]}

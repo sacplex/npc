@@ -1,0 +1,44 @@
+var materials =
+{
+    list:
+	{
+        "slides1":
+		{
+            index:0,
+            frames:5
+        },
+        "story1":
+		{
+            index:0
+        },
+        "notes1":
+        {
+            index:0,
+            frames:1
+        },
+        "textbook1":
+        {
+            index:0,
+            frames:1
+        },
+        "slides2":
+		{
+            index:0,
+            frames:12
+        },
+        "story2":
+		{
+            index:0
+        },
+        "notes2":
+        {
+            index:0,
+            frames:1
+        },
+        "textbook2":
+        {
+            index:0,
+            frames:1
+        },
+    },
+}

@@ -119,6 +119,24 @@ var display =
             return filename;
         }
     },
+    "close":
+    {
+        getFileName:function()
+        {
+            var filename = "images/close/close.png";
+
+            return filename;
+        }
+    },
+    "login":
+    {
+        getFileName:function()
+        {
+            var filename = "images/login/login.png";
+
+            return filename;
+        }
+    },
     "gameplayScreen":
     {
         "width":1760,

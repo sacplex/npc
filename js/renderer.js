@@ -57,7 +57,14 @@ var renderer = {
     skirmishDropdownContainer:undefined,
     lobbyContainer:undefined,
     backgroundContainer:undefined,
+    textContainer:undefined,
+    buttonsContainer:undefined,
+    slidesContainer:undefined,
+    notesContainer:undefined,
+    textbookContainer:undefined,
+    propsContainer:undefined,
     dialogueContainer:undefined,
+    loginContainer:undefined,
     resourcesContainer:undefined,
     thresholdContainer:undefined,
     lightsContainer:undefined,
@@ -109,12 +116,18 @@ var renderer = {
     skirmishMapPreview:undefined,
     skirmishMapPreviewPaths:[],
     dialogueSprite:undefined,
+    closeSprite:undefined,
     input:undefined,
     inputField:undefined,
+    outputField:undefined,
     clock:undefined,
     currentMapPreviewPath:undefined,
     conversationMessages:[],
     conversationText:undefined,
+    payText:undefined,
+    lecturerText:undefined,
+    narratorText:undefined,
+    textbookLineCounter:0,
     powerText:undefined,
     cashText:undefined,
     missionFailureText:undefined,
@@ -168,6 +181,10 @@ var renderer = {
     zoomLevelIndex:1,
     zoomLevels:[0.75, 1.0, 2.0],
     buttonImages:[],
+    slidesImages:[],
+    notesImages:[],
+    textbookImages:[],
+    propsImages:[],
     tile:undefined,
     tiles:[],
     tilesMap:undefined,
@@ -246,7 +263,14 @@ var renderer = {
         this.skirmishDropdownContainer = new PIXI.Container();
         this.lobbyContainer = new PIXI.Container();
         this.backgroundContainer = new PIXI.Container();
+        this.textContainer = new PIXI.Container();
+        this.buttonsContainer = new PIXI.Container();
+        this.slidesContainer = new PIXI.Container();
+        this.notesContainer = new PIXI.Container();
+        this.textbookContainer = new PIXI.Container();
+        this.propsContainer = new PIXI.Container();
         this.dialogueContainer = new PIXI.Container();
+        this.loginContainer = new PIXI.Container();
         this.resourcesContainer = new PIXI.Container();
         this.thresholdContainer = new PIXI.Container();
         this.lightsContainer = new PIXI.Container();
@@ -419,9 +443,10 @@ var renderer = {
                     });
             }
             
-            game.team = "technology";
+            //game.team = "technology";
             
-            game.startSinglePlayer();
+            //game.startSinglePlayer();
+            this.login();
         });
 
         if(textures)
@@ -516,6 +541,102 @@ var renderer = {
         game.offsetYIndex = this.cameraOffsetY;
     },
 
+    login:function()
+    {
+        let loginFilename = display.login.getFileName();
+
+        if(!this.resourceMasterSet.has(loginFilename))
+        {
+            PIXI.Assets.add(loginFilename, loginFilename);
+            this.resourceMasterSet.add(loginFilename);
+        }
+
+        const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
+
+        texturesPromise.then((textures) =>
+        {
+            this.assignLogin(textures); 
+        });
+    },
+
+    assignLogin:function(textures)
+    {
+        // --- Setup login ---
+        this.loginContainer.removeChildren();
+
+        const textureName = display.login.getFileName();
+        const loginTexture = textures?.[textureName] || PIXI.Texture.from(textureName);
+
+        this.loginSprite = new PIXI.Sprite(loginTexture);
+        this.loginSprite.x = productionWidth / 2;
+        this.loginSprite.y = productionHeight / 2;
+        this.loginSprite.anchor.set(0.5, 0.5);
+
+        this.loginContainer.addChild(this.loginSprite);
+
+        // --- Setup Hardcoded Text Input ---
+        this.input = new TextInputDetails();
+        
+        // Use numbers instead of strings for math
+        const inputWidth = 1000;
+        const inputFontSize = 20;
+
+        this.input.inputWidth = inputWidth + "px";        // keep string if needed by the input field
+        this.input.inputFontSize = inputFontSize + "px";  // same here
+        this.input.placeholder = "Enter your Text...";
+        this.input.password = false;
+
+        // Now use numbers for x and y
+        this.input.x = productionWidth / 2 - inputWidth / 2;
+        this.input.y = productionHeight / 2 - inputFontSize / 2;
+
+        // Ensure these are all present for PIXI.TextInput
+        this.input.inputPadding = 10;
+        this.input.inputColor = "#ffffff";
+
+        this.input.boxDefaultFill = "#515151";
+        this.input.boxFocusedFill = "#515151";
+
+        this.input.boxDefaultStrokeColor = "#969696";
+        this.input.boxFocusedStrokeColor = "#969696";
+
+        this.input.boxDefaultStrokeWidth = 2;
+        this.input.boxFocusedStrokeWidth = 2;
+
+        this.inputField = this.generateTextInput(this.input);
+        this.inputField.interactive = true;
+        this.inputField.on('keydown', (keycode) => {
+            if (keycode === 13) { // 13 is the keycode for Enter
+                //alert("send text to LLM: " + this.inputField.text)
+                //this.clearTextOutput();
+                this.gamecode = this.inputField.text;
+
+                client.sendMessage({
+                    code:this.inputField.text,
+                    sendTo: "smart",
+                    type:"login",
+                    message:this.inputField.text
+                });
+                
+                this.inputField.text = '';
+
+                this.loginSprite.visible = false;
+
+                this.inputField.interactive = false;
+                this.inputField.visible = false;
+
+                // game.team = "technology";
+            
+                // game.startSinglePlayer();
+            }
+        });
+        
+        this.loginContainer.addChild(this.inputField);
+
+        this.app.stage.addChild(this.loginContainer); 
+        console.log("added loginContainer");
+    },
+
     level:function(savedData = undefined)
     {
         flags.GAME_OVER = false;
@@ -532,6 +653,18 @@ var renderer = {
         const tileImages = [];
 
         this.debugUIDs.clear();
+
+        if(game.level.name == "payslip")
+        {
+            console.log(game.level);
+            client.sendMessage({
+                id: game.player.networkUid,
+                sendTo: "smart",
+                type:"review",
+                code:game.player.id,
+                clockDay:clock.day,
+            });
+        }
         
         if(game.level.mapImages == undefined)
         {
@@ -561,6 +694,9 @@ var renderer = {
 
         this.setAdditionalRequirements();
         this.setGameItems(game.level.items);
+        this.setButtons(game.level.buttons);
+        this.setMaterials(game.level.materials);
+        this.setProps(game.level.props);
         this.setGameResources();
         this.setLights();
         this.setThresholds(game.level.thresholds);
@@ -569,6 +705,8 @@ var renderer = {
         this.setNightTime();
         this.setMenu();
         this.setConversationText();
+        this.setLecturerText();
+        this.setNarratorText();
 
         if(!this.resourceMasterSet.has(game.level.mapImages))
         {
@@ -610,6 +748,14 @@ var renderer = {
             this.resourceMasterSet.add(dialogueFilename);
         }
 
+        let closeFilename = display.close.getFileName();
+
+        if(!this.resourceMasterSet.has(closeFilename))
+        {
+            PIXI.Assets.add(closeFilename, closeFilename);
+            this.resourceMasterSet.add(closeFilename);
+        }
+
         const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
 
         texturesPromise.then((textures) =>
@@ -620,8 +766,8 @@ var renderer = {
             this.assignLights(textures, this.imageNames, game.level.lights);
             this.assignAdditionalRequirements(textures, this.imageNames);
             this.assignGameItems(textures, this.imageNames, game.level.resources, game.level.items);
-            this.assignClock(game.level.clock);
-            this.assignDialogue(textures);
+            
+            
             this.assignEmitter(game.level.emitters);
             this.assignShaders(game.level.shaders);
             
@@ -644,7 +790,7 @@ var renderer = {
             this.itemsContainer.addChild(this.emittersContainer);
 
             this.gameplayContainer.addChild(this.itemsContainer);
-            this.gameplayContainer.addChild(this.dialogueContainer); 
+            
 
             if(debug.production)
             {
@@ -661,9 +807,19 @@ var renderer = {
             this.assignMenu(textures);
 
             this.gameInterfaceContainer.addChild(this.conversationText);
+            this.gameInterfaceContainer.addChild(this.lecturerText);
+            this.gameInterfaceContainer.addChild(this.narratorText);
 
             this.assignSidebar(this.buttonImages, game.level.sidebar);
+            this.assignButtons(textures, game.level.buttons);
+            this.assignText(game.level.text);
+            
+            this.assignProps(textures, game.level.props);
+            this.assignMaterials(textures, game.level.materials);
             this.assignCharacters(textures, this.imageNames);
+            this.assignClock(game.level.clock);
+            this.assignDialogue(textures);
+            this.gameplayContainer.addChild(this.dialogueContainer); 
 
             this.selectionBoxContainer.addChild(this.selectionBox);
 
@@ -672,6 +828,13 @@ var renderer = {
             this.container.addChild(this.characterContainer);
 
             triggers.init();
+
+            if(game.level.mode == "learning")
+            {
+                this.sendDetailsToServer();
+            }
+
+            //director.init(game.items);
                 
             if(game.level.ai)
             {
@@ -692,6 +855,7 @@ var renderer = {
 
             game.buildPassableGrid();
 
+            
             this.app.stage.addChild(this.container);
             this.app.stage.addChild(this.selectionBoxContainer);
 
@@ -1019,6 +1183,121 @@ var renderer = {
             
             this.indexes.set(items[i].team + "_" + items[i].name, {"index":this.overallFrames,"frames":frames}); 
             this.overallFrames = this.overallFrames + frames;
+        }
+    },
+
+    setButtons:function(buttons)
+    {
+        if(buttons)
+        {
+            for(var i = 0; i < buttons.length; i++)
+            {
+                var frames = window[buttons[i].type].list[buttons[i].name].frames;
+
+                for(var j = 0; j < frames; j++)
+                {
+                    var image = "images/" + buttons[i].type + "/" + buttons[i].name + "/" + j + ".png"
+
+                    if(!this.resourceMasterSet.has(image))
+                    {
+                        this.buttonImages.push(image);
+                        this.resourceMasterSet.add(image);
+                    }
+                }
+            }
+        }
+    },
+
+    setMaterials:function(materials)
+    {
+        if(materials)
+        {
+            for(var i = 0; i < materials.length; i++)
+            {
+                if(materials[i].name == "slides")
+                {
+                    this.setSlides();
+                }
+
+                if(materials[i].name == "notes")
+                {
+                    this.setNotes();
+                }
+
+                if(materials[i].name == "textbook")
+                {
+                    this.seTextbook();
+                }
+            }
+        }
+    },
+
+    setSlides:function()
+    {
+        console.log(clock.day);
+        
+        var frames = window["materials"].list["slides" + clock.day].frames;
+        
+        for(var j = 0; j < frames; j++)
+        {
+            var image = "images/slides/" + clock.day + "/" + j + ".png"
+
+            if(!this.resourceMasterSet.has(image))
+            {
+                this.slidesImages.push(image);
+                this.resourceMasterSet.add(image);
+            }
+        }
+    },
+
+    setNotes:function()
+    {
+        var frames = window["materials"].list["notes" + clock.day].frames;
+        
+        for(var j = 0; j < frames; j++)
+        {
+            var image = "images/notes/" + clock.day + "/" + j + ".png"
+
+            if(!this.resourceMasterSet.has(image))
+            {
+                this.notesImages.push(image);
+                this.resourceMasterSet.add(image);
+            }
+        }
+    },
+
+    seTextbook:function()
+    {
+        var frames = window["materials"].list["textbook" + clock.day].frames;
+        
+        for(var j = 0; j < frames; j++)
+        {
+            var image = "images/textbook/" + clock.day + "/" + j + ".jpg"
+
+            if(!this.resourceMasterSet.has(image))
+            {
+                this.textbookImages.push(image);
+                this.resourceMasterSet.add(image);
+            }
+        }
+    },
+
+    setProps:function(props)
+    {
+        if(props)
+        {
+            for(var i = 0; i < props.length; i++)
+            {
+                var frames = window["props"].list[props[i].name].frames;
+    
+                for(var j = 0; j < frames; j++)
+                {
+                    var image = "images/" + props[i].type + "/" + props[i].name + "/" + j + ".png";
+        
+                    this.propsImages.push(image);
+                    this.resourceMasterSet.add(image);
+                }
+            }
         }
     },
 
@@ -1363,7 +1642,44 @@ var renderer = {
     displayConversationText:function(visible)
     {
         this.conversationText.visible = visible;
-        console.log(this.conversationText);
+    },
+
+    addLecturerText:function(message)
+    {
+        this.lecturerText.text = message;
+    },
+
+    setLecturerText:function()
+    {
+        this.lecturerText = new PIXI.Text("", lecturerStyle);
+        this.lecturerText.x = productionWidth / 2;
+        this.lecturerText.y = 35;
+        this.lecturerText.visible = false;
+        this.lecturerText.anchor.set(0.5, 0);
+    },
+
+    displayLecturerText:function(visible)
+    {
+        this.lecturerText.visible = visible;
+    },
+
+    addNarratorText:function(message)
+    {
+        this.narratorText.text = message;
+    },
+
+    setNarratorText:function()
+    {
+        this.narratorText = new PIXI.Text("", narratorStyle);
+        this.narratorText.x = productionWidth / 2;
+        this.narratorText.y = 35;
+        this.narratorText.visible = false;
+        this.narratorText.anchor.set(0.5, 0);
+    },
+
+    displayNarratorText:function(visible)
+    {
+        this.narratorText.visible = visible;
     },
 
     assignBackground:function(textures)
@@ -1415,18 +1731,16 @@ var renderer = {
     assignDialogue: function(textures)
     {
         // --- Setup Dialogue ---
-        this.dialogueContainer.removeChildren();
+        //this.dialogueContainer.removeChildren();
 
-        const textureName = display.dialogue.getFileName();
-        const dialogueTexture = textures?.[textureName] || PIXI.Texture.from(textureName);
+        const dialogueTextureName = display.dialogue.getFileName();
+        const dialogueTexture = textures?.[dialogueTextureName] || PIXI.Texture.from(dialogueTextureName);
 
         this.dialogueSprite = new PIXI.Sprite(dialogueTexture);
-        this.dialogueSprite.visible = false;
+        this.dialogueSprite.visible = true;
         this.dialogueSprite.x = productionWidth / 2;
         this.dialogueSprite.y = productionHeight / 2;
         this.dialogueSprite.anchor.set(0.5, 0.5);
-
-        this.dialogueContainer.addChild(this.dialogueSprite);
 
         // --- Setup Hardcoded Text Input ---
         this.input = new TextInputDetails();
@@ -1453,16 +1767,86 @@ var renderer = {
         this.input.boxFocusedStrokeWidth = 2;
 
         this.inputField = this.generateTextInput(this.input);
-        this.inputField.visible = false;
+        this.inputField.visible = true;
         this.inputField.interactive = true;
         this.inputField.on('keydown', (keycode) => {
             if (keycode === 13) { // 13 is the keycode for Enter
-                alert("send text to LLM")
-                this.inputField.text = '';
+                //alert("send text to LLM: " + this.inputField.text)
+                this.clearTextOutput();
+
+                if(player.currentStudent)
+                {
+                    economy.set(player.currentStudent.name,1);
+                    client.sendMessage({
+                        id: game.player.networkUid,
+                        sendTo: "smart",
+                        type:"talk",
+                        code:game.player.id,
+                        clockDay:clock.day,
+                        studentName:player.currentStudent.name,
+                        message:this.inputField.text
+                    });
+                    this.inputField.text = '';
+                }
+                else if(player.currentTeacher)
+                {
+                    client.sendMessage({
+                        id: game.player.networkUid,
+                        sendTo: "smart",
+                        type:"teacher",
+                        code:game.player.id,
+                        clockDay:clock.day,
+                        message:this.inputField.text,
+                        teacherType:player.currentTeacher.name
+                    });
+                    this.inputField.text = '';
+                }
             }
         });
-        
+
+        this.outputField = new PIXI.Text("", narratorStyle);
+        this.outputField.visible = true;
+        this.outputField.x = 460;
+        this.outputField.y = 240;
+
+        // --- Setup Dialogue ---
+        const closeTextureName = display.close.getFileName();
+        const closeTexture = textures?.[closeTextureName] || PIXI.Texture.from(closeTextureName);
+
+        this.closeSprite = new PIXI.Sprite(closeTexture);
+        this.closeSprite.visible = true;
+        this.closeSprite.x = 1440;
+        this.closeSprite.y = 180;
+        this.closeSprite.interactive = true;
+        this.closeSprite.on('pointerdown', () => {
+            
+            if(player.currentStudent)
+            {
+                player.currentStudent.orders.type = "leave";
+                player.currentStudent.talkCount = 0;
+                player.currentStudent.state.talking = false;
+                player.currentStudent.state.talkingToTutor = false;
+                player.currentStudent.state.leaving = true;
+
+                for(var i = 0; i < game.items.length; i++)
+                {
+                    if(game.items[i].uid == player.currentStudent.uid)
+                    {
+                        game.items[i].target = undefined;
+                    }
+                }
+
+                player.currentStudent = undefined;
+            }
+
+            this.hideDialogue();
+        });
+
+        this.dialogueContainer.visible = false;
+        this.dialogueContainer.addChild(this.dialogueSprite);
         this.dialogueContainer.addChild(this.inputField);
+        this.dialogueContainer.addChild(this.outputField);
+        this.dialogueContainer.addChild(this.closeSprite);
     },
 
     generateTextInput:function(details)
@@ -1529,6 +1913,27 @@ var renderer = {
         console.log(temp);
 
         return temp;
+    },
+
+    generateTextOutput:function(text)
+    {
+        this.textbookLineCounter++;
+
+        if((this.textbookLineCounter % 20) == 0)
+            this.outputField.text = this.outputField.text + text + "\n";
+        else
+            this.outputField.text = this.outputField.text + text;
+    },
+
+    showTextOutput:function()
+    {
+        this.outputField.visible = true;
+    },
+
+    clearTextOutput:function()
+    {
+        this.textbookLineCounter = 0;
+        this.outputField.text = "";
     },
 
     assignGameItems:function(textures, images, resources, items)
@@ -1604,6 +2009,9 @@ var renderer = {
                 leaving:false
             };
 
+            if(item.name == "tutor" || item.name == "librarian")
+                item.selectable = true;
+            
             item.isAlive = true;
             item.hasCollided = false;
 
@@ -1815,7 +2223,7 @@ var renderer = {
             item.nearCollision = new PIXI.Graphics();
             item.collisionBubble = new PIXI.Graphics();
 
-            if(item.team == game.team)
+            if(item.name == game.team)
             {
                 if(item.layer && item.layer == "surface")
                     this.addToContainer(item, this.surfaceItemsContainer);
@@ -1840,7 +2248,35 @@ var renderer = {
                     this.addToContainer(item, this.submergedItemsContainer);
                 else
                     this.addToContainer(item, this.otherContainer);
-            }  
+            }
+            
+            if(item.name == "player")
+            {
+                game.player = item;
+                game.player.id = this.gamecode;
+            }
+            
+            if(item.name == "lecturer")
+            {
+                game.lecturer = item;
+            }
+
+            if(item.name == "narrator")
+            {
+                game.narrator = item;
+            }
+
+            if(item.name == "tutor")
+            {
+                game.tutor = item;
+            }
+
+            if(item.name == "librarian")
+            {
+                game.librarian = item;
+            }
+
+            console.log(item);
 
             item.outputTest();
             
@@ -1866,8 +2302,34 @@ var renderer = {
         this.container.addChild(this.masks);
     },
 
+    sendDetailsToServer:function()
+    {
+        let message = {
+            sendTo: "smart",
+            type: "init",
+            day: this.clock.day,
+            names: [],
+            personalities:[]
+        };
+    
+        for (var i = 0; i < game.items.length; i++)
+        {
+            if (game.items[i].type !== "students")
+                continue;
+    
+            message.names.push(game.items[i].name);
+            message.personalities.push(game.items[i].personality);
+        }
+    
+        console.log("Sending initialization message:", message);
+        client.sendMessage(message);
+    },
+
     assignClock:function(clockData)
     {
+        if(!clockData)
+            return;
+        
         this.clock = {};
         Object.assign(this.clock, window["clock"]);
         this.clock.timer = clockData.timer;
@@ -2662,6 +3124,251 @@ var renderer = {
                 }
             });
         }
+    },
+
+    assignButtons:function(textures, buttons)
+    {
+        if(!buttons)
+            return;
+
+        for (let i = 0; i < buttons.length; i++)
+        {
+            game.buttons.push({});
+            game.buttons[game.buttons.length-1].sprites = [];
+
+            Object.assign(game.buttons[i], window[buttons[i].type].list[buttons[i].name]);
+            
+            if(game.buttons[i].cost)
+                economy.add(buttons[i].name, game.buttons[i].cost);
+
+            for (let j = 0; j < game.buttons[i].frames; j++)
+            {
+                game.buttons[i].name = buttons[i].name;
+                game.buttons[i].sprites.push(PIXI.Sprite.from(
+                    textures["images/" + buttons[i].type + "/" + buttons[i].name + "/" + j + ".png"]));
+                
+                if(buttons[i].text)
+                {
+                    game.buttons[i].text = new PIXI.Text(buttons[i].text, {fill: 'white'});
+                    game.buttons[i].text.position.set(
+                        buttons[i].x - 400,
+                        buttons[i].y);
+                }
+
+
+                game.buttons[i].sprites[game.buttons[i].sprites.length-1].x = buttons[i].x;
+                game.buttons[i].sprites[game.buttons[i].sprites.length-1].y = buttons[i].y;
+
+                game.buttons[i].sprites[game.buttons[i].sprites.length-1].visible = false;
+
+                if(game.buttons[i].visible == j)
+                {
+                    game.buttons[i].sprites[game.buttons[i].sprites.length-1].visible = true;
+                }
+    
+                if (buttons[i].action && typeof buttons[i].action === 'function')
+                {
+                    game.buttons[i].sprites[game.buttons[i].sprites.length-1].interactive = true;
+                    game.buttons[i].sprites[game.buttons[i].sprites.length-1].on('pointerdown', buttons[i].action);
+                }
+
+                if(buttons[i].text)
+                {
+                    this.buttonsContainer.addChild(game.buttons[i].text);
+                }
+
+                this.buttonsContainer.addChild(game.buttons[i].sprites[game.buttons[i].sprites.length-1]);
+            }
+        }
+        this.gameplayContainer.addChild(this.buttonsContainer); 
+    },
+
+    toggleButton:function(name)
+    {
+        for (let i = 0; i < game.buttons.length; i++)
+        {
+            if(game.buttons[i].name == name)
+            {
+                for (let j = 0; j < game.buttons[i].sprites.length; j++)
+                {
+                    if(game.buttons[i].sprites[j].visible)
+                    {
+                        if(j == 0)
+                        {
+                            game.buttons[i].sprites[0].visible = false;
+                            game.buttons[i].sprites[1].visible = true;
+                        }
+                        else
+                        {
+                            game.buttons[i].sprites[1].visible = false;
+                            game.buttons[i].sprites[0].visible = true;
+                        }
+
+                        return;
+                    }
+                }
+            }
+        }
+    },
+
+    assignText:function()
+    {
+        if(game.level.text)
+        {
+            for(var i = 0; i < game.level.text.length; i++)
+            {
+                if(game.level.text[i].name == "pay")
+                {
+                    economy.setPayout();
+
+                    this.payText = new PIXI.Text("Pay: ", {fill: 'white'});
+                    this.payText.text = "Pay: " + economy.cash;
+                    this.payText.position.set(
+                        game.level.text[i].x,
+                        game.level.text[i].y
+                    );
+
+                    console.log(game.level.text[i].x, // I am seeing this message
+                        game.level.text[i].y);
+
+                    this.textContainer.addChild(this.payText);
+                }
+            }
+
+            this.gameplayContainer.addChild(this.textContainer); 
+        }
+    },
+
+    assignMaterials:function(textures, materials)
+    {
+        if(game.level.materials)
+        {
+            for(var i = 0; i < materials.length; i++)
+            {
+                if(materials[i].name == "slides")
+                {
+                    this.assignSlides(textures);
+                }
+
+                if(materials[i].name == "notes")
+                {
+                    this.assignNotes(textures);
+                }
+
+                if(materials[i].name == "textbook")
+                {
+                    this.assignTextbook(textures);
+                }
+            }
+        }
+    },
+
+    assignSlides:function(textures)
+    {
+        for (let i = 0; i < this.slidesImages.length; i++)
+        {
+            game.slides.push({});
+            game.slides[i].sprite = PIXI.Sprite.from(
+                textures[this.slidesImages[i]]);
+            game.slides[i].sprite.scale.set(0.5, 0.5);
+            game.slides[i].sprite.x = 58 * game.gridSize - this.cameraOffsetX;
+            game.slides[i].sprite.y = 27 * game.gridSize - this.cameraOffsetY;
+            game.slides[i].sprite.visible = false;
+            
+            if(i == 0)
+            {
+                game.slides[i].sprite.visible = true;
+            }
+
+            this.slidesContainer.addChild(game.slides[i].sprite);
+        }
+        console.log(game.slides);
+        this.gameplayContainer.addChild(this.slidesContainer); 
+    },
+
+    assignNotes:function(textures)
+    {
+        for (let i = 0; i < this.notesImages.length; i++)
+        {
+            game.notes.push({});
+            game.notes[i].sprite = PIXI.Sprite.from(
+                textures[this.notesImages[i]]);
+            game.notes[i].sprite.scale.set(0.3, 0.3);
+            game.notes[i].sprite.x = 238 * game.gridSize - this.cameraOffsetX;
+            game.notes[i].sprite.y = 148 * game.gridSize - this.cameraOffsetY;
+            game.notes[i].sprite.visible = false;
+            
+            if(i == 0)
+            {
+                game.notes[i].sprite.visible = true;
+            }
+
+            this.notesContainer.addChild(game.notes[i].sprite);
+        }
+        console.log(game.notes);
+        this.gameplayContainer.addChild(this.notesContainer); 
+    },
+
+    assignTextbook:function(textures)
+    {
+        for (let i = 0; i < this.textbookImages.length; i++)
+        {
+            game.textbook.push({});
+            game.textbook[i].sprite = PIXI.Sprite.from(
+                textures[this.textbookImages[i]]);
+            game.textbook[i].sprite.scale.set(0.5, 0.5);
+            game.textbook[i].sprite.x = 220 * game.gridSize - this.cameraOffsetX;
+            game.textbook[i].sprite.y = 55 * game.gridSize - this.cameraOffsetY;
+
+            this.textbookContainer.addChild(game.textbook[i].sprite);
+
+            if(!this.closeTextbookSprite)
+            {
+                const closeTextureName = display.close.getFileName();
+                const closeTexture = textures?.[closeTextureName] || PIXI.Texture.from(closeTextureName);
+    
+                this.closeTextbookSprite = new PIXI.Sprite(closeTexture);
+                this.closeTextbookSprite.visible = true;
+                this.closeTextbookSprite.x = 1340;
+                this.closeTextbookSprite.y = 140;
+                this.closeTextbookSprite.interactive = true;
+                this.closeTextbookSprite.on('pointerdown', () => {
+                    this.hideTextbook();
+                });
+
+                this.textbookContainer.addChild(this.closeTextbookSprite);
+            }
+        }
+        this.textbookContainer.visible = false;
+        this.gameplayContainer.addChild(this.textbookContainer); 
+    },
+
+    assignProps:function(textures, props)
+    {
+        if(props)
+        {
+            for (let i = 0; i < props.length; i++)
+            {
+                game.props.push({});
+                game.props[i].sprite = PIXI.Sprite.from(
+                    textures[this.propsImages[i]]);
+                game.props[i].sprite.scale.set(1, 1);
+                game.props[i].sprite.x = props[i].x * game.gridSize - this.cameraOffsetX;
+                game.props[i].sprite.y = props[i].y * game.gridSize - this.cameraOffsetY;
+                game.props[i].sprite.visible = true;
+    
+                console.log(props.name + ", " + props[i].x + " " + props[i].y);
+    
+                this.propsContainer.addChild(game.props[i].sprite);
+            }
+    
+            this.gameplayContainer.addChild(this.propsContainer);
+        }
+    },
+
+    setPayText:function()
+    {
+
     },
 
     assignCharacters:function(textures, images)
@@ -3767,6 +4474,7 @@ var renderer = {
         this.airItemsContainer.removeChildren();
         this.playerContainer.removeChildren();
         this.otherContainer.removeChildren();
+        this.dialogueContainer.removeChildren();
 
         game.items.splice(0, game.items.length);
 
@@ -3936,14 +4644,19 @@ var renderer = {
 
     showDialogue:function()
     {
-        this.dialogueSprite.visible = true;
-        this.inputField.visible = true;
+        this.dialogueContainer.x = 0;
+        this.dialogueContainer.y = 0;
+        this.dialogueContainer.visible = true;
     },
 
     hideDialogue:function()
     {
-        this.dialogueSprite.visible = false;
-        this.inputField.visible = false;
+        this.dialogueContainer.visible = false;
+    },
+
+    hideTextbook:function()
+    {
+        this.textbookContainer.visible = false;
     },
 
     gameOver:function()

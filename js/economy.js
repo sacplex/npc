@@ -1,54 +1,127 @@
 var economy = 
 {
-    waterExtractorCount:0,
-    oilExtractorCount:0,
-    cash:0,
-    water:0,
-    oil:0,
-    update:function()
+    lecturerTime:0,
+    narratorTime:0,
+    tutorTime:0,
+    librarianTime:0,
+    cash: 200,
+    expenses: undefined,
+    payout: {
+        messagesByStudent: new Map(), // Map<studentName, messageCount>
+        bonus: 1,
+        pay: 0
+    },
+    
+    init: function()
     {
-        this.addWater();
-        this.addOil();
+        this.expenses = new Map();
+    },
 
-        if(this.oil > 1000)
+    add: function(name, cost)
+    {
+        this.expenses.set(
+            name,
+            {
+                "name": name,
+                "cost": cost,
+                "toggle": false
+            }
+        );
+    },
+
+    // Record each conversation during the day
+    set: function(studentName, count = 1)
+    {
+        let currentCount = this.payout.messagesByStudent.get(studentName) || 0;
+        let newCount = currentCount + count;
+        this.payout.messagesByStudent.set(studentName, newCount);
+    },
+
+    // Calculate end-of-day payout
+    setPayout: function()
+    {
+        let pay = 0;
+
+        let uniqueStudents = this.payout.messagesByStudent.size;
+
+        // Breadth bonus: encourage talking to more people
+        let breadthMultiplier = 1 + (Math.min(uniqueStudents, 5)); // max +50%
+
+        for (let [name, count] of this.payout.messagesByStudent.entries())
         {
-            this.oil = this.oil - 1000;
-
-            if(this.oil <= 0)
-                this.oil = 0;
-
-            this.cash = this.cash + 1000;
-            renderer.cashText.text = "Cash: $" + this.cash;
+            // Depth reward: diminishing returns for each student
+            for (let i = 1; i <= count; i++)
+            {
+                pay += this.getMessageValue(i);
+            }
         }
 
-        if(this.water > 500)
-        {
-            this.water = this.water - 500;
+        // Apply breadth bonus and any global bonus
+        pay = pay * breadthMultiplier * this.payout.bonus;
 
-            if(this.water <= 0)
-                this.water = 0;
+        // Add to cash & reset daily record
+        pay = Math.ceil(pay);
 
-            this.cash = this.cash + 500;
-            
-            renderer.cashText.text = "Cash: $" + this.cash;
-        }       
+        this.payout.pay += pay;
+        this.cash += pay;
+        
+        this.payout.messagesByStudent.clear();
+
+        console.log(`End of day payout: $${pay.toFixed(2)} (Cash: $${this.cash.toFixed(2)})`);
     },
 
-    addWater:function()
+    getMessageValue: function(messageIndex)
     {
-        this.water = this.water + 0.5 * this.waterExtractorCount;        
+        // First 5 messages = $1 each
+        if (messageIndex <= 5) return 1;
+        // Messages 6–10 = $0.5 each
+        if (messageIndex <= 10) return 0.5;
+        // Anything after = $0.2 each
+        return 0.2;
+    },
+    
+    toggle: function(name)
+    {
+        if (!this.expenses.has(name)) return;
+
+        let expense = this.expenses.get(name);
+        expense.toggle = !expense.toggle;
+
+        if (expense.toggle)
+            this.cash -= expense.cost;
+        else
+            this.cash += expense.cost;
+
+        renderer.payText.text = "Pay: " + this.cash;
     },
 
-    addOil:function()
+    send:function()
     {
-        this.oil = this.oil + 0.1 * this.oilExtractorCount;
-    },
+        console.log(this.expenses);
+        console.log(this.cash);
+        console.log(this.lecturerTime);
 
-    reset:function()
-    {
-        this.waterExtractorCount = 0;
-        this.oilExtractorCount = 0;
-        this.cash = 0;
-        this.water = 0;
+        client.sendMessage({
+            code: game.player.id,
+            sendTo:"smart",
+            type:"economy",
+            day:clock.day,
+            message: {
+                cash: this.cash,
+                expenses: Array.from(this.expenses.entries()) // convert Map → array for safe transmission
+            },
+            teaching: {
+                lecturerTime:this.lecturerTime,
+                narratorTime:this.narratorTime,
+                tutorTime:this.tutorTime,
+                librarianTime:this.librarianTime
+            }
+        });
+
+        this.payout.messagesByStudent.clear();
+        this.lecturerTime = 0;
+        this.narratorTime = 0;
+        this.tutorTime = 0;
+        this.librarianTime = 0;
     }
-}
+};

@@ -12,11 +12,8 @@ window.addEventListener('load', function() {
     renderer.init();    
     game.init();
 
-    if(debug.network)
-    {
-        console.log("client init");
-        client.init();
-    }
+    console.log("client init");
+    client.init();
 
     document.body.style.backgroundColor = 'black';
     
@@ -69,6 +66,36 @@ var game = {
     thresholds:[],
     bullets:[],
     characters:[],
+    player:undefined,
+    lecturer:undefined,
+    narrator:undefined,
+    tutor:undefined,
+    librarian:undefined,
+    buttons:[],
+    slides:[],
+    notes:[],
+    textbook:[],
+    props:[],
+    lecturerStudentPositions: [
+        { x: 100, y: 72, d:0 },
+        { x: 82, y: 61, d:0 },
+        { x: 95, y: 64, d:0 }
+    ],
+    narratorStudentPositions: [
+        { x: 80, y: 183, d:0 },
+        { x: 84, y: 183, d:0 },
+        { x: 88, y: 186, d:0 }
+    ],
+    tutorStudentPositions: [
+        { x: 243, y: 179, d:0 },
+        { x: 256, y: 182, d:0 },
+        { x: 249, y: 172, d:0 }
+    ],
+    librarianStudentPositions: [
+        { x: 257, y: 67, d:0 },
+        { x: 250, y: 75, d:0 },
+        { x: 243, y: 64, d:0 }
+    ],
     lasers:[],
     sidebarButtons:[],
     selectedItems:[],
@@ -121,13 +148,13 @@ var game = {
         cells.init();    
         target.init();
         lookup.init();
+        economy.init();
         sidebar.init();
         singleplayer.start(savedData);
 
         fog.init();  
 
         mouse.init();
-        keyboard.init("singleplayer");
     },
 
     initMultiplayer:function()
@@ -142,7 +169,6 @@ var game = {
         lookup.init();
         mouse.init();
         fog.init(); 
-        keyboard.init("multiplayer");
         //physics.init();
     },
 
@@ -153,12 +179,12 @@ var game = {
 
         if(renderer.clock.expired())
         {
+            renderer.clock.reset();
             game.endLevel();
             game.nextLevel();
             return;
         }
 
-        economy.update();
         mouse.update();
         sidebar.update();
 
@@ -269,24 +295,21 @@ var game = {
         if(mouse.y * productionInverseRatio < display.maininterface.mapImageYOffset)
             return;
 
-        if(mouse.x * productionInverseRatioX <=game.panningThreshold || keyboard.pan == flags.PAN_LEFT)
+        if(mouse.x * productionInverseRatioX <=game.panningThreshold)
         {
             this.handleLeftPanning();
         }
         else if ((mouse.x * productionInverseRatioX >= (productionWidth - game.panningThreshold) - display.maininterface.mapImageXOffset) &&
-                  (mouse.x * productionInverseRatioX <= (productionWidth - display.maininterface.mapImageXOffset)) ||
-                  keyboard.pan == flags.PAN_RIGHT)
+                  (mouse.x * productionInverseRatioX <= (productionWidth - display.maininterface.mapImageXOffset)))
         {
             this.handleRightPanning();			
 		}
 
-        if(mouse.y * productionInverseRatio <= game.panningThreshold + display.maininterface.mapImageYOffset ||
-            keyboard.pan == flags.PAN_UP)
+        if(mouse.y * productionInverseRatio <= game.panningThreshold + display.maininterface.mapImageYOffset)
         {               
             this.handleUpPanning();
         }
-        else if (mouse.y * productionInverseRatio >= (productionHeight + nearFullScreenHeight) - game.panningThreshold ||
-            keyboard.pan == flags.PAN_DOWN)
+        else if (mouse.y * productionInverseRatio >= (productionHeight + nearFullScreenHeight) - game.panningThreshold)
         {
             this.handleDownPanning();
         }
@@ -334,6 +357,40 @@ var game = {
                     for(var j = 0; j < game.items[i].sprites.length; j++)
                         game.items[i].sprites[j].x = game.items[i].sprites[j].x + game.panningSpeed;
                 }
+            }
+
+            for(var i=0; i < game.slides.length; i++)
+            {
+                if(!game.slides[i])
+                    continue;
+
+                game.slides[i].sprite.x = game.slides[i].sprite.x + game.panningSpeed;
+            }
+
+            for(var i=0; i < game.notes.length; i++)
+            {
+                if(!game.notes[i])
+                    continue;
+
+                game.notes[i].sprite.x = game.notes[i].sprite.x + game.panningSpeed;
+            }
+
+            for(var i=0; i < game.textbook.length; i++)
+            {
+                if(!game.textbook[i])
+                    continue;
+
+                game.textbook[i].sprite.x = game.textbook[i].sprite.x + game.panningSpeed;
+
+                if(renderer.closeTextbookSprite)
+                {
+                    renderer.closeTextbookSprite.x = renderer.closeTextbookSprite.x + game.panningSpeed;
+                }
+            }
+
+            for(var i = 0; i < game.props.length; i++)
+            {
+                game.props[i].sprite.x = game.props[i].sprite.x + game.panningSpeed;
             }
 
             renderer.emittersContainer.x = renderer.emittersContainer.x + game.panningSpeed;
@@ -388,6 +445,40 @@ var game = {
                 }
             }
 
+            for(var i=0; i < game.slides.length; i++)
+            {
+                if(!game.slides[i])
+                    continue;
+
+                game.slides[i].sprite.x = game.slides[i].sprite.x - game.panningSpeed;
+            }
+
+            for(var i=0; i < game.notes.length; i++)
+            {
+                if(!game.notes[i])
+                    continue;
+
+                game.notes[i].sprite.x = game.notes[i].sprite.x - game.panningSpeed;
+            }
+
+            for(var i=0; i < game.textbook.length; i++)
+            {
+                if(!game.textbook[i])
+                    continue;
+
+                game.textbook[i].sprite.x = game.textbook[i].sprite.x - game.panningSpeed;
+
+                if(renderer.closeTextbookSprite)
+                {
+                    renderer.closeTextbookSprite.x = renderer.closeTextbookSprite.x - game.panningSpeed;
+                }
+            }
+
+            for(var i = 0; i < game.props.length; i++)
+            {
+                game.props[i].sprite.x = game.props[i].sprite.x - game.panningSpeed;
+            }
+
             renderer.emittersContainer.x = renderer.emittersContainer.x - game.panningSpeed;
 
             for(var i=0; i < renderer.wayPoints.length; i++)
@@ -437,6 +528,40 @@ var game = {
                     for(var j = 0; j < game.items[i].sprites.length; j++)
                         game.items[i].sprites[j].y = game.items[i].sprites[j].y + game.panningSpeed;
                 }
+            }
+
+            for(var i=0; i < game.slides.length; i++)
+            {
+                if(!game.slides[i])
+                    continue;
+
+                game.slides[i].sprite.y = game.slides[i].sprite.y + game.panningSpeed;
+            }
+
+            for(var i=0; i < game.notes.length; i++)
+            {
+                if(!game.notes[i])
+                    continue;
+
+                game.notes[i].sprite.y = game.notes[i].sprite.y + game.panningSpeed;
+            }
+
+            for(var i=0; i < game.textbook.length; i++)
+            {
+                if(!game.textbook[i])
+                    continue;
+
+                game.textbook[i].sprite.y = game.textbook[i].sprite.y + game.panningSpeed;
+
+                if(renderer.closeTextbookSprite)
+                {
+                    renderer.closeTextbookSprite.y = renderer.closeTextbookSprite.y + game.panningSpeed;
+                }
+            }
+
+            for(var i = 0; i < game.props.length; i++)
+            {
+                game.props[i].sprite.y = game.props[i].sprite.y + game.panningSpeed;
             }
 
             renderer.emittersContainer.y = renderer.emittersContainer.y + game.panningSpeed;
@@ -490,6 +615,40 @@ var game = {
                     for(var j = 0; j < game.items[i].sprites.length; j++)
                         game.items[i].sprites[j].y = game.items[i].sprites[j].y - game.panningSpeed;
                 }
+            }
+
+            for(var i=0; i < game.slides.length; i++)
+            {
+                if(!game.slides[i])
+                    continue;
+
+                game.slides[i].sprite.y = game.slides[i].sprite.y - game.panningSpeed;
+            }
+
+            for(var i=0; i < game.notes.length; i++)
+            {
+                if(!game.notes[i])
+                    continue;
+
+                game.notes[i].sprite.y = game.notes[i].sprite.y - game.panningSpeed;
+            }
+
+            for(var i=0; i < game.textbook.length; i++)
+            {
+                if(!game.textbook[i])
+                    continue;
+
+                game.textbook[i].sprite.y = game.textbook[i].sprite.y - game.panningSpeed;
+
+                if(renderer.closeTextbookSprite)
+                {
+                    renderer.closeTextbookSprite.y = renderer.closeTextbookSprite.y - game.panningSpeed;
+                }
+            }
+
+            for(var i = 0; i < game.props.length; i++)
+            {
+                game.props[i].sprite.y = game.props[i].sprite.y - game.panningSpeed;
             }
 
             renderer.emittersContainer.y = renderer.emittersContainer.y - game.panningSpeed;
@@ -707,38 +866,93 @@ var game = {
         // }
     },
 
+    updateEnrolledStudentGroups:function(enrolled)
+    {
+        console.log("updateEnrolledStudentGroups");
+        const positionMap = {
+            lecturer: this.lecturerStudentPositions,
+            narrator: this.narratorStudentPositions,
+            tutor: this.tutorStudentPositions,
+            librarian: this.librarianStudentPositions
+        };
+    
+        for (const group in enrolled)
+        {
+            const studentNames = enrolled[group];
+            const positions = positionMap[group];
+    
+            if (!positions)
+            {
+                console.warn(`No positions defined for group: ${group}`);
+                continue;
+            }
+
+            console.log(studentNames);
+    
+            for (let i = 0; i < studentNames.length; i++)
+            {
+                const studentName = studentNames[i];
+                const position = positions[i % positions.length]; // cycle if more students than positions
+    
+                // Find the student item in game.items
+                const studentItem = game.items.find(item => item.type === "students" && item.name === studentName);
+    
+                if (studentItem)
+                {
+                    studentItem.x = position.x;
+                    studentItem.y = position.y;
+
+                    studentItem.sprite.x = position.x * game.gridSize;
+                    studentItem.sprite.y = position.y * game.gridSize;
+
+                    studentItem.sprite.x = studentItem.sprite.x - renderer.cameraOffsetX;
+                    studentItem.sprite.y = studentItem.sprite.y - renderer.cameraOffsetY;
+
+                    studentItem.sprite.texture = renderer.texturesMap.get(studentItem.team + "_" + studentItem.name)
+						[position.d];
+
+                    console.log(`Assigned ${studentName} to (${position.x}, ${position.y}) in group ${group}`);
+                }
+                else
+                {
+                    console.warn(`Student ${studentName} not found in game items.`);
+                }
+            }
+        }
+    },
+
     addDialogue:function(message, character)
     {
         narration.add(game.level.name, message);       
         this.showMessages.push({"message":message, "character":character});
     },
 
-    showBlockedDialogue:function()
-    {
-        triggers.setBlockActiveTrigger(true);
+    // showBlockedDialogue:function()
+    // {
+    //     triggers.setBlockActiveTrigger(true);
         
-        renderer.showDialogue(this.showMessages[0].message);
-        renderer.hideCharacter();
-        renderer.showCharacter(this.showMessages[0].character);
-        narration.play(this.showMessages[0].message);
-        this.showMessages.splice(0, 1);
-    },
+    //     renderer.showDialogue(this.showMessages[0].message);
+    //     renderer.hideCharacter();
+    //     renderer.showCharacter(this.showMessages[0].character);
+    //     narration.play(this.showMessages[0].message);
+    //     this.showMessages.splice(0, 1);
+    // },
 
-    showDialogue:function()
-    {       
-        renderer.showDialogue(this.showMessages[0].message);
-        renderer.hideCharacter();
-        renderer.showCharacter(this.showMessages[0].character);
-        narration.play(this.showMessages[0].message);
-        this.showMessages.splice(0, 1);
-    },
+    // showDialogue:function()
+    // {       
+    //     renderer.showDialogue(this.showMessages[0].message);
+    //     renderer.hideCharacter();
+    //     renderer.showCharacter(this.showMessages[0].character);
+    //     narration.play(this.showMessages[0].message);
+    //     this.showMessages.splice(0, 1);
+    // },
 
-    clearDialogue:function()
-    {
-        narration.stop();
-        triggers.setBlockActiveTrigger(false);
-        narration.clear();
-    },
+    // clearDialogue:function()
+    // {
+    //     narration.stop();
+    //     triggers.setBlockActiveTrigger(false);
+    //     narration.clear();
+    // },
 
     addTransition:function(texture, displayTime = 10, fadeIn = 1, fadeOut = 1)
     {        
@@ -1271,7 +1485,12 @@ var game = {
         if(singleplayer.currentLevel == maps.singleplayer.length)
             singleplayer.currentLevel = 0;
 
+        console.log("single currentLeveL: " + singleplayer.currentLevel + ", maps.singleplayer.length: " + maps.singleplayer.length);
+
         this.level = maps.singleplayer[singleplayer.currentLevel];
+
+        console.log(this.level);
+        background.init();
         renderer.setCamera();
         renderer.level();
     },
@@ -1283,12 +1502,10 @@ var game = {
         game.inGame = false;
         game.currentTerrainMapPassableGrid = undefined;
 
-        economy.reset();
+        // triggers.clearAll();
 
-        triggers.clearAll();
-
-        this.clearSelection();
-        this.clearDialogue();
+        // this.clearSelection();
+        // this.clearDialogue();
         
         if(game.level.ai)
             ai.end();
