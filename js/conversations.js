@@ -46,6 +46,7 @@ var conversations =
         const message = {
             id: conversationUid,
             type: "conversation",
+            role:"dumb",
             sendTo: "smart",
             code:game.player.id,
             clock:clock.day,
@@ -113,7 +114,7 @@ var conversations =
 
         if(message)
         {
-            renderer.displayConversationText(true);
+            renderer.showConversationText(true);
             renderer.addConversationText(message);
         }
     },

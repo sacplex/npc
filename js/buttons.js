@@ -8,6 +8,48 @@ var buttons =
             frames:1,
             visible:0
         },
+        "start":
+		{
+            name:"start",
+            frames:1,
+            visible:0
+        },
+        "first_survey":
+		{
+            name:"first_survey",
+            frames:1,
+            visible:0
+        },
+        "return_survey":
+		{
+            name:"return_survey",
+            frames:1,
+            visible:0
+        },
+        "last_survey":
+		{
+            name:"last_survey",
+            frames:1,
+            visible:0
+        },
+        "first_survey_qr":
+		{
+            name:"first_survey_qr",
+            frames:1,
+            visible:0
+        },
+        "return_survey_qr":
+		{
+            name:"return_survey_qr",
+            frames:1,
+            visible:0
+        },
+        "last_survey_qr":
+		{
+            name:"last_survey_qr",
+            frames:1,
+            visible:0
+        },
         "rent":
         {
             name:"rent",
@@ -15,23 +57,23 @@ var buttons =
             visible:0,
             cost:40
         },
-        "heat_aircon":
+        "aircon_heating":
         {
-            name:"heat_aircon",
+            name:"aircon_heating",
             frames:2,
             visible:0,
             cost:10
         },
-        "food_noodles":
+        "food":
         {
-            name:"food_noodles",
+            name:"food",
             frames:2,
             visible:0,
             cost:5
         },
-        "social_friends":
+        "social":
         {
-            name:"social_friends",
+            name:"social",
             frames:2,
             visible:0,
             cost:15

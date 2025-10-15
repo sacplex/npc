@@ -216,6 +216,11 @@ function distanceBetweenTwoPoints(startX, startY, endX, endY)
 	return Math.sqrt(x * x + y * y);
 }
 
+function findDistanceToItem(player, item)
+{
+	return distance(player.x, player.y, item.x, item.y);
+}
+
 function findDistanceToLecturer(player, teacher)
 {
 	return distance(player.x, player.y, teacher.x, teacher.y);

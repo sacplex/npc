@@ -622,7 +622,7 @@ var students =
 						y: randomY
 					};
 
-					renderer.displayConversationText(false);
+					renderer.showConversationText(false);
 					console.log(`Unit ${this.uid} issued search order to (${randomX}, ${randomY}), orders.type (${this.orders.type})`);
 					return;
 				}
@@ -1175,8 +1175,6 @@ var students =
 			{
 				this.drawSelection();
 				this.drawLifeBar();
-				this.drawPath();
-				this.drawDebugPath();
 			}
 		},
         

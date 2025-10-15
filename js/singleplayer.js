@@ -24,10 +24,7 @@ var singleplayer =
         if(obstruction.singleplayer[this.currentLevel])
         {
             singleplayer.generateCurrentMapGrid(
-                obstruction.singleplayer[this.currentLevel].mapTable,
-                obstruction.singleplayer[this.currentLevel].mapObstructedTerrain,
-                obstruction.singleplayer[this.currentLevel].mapObstructedIsle,
-                obstruction.singleplayer[this.currentLevel].mapLookup);
+                obstruction.singleplayer[this.currentLevel].mapObstructedTerrain);
         }
         else
         {
@@ -75,12 +72,9 @@ var singleplayer =
 		game.processCommand(uids,orders);
     },  
     
-    generateCurrentMapGrid:function(mapTable, mapObstructedTerrain, mapObstructedIsle, mapLookup)
+    generateCurrentMapGrid:function(mapObstructedTerrain)
     {
-        game.mapTable = mapTable;
         game.currentMapTerrainGrid = [];
-        game.currentMapIsleGrid = [];
-        game.currentTerrainMapLookupTable = [];
 
         if(!game.level.mapGridWidth)
             game.level.mapGridWidth = game.level.backgroundWidth / game.gridSize;
@@ -90,11 +84,9 @@ var singleplayer =
 
         for (var y=0; y < game.level.mapGridHeight; y++)
         {
-            game.currentMapIsleGrid[y] = [];
             game.currentMapTerrainGrid[y] = [];
-            game.currentTerrainMapLookupTable[y] = [];
         }
 
-        game.fillGridWithFullTiles(mapObstructedTerrain, mapObstructedIsle, mapLookup);
+        game.fillGridWithFullTiles(mapObstructedTerrain);
     },
 }

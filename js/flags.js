@@ -26,10 +26,11 @@ var flags =
     FOG_E:8,
     FOG_S:9,
 
-    PAN_LEFT:0,
-    PAN_RIGHT:1,
-    PAN_UP:2,
-    PAN_DOWN:3,
+    PAN_NONE:0,
+    PAN_LEFT:1,
+    PAN_RIGHT:2,
+    PAN_UP:3,
+    PAN_DOWN:4,
 
     GAME_OVER:false,
 

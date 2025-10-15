@@ -2,6 +2,56 @@ var maps =
 {
     "singleplayer":[
     {
+        "name":"instructions",
+        "mapImages":"images/maps/instructions/",       
+        "numberOfHorizontalTiles":3,
+        "numberOfVerticalTiles":3,
+        "backgroundWidth":1920,
+        "backgroundHeight":1080,
+        "startX":0,
+        "startY":0,
+        "mapGridWidth":96,
+        "mapGridHeight":54,
+        "additional_requirements":[
+        ],
+        "items": [
+
+        ],
+        "lights" : [
+            // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
+        ],
+        "thresholds":[
+            //{"type":"thresholds","name":"auto_door","x":117,"y":53,"direction":0,"uid":-151}
+        ],
+        // "text":[
+        //     {"type":"text", "name":"pay", "x":900, "y":100}
+        // ],
+        "clock":
+        {
+            //"timer":180
+            "timer":9999999999
+        },
+        "buttons":[
+            {"type":"buttons", "name":"start", "x":900, "y":1020, "action":()=>{
+                renderer.clock.reset();
+                game.endLevel();
+                game.nextLevel();
+                //economy.send();
+            }},
+        ],    
+        "triggers" : [
+        {
+            "type":"conditional",
+            "condition":() => {
+                return false;
+            },     
+            "action":() => {
+
+            } 
+        }
+        ]
+    }, 
+    {
         "name":"university",
         "mode":"learning",
         "mapImages":"images/maps/university/",
@@ -12,14 +62,17 @@ var maps =
         "backgroundHeight":4800,
         // "startX":80,
         // "startY":80,
-        "startX":180,
-        "startY":50,
+        //"startX":180,
+        //"startY":50,
+        "startX":40,
+        "startY":40,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
         ],
         "items": [
-            {"type":"player","name":"player","x":240,"y":70,"direction":0,"team":"characters","uid":-1},
+            {"type":"player","name":"player","x":80,"y":70,"direction":0,"team":"characters","uid":-1},
+            // {"type":"player","name":"player","x":240,"y":70,"direction":0,"team":"characters","uid":-1},
             // {"type":"player","name":"player","x":120,"y":120,"direction":0,"team":"characters","uid":-1},
             {"type":"teachers","name":"lecturer","x":103,"y":56,"direction":0,"team":"characters","uid":-2},
             {"type":"teachers","name":"librarian","x":240,"y":58,"direction":0,"team":"characters","uid":-3},
@@ -47,131 +100,131 @@ var maps =
             {"name":"textbook","x":85,"y":35},
         ],
         "props" : [
-            {"type":"classroom","name":"blue_desk","x":240,"y":170},
-            {"type":"classroom","name":"red_desk","x":250,"y":175},
-            {"type":"classroom","name":"green_desk","x":235,"y":180},
-            {"type":"library","name":"bookshelf","x":230,"y":80},
-            {"type":"library","name":"bookshelf","x":230,"y":66},
-            {"type":"library","name":"bookshelf_2","x":260,"y":66},
-            {"type":"hall","name":"chair","x":60,"y":60},
-            {"type":"hall","name":"chair","x":62,"y":60},
-            {"type":"hall","name":"chair","x":64,"y":60},
-            {"type":"hall","name":"chair","x":66,"y":60},
-            {"type":"hall","name":"chair","x":68,"y":60},
-            {"type":"hall","name":"chair","x":70,"y":60},
-            {"type":"hall","name":"chair","x":72,"y":60},
-            {"type":"hall","name":"chair","x":74,"y":60},
-            {"type":"hall","name":"chair","x":76,"y":60},
-            {"type":"hall","name":"chair","x":80,"y":60},
-            {"type":"hall","name":"chair","x":82,"y":60},
-            {"type":"hall","name":"chair","x":84,"y":60},
-            {"type":"hall","name":"chair","x":88,"y":60},
-            {"type":"hall","name":"chair","x":90,"y":60},
-            {"type":"hall","name":"chair","x":92,"y":60},
-            {"type":"hall","name":"chair","x":94,"y":60},
-            {"type":"hall","name":"chair","x":96,"y":60},
-            {"type":"hall","name":"chair","x":98,"y":60},
-            {"type":"hall","name":"chair","x":100,"y":60},
+            // {"type":"classroom","name":"blue_desk","x":240,"y":170},
+            // {"type":"classroom","name":"red_desk","x":250,"y":175},
+            // {"type":"classroom","name":"green_desk","x":235,"y":180},
+            // {"type":"library","name":"bookshelf","x":230,"y":80},
+            // {"type":"library","name":"bookshelf","x":230,"y":66},
+            // {"type":"library","name":"bookshelf_2","x":260,"y":66},
+            // {"type":"hall","name":"chair","x":60,"y":60},
+            // {"type":"hall","name":"chair","x":62,"y":60},
+            // {"type":"hall","name":"chair","x":64,"y":60},
+            // {"type":"hall","name":"chair","x":66,"y":60},
+            // {"type":"hall","name":"chair","x":68,"y":60},
+            // {"type":"hall","name":"chair","x":70,"y":60},
+            // {"type":"hall","name":"chair","x":72,"y":60},
+            // {"type":"hall","name":"chair","x":74,"y":60},
+            // {"type":"hall","name":"chair","x":76,"y":60},
+            // {"type":"hall","name":"chair","x":80,"y":60},
+            // {"type":"hall","name":"chair","x":82,"y":60},
+            // {"type":"hall","name":"chair","x":84,"y":60},
+            // {"type":"hall","name":"chair","x":88,"y":60},
+            // {"type":"hall","name":"chair","x":90,"y":60},
+            // {"type":"hall","name":"chair","x":92,"y":60},
+            // {"type":"hall","name":"chair","x":94,"y":60},
+            // {"type":"hall","name":"chair","x":96,"y":60},
+            // {"type":"hall","name":"chair","x":98,"y":60},
+            // {"type":"hall","name":"chair","x":100,"y":60},
 
-            {"type":"hall","name":"chair","x":60,"y":63},
-            {"type":"hall","name":"chair","x":62,"y":63},
-            {"type":"hall","name":"chair","x":64,"y":63},
-            {"type":"hall","name":"chair","x":66,"y":63},
-            {"type":"hall","name":"chair","x":68,"y":63},
-            {"type":"hall","name":"chair","x":70,"y":63},
-            {"type":"hall","name":"chair","x":72,"y":63},
-            {"type":"hall","name":"chair","x":74,"y":63},
-            {"type":"hall","name":"chair","x":76,"y":63},
-            {"type":"hall","name":"chair","x":80,"y":63},
-            {"type":"hall","name":"chair","x":82,"y":63},
-            {"type":"hall","name":"chair","x":84,"y":63},
-            {"type":"hall","name":"chair","x":88,"y":63},
-            {"type":"hall","name":"chair","x":90,"y":63},
-            {"type":"hall","name":"chair","x":92,"y":63},
-            {"type":"hall","name":"chair","x":94,"y":63},
-            {"type":"hall","name":"chair","x":96,"y":63},
-            {"type":"hall","name":"chair","x":98,"y":63},
-            {"type":"hall","name":"chair","x":100,"y":63},
+            // {"type":"hall","name":"chair","x":60,"y":63},
+            // {"type":"hall","name":"chair","x":62,"y":63},
+            // {"type":"hall","name":"chair","x":64,"y":63},
+            // {"type":"hall","name":"chair","x":66,"y":63},
+            // {"type":"hall","name":"chair","x":68,"y":63},
+            // {"type":"hall","name":"chair","x":70,"y":63},
+            // {"type":"hall","name":"chair","x":72,"y":63},
+            // {"type":"hall","name":"chair","x":74,"y":63},
+            // {"type":"hall","name":"chair","x":76,"y":63},
+            // {"type":"hall","name":"chair","x":80,"y":63},
+            // {"type":"hall","name":"chair","x":82,"y":63},
+            // {"type":"hall","name":"chair","x":84,"y":63},
+            // {"type":"hall","name":"chair","x":88,"y":63},
+            // {"type":"hall","name":"chair","x":90,"y":63},
+            // {"type":"hall","name":"chair","x":92,"y":63},
+            // {"type":"hall","name":"chair","x":94,"y":63},
+            // {"type":"hall","name":"chair","x":96,"y":63},
+            // {"type":"hall","name":"chair","x":98,"y":63},
+            // {"type":"hall","name":"chair","x":100,"y":63},
 
-            {"type":"hall","name":"chair","x":60,"y":66},
-            {"type":"hall","name":"chair","x":62,"y":66},
-            {"type":"hall","name":"chair","x":64,"y":66},
-            {"type":"hall","name":"chair","x":66,"y":66},
-            {"type":"hall","name":"chair","x":68,"y":66},
-            {"type":"hall","name":"chair","x":70,"y":66},
-            {"type":"hall","name":"chair","x":72,"y":66},
-            {"type":"hall","name":"chair","x":74,"y":66},
-            {"type":"hall","name":"chair","x":76,"y":66},
-            {"type":"hall","name":"chair","x":80,"y":66},
-            {"type":"hall","name":"chair","x":82,"y":66},
-            {"type":"hall","name":"chair","x":84,"y":66},
-            {"type":"hall","name":"chair","x":88,"y":66},
-            {"type":"hall","name":"chair","x":90,"y":66},
-            {"type":"hall","name":"chair","x":92,"y":66},
-            {"type":"hall","name":"chair","x":94,"y":66},
-            {"type":"hall","name":"chair","x":96,"y":66},
-            {"type":"hall","name":"chair","x":98,"y":66},
-            {"type":"hall","name":"chair","x":100,"y":66},
+            // {"type":"hall","name":"chair","x":60,"y":66},
+            // {"type":"hall","name":"chair","x":62,"y":66},
+            // {"type":"hall","name":"chair","x":64,"y":66},
+            // {"type":"hall","name":"chair","x":66,"y":66},
+            // {"type":"hall","name":"chair","x":68,"y":66},
+            // {"type":"hall","name":"chair","x":70,"y":66},
+            // {"type":"hall","name":"chair","x":72,"y":66},
+            // {"type":"hall","name":"chair","x":74,"y":66},
+            // {"type":"hall","name":"chair","x":76,"y":66},
+            // {"type":"hall","name":"chair","x":80,"y":66},
+            // {"type":"hall","name":"chair","x":82,"y":66},
+            // {"type":"hall","name":"chair","x":84,"y":66},
+            // {"type":"hall","name":"chair","x":88,"y":66},
+            // {"type":"hall","name":"chair","x":90,"y":66},
+            // {"type":"hall","name":"chair","x":92,"y":66},
+            // {"type":"hall","name":"chair","x":94,"y":66},
+            // {"type":"hall","name":"chair","x":96,"y":66},
+            // {"type":"hall","name":"chair","x":98,"y":66},
+            // {"type":"hall","name":"chair","x":100,"y":66},
 
-            {"type":"hall","name":"chair","x":60,"y":72},
-            {"type":"hall","name":"chair","x":62,"y":72},
-            {"type":"hall","name":"chair","x":64,"y":72},
-            {"type":"hall","name":"chair","x":66,"y":72},
-            {"type":"hall","name":"chair","x":68,"y":72},
-            {"type":"hall","name":"chair","x":70,"y":72},
-            {"type":"hall","name":"chair","x":72,"y":72},
-            {"type":"hall","name":"chair","x":74,"y":72},
-            {"type":"hall","name":"chair","x":76,"y":72},
-            {"type":"hall","name":"chair","x":80,"y":72},
-            {"type":"hall","name":"chair","x":82,"y":72},
-            {"type":"hall","name":"chair","x":84,"y":72},
-            {"type":"hall","name":"chair","x":88,"y":72},
-            {"type":"hall","name":"chair","x":90,"y":72},
-            {"type":"hall","name":"chair","x":92,"y":72},
-            {"type":"hall","name":"chair","x":94,"y":72},
-            {"type":"hall","name":"chair","x":96,"y":72},
-            {"type":"hall","name":"chair","x":98,"y":72},
-            {"type":"hall","name":"chair","x":100,"y":72},
+            // {"type":"hall","name":"chair","x":60,"y":72},
+            // {"type":"hall","name":"chair","x":62,"y":72},
+            // {"type":"hall","name":"chair","x":64,"y":72},
+            // {"type":"hall","name":"chair","x":66,"y":72},
+            // {"type":"hall","name":"chair","x":68,"y":72},
+            // {"type":"hall","name":"chair","x":70,"y":72},
+            // {"type":"hall","name":"chair","x":72,"y":72},
+            // {"type":"hall","name":"chair","x":74,"y":72},
+            // {"type":"hall","name":"chair","x":76,"y":72},
+            // {"type":"hall","name":"chair","x":80,"y":72},
+            // {"type":"hall","name":"chair","x":82,"y":72},
+            // {"type":"hall","name":"chair","x":84,"y":72},
+            // {"type":"hall","name":"chair","x":88,"y":72},
+            // {"type":"hall","name":"chair","x":90,"y":72},
+            // {"type":"hall","name":"chair","x":92,"y":72},
+            // {"type":"hall","name":"chair","x":94,"y":72},
+            // {"type":"hall","name":"chair","x":96,"y":72},
+            // {"type":"hall","name":"chair","x":98,"y":72},
+            // {"type":"hall","name":"chair","x":100,"y":72},
 
-            {"type":"hall","name":"chair","x":60,"y":75},
-            {"type":"hall","name":"chair","x":62,"y":75},
-            {"type":"hall","name":"chair","x":64,"y":75},
-            {"type":"hall","name":"chair","x":66,"y":75},
-            {"type":"hall","name":"chair","x":68,"y":75},
-            {"type":"hall","name":"chair","x":70,"y":75},
-            {"type":"hall","name":"chair","x":72,"y":75},
-            {"type":"hall","name":"chair","x":74,"y":75},
-            {"type":"hall","name":"chair","x":76,"y":75},
-            {"type":"hall","name":"chair","x":80,"y":75},
-            {"type":"hall","name":"chair","x":82,"y":75},
-            {"type":"hall","name":"chair","x":84,"y":75},
-            {"type":"hall","name":"chair","x":88,"y":75},
-            {"type":"hall","name":"chair","x":90,"y":75},
-            {"type":"hall","name":"chair","x":92,"y":75},
-            {"type":"hall","name":"chair","x":94,"y":75},
-            {"type":"hall","name":"chair","x":96,"y":75},
-            {"type":"hall","name":"chair","x":98,"y":75},
-            {"type":"hall","name":"chair","x":100,"y":75},
+            // {"type":"hall","name":"chair","x":60,"y":75},
+            // {"type":"hall","name":"chair","x":62,"y":75},
+            // {"type":"hall","name":"chair","x":64,"y":75},
+            // {"type":"hall","name":"chair","x":66,"y":75},
+            // {"type":"hall","name":"chair","x":68,"y":75},
+            // {"type":"hall","name":"chair","x":70,"y":75},
+            // {"type":"hall","name":"chair","x":72,"y":75},
+            // {"type":"hall","name":"chair","x":74,"y":75},
+            // {"type":"hall","name":"chair","x":76,"y":75},
+            // {"type":"hall","name":"chair","x":80,"y":75},
+            // {"type":"hall","name":"chair","x":82,"y":75},
+            // {"type":"hall","name":"chair","x":84,"y":75},
+            // {"type":"hall","name":"chair","x":88,"y":75},
+            // {"type":"hall","name":"chair","x":90,"y":75},
+            // {"type":"hall","name":"chair","x":92,"y":75},
+            // {"type":"hall","name":"chair","x":94,"y":75},
+            // {"type":"hall","name":"chair","x":96,"y":75},
+            // {"type":"hall","name":"chair","x":98,"y":75},
+            // {"type":"hall","name":"chair","x":100,"y":75},
 
-            {"type":"hall","name":"chair","x":60,"y":81},
-            {"type":"hall","name":"chair","x":62,"y":81},
-            {"type":"hall","name":"chair","x":64,"y":81},
-            {"type":"hall","name":"chair","x":66,"y":81},
-            {"type":"hall","name":"chair","x":68,"y":81},
-            {"type":"hall","name":"chair","x":70,"y":81},
-            {"type":"hall","name":"chair","x":72,"y":81},
-            {"type":"hall","name":"chair","x":74,"y":81},
-            {"type":"hall","name":"chair","x":76,"y":81},
-            {"type":"hall","name":"chair","x":80,"y":81},
-            {"type":"hall","name":"chair","x":82,"y":81},
-            {"type":"hall","name":"chair","x":84,"y":81},
-            {"type":"hall","name":"chair","x":88,"y":81},
-            {"type":"hall","name":"chair","x":90,"y":81},
-            {"type":"hall","name":"chair","x":92,"y":81},
-            {"type":"hall","name":"chair","x":94,"y":81},
-            {"type":"hall","name":"chair","x":96,"y":81},
-            {"type":"hall","name":"chair","x":98,"y":81},
-            {"type":"hall","name":"chair","x":100,"y":81},
+            // {"type":"hall","name":"chair","x":60,"y":81},
+            // {"type":"hall","name":"chair","x":62,"y":81},
+            // {"type":"hall","name":"chair","x":64,"y":81},
+            // {"type":"hall","name":"chair","x":66,"y":81},
+            // {"type":"hall","name":"chair","x":68,"y":81},
+            // {"type":"hall","name":"chair","x":70,"y":81},
+            // {"type":"hall","name":"chair","x":72,"y":81},
+            // {"type":"hall","name":"chair","x":74,"y":81},
+            // {"type":"hall","name":"chair","x":76,"y":81},
+            // {"type":"hall","name":"chair","x":80,"y":81},
+            // {"type":"hall","name":"chair","x":82,"y":81},
+            // {"type":"hall","name":"chair","x":84,"y":81},
+            // {"type":"hall","name":"chair","x":88,"y":81},
+            // {"type":"hall","name":"chair","x":90,"y":81},
+            // {"type":"hall","name":"chair","x":92,"y":81},
+            // {"type":"hall","name":"chair","x":94,"y":81},
+            // {"type":"hall","name":"chair","x":96,"y":81},
+            // {"type":"hall","name":"chair","x":98,"y":81},
+            // {"type":"hall","name":"chair","x":100,"y":81},
         ],
         "lights" : [
             // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
@@ -181,9 +234,8 @@ var maps =
         ],
         "clock":
         {
-            //"timer":180            
-            "timer":10
-            //timer:120
+            //"timer":180
+            "timer":2
         },
         "triggers" : [
         {
@@ -232,8 +284,8 @@ var maps =
         ],
         "clock":
         {
-            "timer":300
             //"timer":180
+            "timer":30
         },
         
         "triggers" : [
@@ -289,25 +341,28 @@ var maps =
         ],
         "buttons":[
             {"type":"buttons", "name":"confirm", "x":900, "y":900, "action":()=>{
+                renderer.clock.reset();
+                game.endLevel();
+                game.nextLevel();
                 economy.send();
             }},
             {"type":"buttons", "name":"rent", "text":"Rent", "x":1100, "y":300, "action":()=>{
                 renderer.toggleButton("rent");
                 economy.toggle("rent");
             }},
-            {"type":"buttons", "name":"heat_aircon", "text":"Heat/Aircon", "x":1100, "y":400, "action":()=>{
-                renderer.toggleButton("heat_aircon");
-                economy.toggle("heat_aircon");
+            {"type":"buttons", "name":"aircon_heating", "text":"Heat/Aircon", "x":1100, "y":400, "action":()=>{
+                renderer.toggleButton("aircon_heating");
+                economy.toggle("aircon_heating");
             }},
-            {"type":"buttons", "name":"food_noodles", "text":"Eat Noodles", "x":1100, "y":500, "action":()=>{
-                renderer.toggleButton("food_noodles");
-                economy.toggle("food_noodles");
+            {"type":"buttons", "name":"food", "text":"Eat", "x":1100, "y":500, "action":()=>{
+                renderer.toggleButton("food");
+                economy.toggle("food");
             }},
-            {"type":"buttons", "name":"social_friends", "text":"Socialise with Friends", "x":1100, "y":600, "action":()=>{
+            {"type":"buttons", "name":"social", "text":"Socialise", "x":1100, "y":600, "action":()=>{
                 renderer.toggleButton("social_friends");
                 economy.toggle("social_friends");
             }},
-            {"type":"buttons", "name":"family", "text":"Give money to family", "x":1100, "y":700, "action":()=>{
+            {"type":"buttons", "name":"family", "text":"Family Support", "x":1100, "y":700, "action":()=>{
                 renderer.toggleButton("family");
                 economy.toggle("family");
             }}
@@ -323,5 +378,56 @@ var maps =
 		    } 
         }
         ]
-    },      
+    }, 
+    {
+        "name":"survey",
+        "mapImages":"images/maps/survey/",       
+        "numberOfHorizontalTiles":3,
+        "numberOfVerticalTiles":3,
+        "backgroundWidth":1920,
+        "backgroundHeight":1080,
+        "startX":0,
+        "startY":0,
+        "mapGridWidth":96,
+        "mapGridHeight":54,
+        "additional_requirements":[
+        ],
+        "items": [
+
+        ],
+        "lights" : [
+            // {"type":"lights","name":"temporary_post","x":21,"y":95,"on":true,"uid":-282},
+        ],
+        "thresholds":[
+            //{"type":"thresholds","name":"auto_door","x":117,"y":53,"direction":0,"uid":-151}
+        ],
+        // "text":[
+        //     {"type":"text", "name":"pay", "x":900, "y":100}
+        // ],
+        "buttons":[
+            {"type":"buttons", "name":"first_survey", "x":900, "y":550, "action":()=>{
+                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_cx7YYDMo3zBF5Nc", "_blank")
+            }},
+            {"type":"buttons", "name":"first_survey_qr", "x":900, "y":600},
+            {"type":"buttons", "name":"return_survey", "x":600, "y":550, "action":()=>{
+                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_6QXm5X7OtB01You", "_blank")
+            }},
+            {"type":"buttons", "name":"return_survey_qr", "x":600, "y":600},
+            {"type":"buttons", "name":"last_survey", "x":1200, "y":550, "action":()=>{
+                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_eFZzdAMiQYWY74y", "_blank")
+            }},
+            {"type":"buttons", "name":"last_survey_qr", "x":1200, "y":600},
+        ],    
+        "triggers" : [
+        {
+            "type":"conditional",
+            "condition":() => {
+                return false;
+            },     
+		    "action":() => {
+
+		    } 
+        }
+        ]
+    },     
 ]}

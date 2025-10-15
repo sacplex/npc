@@ -19,12 +19,6 @@ var clock =
         return this.timer <= 0;
     },
 
-    nextDay: function()
-    {
-        this.timer = 0;
-        this.day++;
-    },
-
     reset:function()
     {
         this.timer = 300;

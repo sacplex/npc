@@ -41,6 +41,7 @@ var game = {
     offsetYIndex:0,
     removalCount:0,
     removalLimit:5,
+    runSpeed:2,
     gridSize:20,
     bigNumber:99999999,
     animationTimeout:100,
@@ -50,8 +51,11 @@ var game = {
     turnSpeedAdjustmentFactor:1/8,
     turnSlowSpeedAdjustmentFactor:1/32,
     turnSlowestSpeedAdjustmentFactor:1/64,
-    panningThreshold:12, // Distance from edge of canvas at which panning starts
+    distenceThreshold:30,
+    panningThreshold:40, // Distance from edge of canvas at which panning starts
     panningSpeed:10, // Pixels to pan every drawing loop
+    panX:0,
+    panY:0,
     panningTimeIndex:0,
 	panningTimeThreshold:16,
     lifeBarSmallHeight:12,
@@ -148,6 +152,7 @@ var game = {
         cells.init();    
         target.init();
         lookup.init();
+        console.log(economy);
         economy.init();
         sidebar.init();
         singleplayer.start(savedData);
@@ -155,6 +160,7 @@ var game = {
         fog.init();  
 
         mouse.init();
+        keyboard.init();
     },
 
     initMultiplayer:function()
@@ -285,6 +291,12 @@ var game = {
 
     handlePanning:function()
     {
+        this.panX = 0;
+        this.panY = 0;
+
+        if(renderer.dialogueContainer.visible == true)
+            return;
+
         if(mouse.velocity > 0.1)
             return;
 
@@ -295,21 +307,24 @@ var game = {
         if(mouse.y * productionInverseRatio < display.maininterface.mapImageYOffset)
             return;
 
-        if(mouse.x * productionInverseRatioX <=game.panningThreshold)
+        if(mouse.x * productionInverseRatioX <=game.panningThreshold || keyboard.pan == flags.PAN_LEFT)
         {
             this.handleLeftPanning();
         }
         else if ((mouse.x * productionInverseRatioX >= (productionWidth - game.panningThreshold) - display.maininterface.mapImageXOffset) &&
-                  (mouse.x * productionInverseRatioX <= (productionWidth - display.maininterface.mapImageXOffset)))
+                  (mouse.x * productionInverseRatioX <= (productionWidth - display.maininterface.mapImageXOffset)) ||
+                  keyboard.pan == flags.PAN_RIGHT)
         {
             this.handleRightPanning();			
 		}
 
-        if(mouse.y * productionInverseRatio <= game.panningThreshold + display.maininterface.mapImageYOffset)
+        if(mouse.y * productionInverseRatio <= game.panningThreshold + display.maininterface.mapImageYOffset ||
+            keyboard.pan == flags.PAN_UP)
         {               
             this.handleUpPanning();
         }
-        else if (mouse.y * productionInverseRatio >= (productionHeight + nearFullScreenHeight) - game.panningThreshold)
+        else if (mouse.y * productionInverseRatio >= (productionHeight + nearFullScreenHeight) - game.panningThreshold ||
+            keyboard.pan == flags.PAN_DOWN)
         {
             this.handleDownPanning();
         }
@@ -322,6 +337,8 @@ var game = {
             console.log("handle Left Panning");
             
             this.handleUpdate = true;
+
+            this.panX = -1;
 
             //background.moveLeftX();
             
@@ -408,6 +425,8 @@ var game = {
         if (game.offsetX + (productionWidth - display.maininterface.mapImageXOffset) + game.panningSpeed <= background.width/*24640*/)
         {
             this.handleUpdate = true;
+
+            this.panX = 1;
                     
             game.offsetX += game.panningSpeed;
             game.offsetXIndex = Math.floor(game.offsetX / game.gridSize);
@@ -496,6 +515,8 @@ var game = {
             this.handleUpdate = true;
             //background.moveUpY();
 
+            this.panY = -1;
+
             game.offsetY -= game.panningSpeed;
             game.offsetYIndex = Math.floor(game.offsetY / game.gridSize);
             renderer.backgroundContainer.y = renderer.backgroundContainer.y + game.panningSpeed;
@@ -576,9 +597,11 @@ var game = {
 
     handleDownPanning:function()
     {
-        if (game.offsetY + (productionHeight + nearFullScreenHeight - display.maininterface.mapImageYOffset) + game.panningSpeed <= background.height/*14000*/)
+        if (game.offsetY + (productionHeight) + game.panningSpeed <= background.height/*14000*/)
         {
             this.handleUpdate = true;
+
+            this.panY = 1;
 
             game.offsetY += game.panningSpeed;
             game.offsetYIndex = Math.floor(game.offsetY / game.gridSize);
@@ -712,7 +735,7 @@ var game = {
 
         window.onresize = resize
         function resize() 
-        {   
+        {
             screenWidth = screen.width * window.devicePixelRatio;
             screenHeight = screen.height * window.devicePixelRatio;
 
@@ -763,7 +786,8 @@ var game = {
                 const scaleFactorY = window.innerHeight / productionHeight;
 
                 //alert(window.innerWidth + " " + productionWidth + " " + window.innerHeight + " " + productionHeight)
-
+                // renderer.app.renderer.resolution = dpr;
+				renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
                 renderer.app.stage.scale.set(scaleFactorX, scaleFactorY);
             }
         }
@@ -771,6 +795,61 @@ var game = {
         tileWidthOffset = Math.ceil((screen.width - productionWidth) / game.gridSize);
         tileHeightOffset = Math.ceil((screen.height - productionHeight) / game.gridSize);
     },
+
+    // setFullScreen: function()
+    // {
+    //     document.body.requestFullscreen()
+    //     .then(() => {
+    //         display.splashscreen.windowedOffsetY = 0;
+    //         resize();
+    //     })
+    //     .catch((error) => {
+    //         console.error("Fullscreen failed:", error);
+    //     });
+
+    //     window.onresize = resize;
+
+    //     function resize()
+    //     {
+    //         const dpr = window.devicePixelRatio || 1;
+
+    //         // Always use CSS pixel dimensions for logic
+    //         const cssWidth = window.innerWidth;
+    //         const cssHeight = window.innerHeight;
+
+    //         // Production ratios are based on design (logical space)
+    //         productionRatioX = cssWidth / productionWidth;
+    //         productionRatio = cssHeight / productionHeight;
+
+    //         // Inverse (for mapping back)
+    //         productionInverseRatioX = productionWidth / cssWidth;
+    //         productionInverseRatio = productionHeight / cssHeight;
+
+    //         // Renderer should be told both CSS and DPR
+    //         //renderer.app.renderer.resolution = dpr;
+    //         renderer.app.renderer.resize(cssWidth, cssHeight);
+    //         renderer.app.stage.scale.set(productionRatioX, productionRatio);
+
+    //         // Offsets
+    //         canvasWidthOffset = cssWidth - canvasWidth;
+    //         canvasHeightOffset = cssHeight - canvasHeight;
+
+    //         tileWidthOffset = Math.ceil((cssWidth - productionWidth) / game.gridSize);
+    //         tileHeightOffset = Math.ceil((cssHeight - productionHeight) / game.gridSize);
+
+    //         // Keep fullscreen state synced
+    //         game.isFullScreen = document.fullscreenElement != null;
+    //         nearFullScreenHeight = 0;
+
+    //         if(debug.scale)
+    //         {
+    //             console.log("Scale", productionRatioX, productionRatio, "DPR:", dpr);
+    //         }
+    //     }
+
+    //     // Run once immediately
+    //     resize();
+    // },
 
     sortForInfantryFirst:function(uids,orders)
     {
@@ -1064,146 +1143,69 @@ var game = {
     buildPassableGrid:function()
 	{
         game.currentTerrainMapPassableGrid = [];
-        game.currentIsleMapPassableGrid = [];
-        game.currentFogGrid = [];
 
-        if(!game.currentMapIsleGrid)
-        {   
-            // alert()
-            // for (var y=0; y < game.level.mapGridHeight; y++)
-            // {
-            //     game.currentTerrainMapPassableGrid[y] = [];
-            //     game.currentFogGrid[y] = [];
-    
-            //     for (var x=0; x< game.level.mapGridWidth; x++)
-            //     {
-            //         if(game.currentMapTerrainGrid[y][x] == 1)
-            //             game.currentTerrainMapPassableGrid[y][x] = flags.CELL_COLLISION_MODE_FULL;
-            //         else
-            //             game.currentTerrainMapPassableGrid[y][x] = flags.CELL_COLLISION_MODE_OFF;
-
-            //         game.currentFogGrid[y][x] = flags.FOG_X;     
-            //     }
-            // }
-    
-            // for (var i = 0; i < game.items.length; i++)
-            // {
-            //     var item = game.items[i];
-                
-            //     if(item.type == "buildings" || item.type == "turrets")
-            //     {
-            //         for (var y = 0; y < item.passableGrid.length; y++)
-            //         {
-            //             for (var x = 0; x < item.passableGrid[y].length; x++)
-            //             {
-            //                 if(item.passableGrid[y][x])
-            //                 {
-            //                     console.log(item.y + " " + item.x);
-            //                     game.currentMapTerrainGrid[item.y][item.x] = flags.CELL_COLLISION_MODE_HARD;
-
-            //                     game.currentTerrainMapPassableGrid[item.y][item.x] = flags.CELL_COLLISION_MODE_HARD;
-            //                 }
-            //             }
-            //         }
-            //     }
-            //     else if(item.type == "infantry")
-            //     {
-            //         // Mark all squares under or near the vehicle or infantry as blocked
-            //         cells.add(
-            //             item.uid, item.x, item.y, item.radius / game.gridSize,
-            //             game.currentTerrainMapPassableGrid,
-            //             flags.CELL_COLLISION_MODE_SOFT);
-            //     }
-            //     else if(item.type == "vehicles")
-            //     {
-            //         // Mark all squares under or near the vehicle or infantry as blocked
-            //         cells.add(
-            //             item.uid, item.x, item.y, item.radius / game.gridSize,
-            //             game.currentTerrainMapPassableGrid,
-            //             flags.CELL_COLLISION_MODE_MEDIUM);
-            //     }
-            // }
-        }
-        else
+        for (var y=0; y < game.level.mapGridHeight; y++)
         {
-            for (var y=0; y < game.level.mapGridHeight; y++)
+            game.currentTerrainMapPassableGrid[y] = [];
+
+            for (var x=0; x< game.level.mapGridWidth; x++)
             {
-                game.currentTerrainMapPassableGrid[y] = [];
-                game.currentIsleMapPassableGrid[y] = [];
-                game.currentFogGrid[y] = [];
-    
-                for (var x=0; x< game.level.mapGridWidth; x++)
+                if(game.currentMapTerrainGrid[y][x] == 1)
                 {
-                    if(game.currentMapTerrainGrid[y][x] == 1)
-                    {
-                        game.currentTerrainMapPassableGrid[y][x] = flags.CELL_COLLISION_MODE_FULL;
-                    }                        
-                    else
-                    {
-                        game.currentTerrainMapPassableGrid[y][x] = 0;
-                    }
-                    
-                    if(game.currentMapIsleGrid[y][x] == 1)
-                    {
-                        game.currentIsleMapPassableGrid[y][x] = flags.CELL_COLLISION_MODE_MEDIUM;
-                    }                        
-                    else
-                    {
-                        game.currentIsleMapPassableGrid[y][x] = 0;
-                    }
-                    
-                    game.currentFogGrid[y][x] = flags.FOG_X;
+                    game.currentTerrainMapPassableGrid[y][x] = flags.CELL_COLLISION_MODE_FULL;
+                }                        
+                else
+                {
+                    game.currentTerrainMapPassableGrid[y][x] = 0;
                 }
             }
-    
-            for (var i = 0; i < game.items.length; i++)
-            {
-                var item = game.items[i];
-                
-                if(item.type == "buildings" || item.type == "turrets")
-                {
-                    for (var y = 0; y < item.passableGrid.length; y++)
-                    {
-                        for (var x = 0; x < item.passableGrid[y].length; x++)
-                        {
-                            if(item.passableGrid[y][x])
-                            {
-                                var gridY = Math.floor(item.y - item.passableGrid.length / 2)+y;
-                                var gridX = Math.round(item.x - item.passableGrid[y].length / 2)+x;
-
-                                game.currentMapTerrainGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
-
-                                game.currentTerrainMapPassableGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
-
-                                // if(game.currentMapIsleGrid.length != 0)
-                                //     game.currentMapIsleGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
-                                
-                                // if(game.currentIsleMapPassableGrid.length != 0)
-                                //     game.currentIsleMapPassableGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
-                            }
-                        }
-                    }
-                }
-                else if(item.type == "infantry")
-                {
-                    // Mark all squares under or near the vehicle or infantry as blocked
-                    cells.add(
-                        item.uid, item.x, item.y, item.radius / game.gridSize,
-                        game.currentTerrainMapPassableGrid,
-                        flags.CELL_COLLISION_MODE_SOFT);
-                }
-                else if(item.type == "vehicles")
-                {
-                    // Mark all squares under or near the vehicle or infantry as blocked
-                    cells.add(
-                        item.uid, item.x, item.y, item.radius / game.gridSize,
-                        game.currentTerrainMapPassableGrid,
-                        flags.CELL_COLLISION_MODE_MEDIUM);
-                }
-            }
-
-            nav.createWayPoints(game.currentIsleMapPassableGrid);
         }
+
+        // for (var i = 0; i < game.items.length; i++)
+        // {
+        //     var item = game.items[i];
+            
+        //     if(item.type == "buildings" || item.type == "turrets")
+        //     {
+        //         for (var y = 0; y < item.passableGrid.length; y++)
+        //         {
+        //             for (var x = 0; x < item.passableGrid[y].length; x++)
+        //             {
+        //                 if(item.passableGrid[y][x])
+        //                 {
+        //                     var gridY = Math.floor(item.y - item.passableGrid.length / 2)+y;
+        //                     var gridX = Math.round(item.x - item.passableGrid[y].length / 2)+x;
+
+        //                     game.currentMapTerrainGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
+
+        //                     game.currentTerrainMapPassableGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
+
+        //                     // if(game.currentMapIsleGrid.length != 0)
+        //                     //     game.currentMapIsleGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
+                            
+        //                     // if(game.currentIsleMapPassableGrid.length != 0)
+        //                     //     game.currentIsleMapPassableGrid[gridY][gridX] = flags.CELL_COLLISION_MODE_HARD;
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     else if(item.type == "infantry")
+        //     {
+        //         // Mark all squares under or near the vehicle or infantry as blocked
+        //         cells.add(
+        //             item.uid, item.x, item.y, item.radius / game.gridSize,
+        //             game.currentTerrainMapPassableGrid,
+        //             flags.CELL_COLLISION_MODE_SOFT);
+        //     }
+        //     else if(item.type == "vehicles")
+        //     {
+        //         // Mark all squares under or near the vehicle or infantry as blocked
+        //         cells.add(
+        //             item.uid, item.x, item.y, item.radius / game.gridSize,
+        //             game.currentTerrainMapPassableGrid,
+        //             flags.CELL_COLLISION_MODE_MEDIUM);
+        //     }
+        //}        
     },
 
     addBuildingToPassableGrid:function(item)
@@ -1288,11 +1290,9 @@ var game = {
         }
     },
 
-    fillGridWithFullTiles:function(mapObstructedTerrain, mapObstructedIsle, mapLookup)
+    fillGridWithFullTiles:function(mapObstructedTerrain)
     {
         this.setFullTileToGrid(mapObstructedTerrain, game.currentMapTerrainGrid);
-        this.setFullTileToGrid(mapObstructedIsle, game.currentMapIsleGrid);
-        this.setFullTileToGrid(mapLookup, game.currentTerrainMapLookupTable);
     },
 
     setFullTileToGrid:function(mapObstructed, currentMapGrid)
@@ -1489,15 +1489,33 @@ var game = {
 
         this.level = maps.singleplayer[singleplayer.currentLevel];
 
+        singleplayer.generateCurrentMapGrid(
+            obstruction.singleplayer[singleplayer.currentLevel].mapObstructedTerrain);
+
         console.log(this.level);
         background.init();
         renderer.setCamera();
         renderer.level();
+
+        renderer.showLecturerText(false);
+        renderer.showNarratorText(false);
     },
     
     endLevel:function()
     {
         console.log(debug.skipUI);
+
+        game.lecturer = undefined;
+        game.narrator = undefined;
+        game.tutor = undefined;
+        game.librarian = undefined;
+
+        renderer.addLecturerText("");
+        renderer.addNarratorText("");
+        
+        renderer.showConversationText(false);
+        renderer.clearConversationText();
+
         game.endTheLevel = false;
         game.inGame = false;
         game.currentTerrainMapPassableGrid = undefined;
@@ -1512,6 +1530,9 @@ var game = {
 
         renderer.removeAllItems();
         renderer.removeClock();
+        renderer.removeDay();
+        renderer.removeButtons();
+        renderer.removeText();
         renderer.removeTerrain();
         renderer.removeThreshold();
         renderer.removeLights();

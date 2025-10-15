@@ -45,6 +45,10 @@ const loadIcon = "url('images/cursor/load.png'),auto";
 const unloadIcon = "url('images/cursor/unload.png'),auto";
 const photoIcon = "url('images/cursor/photo.png'),auto";
 const soilIcon = "url('images/cursor/soil.png'),auto";
+const rightArrowIcon = "url('images/cursor/right-arrow.png'),auto";
+const leftArrowIcon = "url('images/cursor/left-arrow.png'),auto";
+const upArrowIcon = "url('images/cursor/up-arrow.png'),auto";
+const downArrowIcon = "url('images/cursor/down-arrow.png'),auto";
 
 const sidebarButtonStates = 4;
 
@@ -59,6 +63,7 @@ var renderer = {
     backgroundContainer:undefined,
     textContainer:undefined,
     buttonsContainer:undefined,
+    problemsContainer:undefined,
     slidesContainer:undefined,
     notesContainer:undefined,
     textbookContainer:undefined,
@@ -125,6 +130,7 @@ var renderer = {
     conversationMessages:[],
     conversationText:undefined,
     payText:undefined,
+    problemsText:undefined,
     lecturerText:undefined,
     narratorText:undefined,
     textbookLineCounter:0,
@@ -174,6 +180,7 @@ var renderer = {
     cncText:undefined,
     controllerIcon:undefined,
     controllerTextures:undefined,
+    theDay:1,
     itemVision:100,
     expandVision:1,
     zoom: 1,
@@ -265,6 +272,7 @@ var renderer = {
         this.backgroundContainer = new PIXI.Container();
         this.textContainer = new PIXI.Container();
         this.buttonsContainer = new PIXI.Container();
+        this.problemsContainer = new PIXI.Container();
         this.slidesContainer = new PIXI.Container();
         this.notesContainer = new PIXI.Container();
         this.textbookContainer = new PIXI.Container();
@@ -345,8 +353,8 @@ var renderer = {
         else
         {
             this.app = new PIXI.Application({
-                width: productionWidth, 
-                height: productionHeight,
+                width: productionWidth * window.devicePixelRatio, 
+                height: productionHeight * window.devicePixelRatio,
                 antialias: false,
                 backgroundColor: 0x000000,
                 backgroundAlpha: 1,
@@ -368,6 +376,7 @@ var renderer = {
             const scaleFactorX = window.innerWidth / productionWidth;
             const scaleFactorY = window.innerHeight / productionHeight;
 
+            this.app.renderer.resize(window.innerWidth, window.innerHeight);
             this.app.stage.scale.set(scaleFactorX, scaleFactorY);
         }
 
@@ -607,12 +616,12 @@ var renderer = {
         this.inputField.interactive = true;
         this.inputField.on('keydown', (keycode) => {
             if (keycode === 13) { // 13 is the keycode for Enter
-                //alert("send text to LLM: " + this.inputField.text)
                 //this.clearTextOutput();
                 this.gamecode = this.inputField.text;
 
                 client.sendMessage({
                     code:this.inputField.text,
+                    role:"dumb",
                     sendTo: "smart",
                     type:"login",
                     message:this.inputField.text
@@ -659,6 +668,7 @@ var renderer = {
             console.log(game.level);
             client.sendMessage({
                 id: game.player.networkUid,
+                role:"dumb",
                 sendTo: "smart",
                 type:"review",
                 code:game.player.id,
@@ -813,10 +823,12 @@ var renderer = {
             this.assignSidebar(this.buttonImages, game.level.sidebar);
             this.assignButtons(textures, game.level.buttons);
             this.assignText(game.level.text);
+            this.assignProblems(economy.problems);
             
             this.assignProps(textures, game.level.props);
             this.assignMaterials(textures, game.level.materials);
             this.assignCharacters(textures, this.imageNames);
+            this.assignDay();
             this.assignClock(game.level.clock);
             this.assignDialogue(textures);
             this.gameplayContainer.addChild(this.dialogueContainer); 
@@ -828,6 +840,61 @@ var renderer = {
             this.container.addChild(this.characterContainer);
 
             triggers.init();
+
+            if(game.level.name == "survey")
+            {
+                const gamecodeText = new PIXI.Text("Gamecode: ", {fill: 'red'});
+                gamecodeText.text = "Gamecode: " + this.gamecode;
+                gamecodeText.position.set(
+                    productionWidth / 2 - 100,
+                    450
+                );
+
+                this.textContainer.addChild(gamecodeText);
+                this.gameplayContainer.addChild(this.textContainer);
+
+                if(clock.day == 1)
+                {
+                    for(var i = 0; i < game.buttons.length; i++)
+                    {
+                        game.buttons[i].sprites[0].visible = false;
+
+                        if(game.buttons[i].name.startsWith("first_survey"))
+                        {
+                            game.buttons[i].sprites[0].visible = true;
+                        }
+                    } 
+                }
+                else if(clock.day > 1 && clock.day < 12)
+                {
+                    for(var i = 0; i < game.buttons.length; i++)
+                    {
+                        game.buttons[i].sprites[0].visible = false;
+
+                        if(game.buttons[i].name.startsWith("return_survey"))
+                        {
+                            game.buttons[i].sprites[0].visible = true;
+                        }
+
+                        if(game.buttons[i].name.startsWith("last_survey"))
+                        {
+                            game.buttons[i].sprites[0].visible = true;
+                        }
+                    } 
+                }
+                else if(clock.day == 12)
+                {
+                    for(var i = 0; i < game.buttons.length; i++)
+                    {
+                        game.buttons[i].sprites[0].visible = false;
+
+                        if(game.buttons[i].name.startsWith("last_survey"))
+                        {
+                            game.buttons[i].sprites[0].visible = true;
+                        }
+                    } 
+                }
+            }
 
             if(game.level.mode == "learning")
             {
@@ -854,7 +921,6 @@ var renderer = {
             PIXI.settings.ROUND_PIXELS = true;
 
             game.buildPassableGrid();
-
             
             this.app.stage.addChild(this.container);
             this.app.stage.addChild(this.selectionBoxContainer);
@@ -1639,9 +1705,14 @@ var renderer = {
         this.conversationText.anchor.set(0.5, 0);
     },
 
-    displayConversationText:function(visible)
+    showConversationText:function(visible)
     {
         this.conversationText.visible = visible;
+    },
+
+    clearConversationText:function()
+    {
+        this.conversationText.text = "";
     },
 
     addLecturerText:function(message)
@@ -1653,12 +1724,12 @@ var renderer = {
     {
         this.lecturerText = new PIXI.Text("", lecturerStyle);
         this.lecturerText.x = productionWidth / 2;
-        this.lecturerText.y = 35;
+        this.lecturerText.y = productionHeight - 100;
         this.lecturerText.visible = false;
         this.lecturerText.anchor.set(0.5, 0);
     },
 
-    displayLecturerText:function(visible)
+    showLecturerText:function(visible)
     {
         this.lecturerText.visible = visible;
     },
@@ -1677,7 +1748,7 @@ var renderer = {
         this.narratorText.anchor.set(0.5, 0);
     },
 
-    displayNarratorText:function(visible)
+    showNarratorText:function(visible)
     {
         this.narratorText.visible = visible;
     },
@@ -1771,7 +1842,6 @@ var renderer = {
         this.inputField.interactive = true;
         this.inputField.on('keydown', (keycode) => {
             if (keycode === 13) { // 13 is the keycode for Enter
-                //alert("send text to LLM: " + this.inputField.text)
                 this.clearTextOutput();
 
                 if(player.currentStudent)
@@ -1779,6 +1849,7 @@ var renderer = {
                     economy.set(player.currentStudent.name,1);
                     client.sendMessage({
                         id: game.player.networkUid,
+                        role:"dumb",
                         sendTo: "smart",
                         type:"talk",
                         code:game.player.id,
@@ -1792,6 +1863,7 @@ var renderer = {
                 {
                     client.sendMessage({
                         id: game.player.networkUid,
+                        role:"dumb",
                         sendTo: "smart",
                         type:"teacher",
                         code:game.player.id,
@@ -1828,6 +1900,8 @@ var renderer = {
                 player.currentStudent.state.talkingToTutor = false;
                 player.currentStudent.state.leaving = true;
 
+                this.clearTextOutput();
+
                 for(var i = 0; i < game.items.length; i++)
                 {
                     if(game.items[i].uid == player.currentStudent.uid)
@@ -1837,6 +1911,14 @@ var renderer = {
                 }
 
                 player.currentStudent = undefined;
+
+                client.sendMessage({
+                    id: game.player.networkUid,
+                    role:"dumb",
+                    sendTo: "smart",
+                    type:"leave",
+                    code:game.player.id,
+                });
             }
 
             this.hideDialogue();
@@ -2305,8 +2387,10 @@ var renderer = {
     sendDetailsToServer:function()
     {
         let message = {
+            role:"dumb",
             sendTo: "smart",
             type: "init",
+            code:this.gamecode,
             day: this.clock.day,
             names: [],
             personalities:[]
@@ -2322,7 +2406,20 @@ var renderer = {
         }
     
         console.log("Sending initialization message:", message);
+        
         client.sendMessage(message);
+    },
+
+    assignDay:function()
+    {   
+        this.day = {};
+
+        this.day.spriteText = new PIXI.Text("Day", clockStyle);
+        this.day.spriteText.x = 35;
+        this.day.spriteText.y = 35;
+        this.day.spriteText.text = "Day: " + (this.theDay);
+
+        this.gameplayContainer.addChild(this.day.spriteText);
     },
 
     assignClock:function(clockData)
@@ -2336,7 +2433,7 @@ var renderer = {
 
         this.clock.spriteText = new PIXI.Text("Clock", clockStyle);
         this.clock.spriteText.x = 35;
-        this.clock.spriteText.y = 35;
+        this.clock.spriteText.y = 65;
         this.clock.spriteText.text = "Clock: " + Math.floor(this.clock.timer);
 
         this.gameplayContainer.addChild(this.clock.spriteText);
@@ -3228,13 +3325,32 @@ var renderer = {
                         game.level.text[i].y
                     );
 
-                    console.log(game.level.text[i].x, // I am seeing this message
+                    console.log(game.level.text[i].x,
                         game.level.text[i].y);
 
                     this.textContainer.addChild(this.payText);
                 }
             }
 
+            this.gameplayContainer.addChild(this.textContainer); 
+        }
+    },
+
+    assignProblems:function(problems)
+    {
+        if(problems && problems.length > 0)
+        {
+            let problemText = ""
+            for(var i = 0; i < problems.length; i++)
+            {
+                problemText = problemText + problems[i] + "\n";
+            }
+            this.problemText = new PIXI.Text("Problems: ", {fill: 'white'});
+            this.problemText.position.set(
+                100,
+                800
+            );
+            this.problemsContainer.addChild(problemText);
             this.gameplayContainer.addChild(this.textContainer); 
         }
     },
@@ -4644,6 +4760,9 @@ var renderer = {
 
     showDialogue:function()
     {
+        // this.inputField.text = '';
+        //this.clearTextOutput();
+
         this.dialogueContainer.x = 0;
         this.dialogueContainer.y = 0;
         this.dialogueContainer.visible = true;
@@ -4808,8 +4927,24 @@ var renderer = {
     },
 
     removeClock:function()
-    {
+    {   
         this.gameplayContainer.removeChild(this.clock.spriteText);
+    },
+
+    removeDay:function()
+    {
+        this.gameplayContainer.removeChild(this.day.spriteText);
+    },
+
+    removeButtons:function()
+    {
+        game.buttons.length = 0;
+        this.buttonsContainer.removeChildren();
+    },
+
+    removeText:function()
+    {
+        this.textContainer.removeChildren();
     },
 
     removeDebug:function()

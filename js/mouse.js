@@ -177,7 +177,11 @@ var mouse =
 
             if(item)
             {
-                console.log(item.selectable);                    
+                if(findDistanceToItem(game.player, item) > game.distenceThreshold)
+                {
+                    document.body.style.cursor = autoIcon;
+                    return;
+                }
             }
 
             if(item && item.selectable)
@@ -344,14 +348,49 @@ var mouse =
     {
         var item = this.itemUnderMouse();
 
+        if(item)
+        {
+            if(findDistanceToItem(game.player, item) > game.distenceThreshold)
+            {
+                document.body.style.cursor = autoIcon;
+                return;
+            }
+        }
+
         if(item && item.selectable)
         {
             document.body.style.cursor = selectionIcon;                      
         }
+        else if(game.panX == -1)
+        {
+            document.body.style.cursor = leftArrowIcon;
+        }
+        else if(game.panX == 1)
+        {
+            document.body.style.cursor = rightArrowIcon;
+        }
+        else if(game.panY == -1)
+        {
+            document.body.style.cursor = upArrowIcon;
+        }
+        else if(game.panY == 1)
+        {
+            document.body.style.cursor = downArrowIcon;
+        }
         else
         {
             document.body.style.cursor = autoIcon;
-        }
+        } 
+        // var item = this.itemUnderMouse();
+
+        // if(item && item.selectable)
+        // {
+        //     document.body.style.cursor = selectionIcon;                      
+        // }
+        // else
+        // {
+        //     document.body.style.cursor = autoIcon;
+        // }
     },
 
     setStartingPointSelectionBox:function()
@@ -593,7 +632,7 @@ var mouse =
         mouse.gameX = (mouse.x + game.offsetX);
         mouse.gameY = (mouse.y + game.offsetY);
 
-        mouse.gridX = Math.floor((mouse.x + game.offsetX * productionRatioX) / game.gridSize);
-        mouse.gridY = Math.floor((mouse.y + game.offsetY * productionRatio) / game.gridSize);
+        //mouse.gridX = Math.floor((mouse.x + game.offsetX * productionRatioX) / game.gridSize);
+        //mouse.gridY = Math.floor((mouse.y + game.offsetY * productionRatio) / game.gridSize);
     },
 }

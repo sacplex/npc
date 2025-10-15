@@ -5,19 +5,19 @@ var lecturer =
 			"Name": "0",
 			"Lecture": 1,
 			"Slide": "0",
-			"Line": "Today, we\\'re diving into the exciting world of programming."
+			"Line": "Today, we're diving into the exciting world of programming."
 		},
 		{
 			"Name": "1",
 			"Lecture": 1,
 			"Slide": "0",
-			"Line": "Programming is a fundamental skill in today\\'s technology-driven world."
+			"Line": "Programming is a fundamental skill in today's technology-driven world."
 		},
 		{
 			"Name": "2",
 			"Lecture": 1,
 			"Slide": "0",
-			"Line": "It\\'s the art and science of instructing computers to perform tasks, solve problems, and create new opportunities."
+			"Line": "It's the art and science of instructing computers to perform tasks, solve problems, and create new opportunities."
 		},
 		{
 			"Name": "3",
@@ -29,7 +29,7 @@ var lecturer =
 			"Name": "4",
 			"Lecture": 1,
 			"Slide": "0",
-			"Line": "It\\'s a skill that will empower you to build, innovate, and understand the digital world around you."
+			"Line": "It's a skill that will empower you to build, innovate, and understand the digital world around you."
 		},
 		{
 			"Name": "5",
@@ -41,7 +41,7 @@ var lecturer =
 			"Name": "6",
 			"Lecture": 1,
 			"Slide": "0",
-			"Line": "It\\'s about breaking down complex problems into manageable pieces and finding efficient solutions."
+			"Line": "It's about breaking down complex problems into manageable pieces and finding efficient solutions."
 		},
 		{
 			"Name": "7",
@@ -53,7 +53,7 @@ var lecturer =
 			"Name": "8",
 			"Lecture": 1,
 			"Slide": "1",
-			"Line": "In this course, we\\'ll be learning programming using Ruby."
+			"Line": "In this course, we'll be learning programming using Ruby."
 		},
 		{
 			"Name": "9",
@@ -71,43 +71,43 @@ var lecturer =
 			"Name": "11",
 			"Lecture": 1,
 			"Slide": "1",
-			"Line": "It was designed to make programming both enjoyable and productive, and it\\'s often described as a language that feels natural to write."
+			"Line": "It was designed to make programming both enjoyable and productive, and it's often described as a language that feels natural to write."
 		},
 		{
 			"Name": "12",
 			"Lecture": 1,
 			"Slide": "1",
-			"Line": "Here are a few reasons why we\\'ve chosen Ruby: simplicity, readability, flexibility, community and resources."
+			"Line": "Here are a few reasons why we've chosen Ruby: simplicity, readability, flexibility, community and resources."
 		},
 		{
 			"Name": "13",
 			"Lecture": 1,
 			"Slide": "2",
-			"Line": "Throughout this course, you\\'ll learn the fundamentals of programming everything from variables, loops, and conditionals to more advanced topics like object-oriented programming and web development with Ruby on Rails."
+			"Line": "Throughout this course, you'll learn the fundamentals of programming everything from variables, loops, and conditionals to more advanced topics like object-oriented programming and web development with Ruby on Rails."
 		},
 		{
 			"Name": "14",
 			"Lecture": 1,
 			"Slide": "2",
-			"Line": "We\\'ll start with the basics, building a solid foundation, and gradually introduce more complex concepts as you become more comfortable with coding."
+			"Line": "We'll start with the basics, building a solid foundation, and gradually introduce more complex concepts as you become more comfortable with coding."
 		},
 		{
 			"Name": "15",
 			"Lecture": 1,
 			"Slide": "2",
-			"Line": "By the end of this course, you\\'ll not only understand how to write Ruby code, but you\\'ll also have developed the problem-solving skills that are essential for any programmer."
+			"Line": "By the end of this course, you'll not only understand how to write Ruby code, but you'll also have developed the problem-solving skills that are essential for any programmer."
 		},
 		{
 			"Name": "16",
 			"Lecture": 1,
 			"Slide": "3",
-			"Line": "Let\\'s get started! Our first few classes will focus on setting up your development environment, understanding the basics of Ruby syntax, and writing your first programs."
+			"Line": "Let's get started! Our first few classes will focus on setting up your development environment, understanding the basics of Ruby syntax, and writing your first programs."
 		},
 		{
 			"Name": "17",
 			"Lecture": 1,
 			"Slide": "3",
-			"Line": "Don\\'t worry if you\\'ve never coded before everyone starts as a beginner, and we\\'ll guide you through every step."
+			"Line": "Don't worry if you've never coded before everyone starts as a beginner, and we'll guide you through every step."
 		},
 		{
 			"Name": "18",
@@ -119,19 +119,19 @@ var lecturer =
 			"Name": "19",
 			"Lecture": 1,
 			"Slide": "3",
-			"Line": "It\\'s okay to make mistakes and ask questions that\\'s how you learn and grow."
+			"Line": "It's okay to make mistakes and ask questions that's how you learn and grow."
 		},
 		{
 			"Name": "20",
 			"Lecture": 1,
 			"Slide": "3",
-			"Line": "We\\'re here to help you succeed, so don\\'t hesitate to reach out for support when you need it."
+			"Line": "We're here to help you succeed, so don't hesitate to reach out for support when you need it."
 		},
 		{
 			"Name": "21",
 			"Lecture": 1,
 			"Slide": "3",
-			"Line": "I\\'m excited to see what you\\'ll create with Ruby and how you\\'ll apply these skills in your academic and professional life."
+			"Line": "I'm excited to see what you'll create with Ruby and how you'll apply these skills in your academic and professional life."
 		},
 		{
 			"Name": "22",
@@ -143,7 +143,7 @@ var lecturer =
 			"Name": "23",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "Let\\'s look at a simple Ruby program: the classic Hello, World! example."
+			"Line": "Let's look at a simple Ruby program: the classic Hello, World! example."
 		},
 		{
 			"Name": "24",
@@ -155,25 +155,25 @@ var lecturer =
 			"Name": "25",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "Here\\'s the code)"
+			"Line": "Here's the code)"
 		},
 		{
 			"Name": "26",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "In this example, puts is a Ruby method that prints the text \\'Hello, World!\\' to the console."
+			"Line": "In this example, puts is a Ruby method that prints the text 'Hello, World!' to the console."
 		},
 		{
 			"Name": "27",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "It\\'s a great way to get started and see immediate results from your code."
+			"Line": "It's a great way to get started and see immediate results from your code."
 		},
 		{
 			"Name": "28",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "Try running this code in your Ruby environment, and you\\'ll see how easy it is to start programming with Ruby!)"
+			"Line": "Try running this code in your Ruby environment, and you'll see how easy it is to start programming with Ruby!)"
 		},
 	],
 	[
@@ -205,13 +205,13 @@ var lecturer =
 			"Name": "34",
 			"Lecture": 2,
 			"Slide": "5",
-			"Line": "For values that shouldn\\'t change, you can use constants written in uppercase; just remember that Ruby won\\'t enforce immutability but will warn you."
+			"Line": "For values that shouldn't change, you can use constants written in uppercase; just remember that Ruby won't enforce immutability but will warn you."
 		},
 		{
 			"Name": "35",
 			"Lecture": 2,
 			"Slide": "6",
-			"Line": "It\\'s also important to know where your variables can be accessed, so understanding the different types local, instance, class, and global will help you control their scope."
+			"Line": "It's also important to know where your variables can be accessed, so understanding the different types local, instance, class, and global will help you control their scope."
 		},
 		{
 			"Name": "36",
@@ -229,7 +229,7 @@ var lecturer =
 			"Name": "38",
 			"Lecture": 2,
 			"Slide": "9",
-			"Line": "Let\\'s try some hands-on examples, like swapping values between variables or experimenting with reassigning different types to the same variable."
+			"Line": "Let's try some hands-on examples, like swapping values between variables or experimenting with reassigning different types to the same variable."
 		},
 		{
 			"Name": "39",
@@ -285,7 +285,7 @@ var lecturer =
 			"Name": "47",
 			"Lecture": 3,
 			"Slide": "7",
-			"Line": "By understanding functions and how they work, you can create reusable, maintainable code in Ruby. Functions help break down complex problems into smaller, manageable tasks, enhancing both readability and efficiency. Now that we\\'ve covered defining, calling, and managing methods, let\\'s move on to practice creating and using functions effectively in our programs."
+			"Line": "By understanding functions and how they work, you can create reusable, maintainable code in Ruby. Functions help break down complex problems into smaller, manageable tasks, enhancing both readability and efficiency. Now that we've covered defining, calling, and managing methods, let's move on to practice creating and using functions effectively in our programs."
 		},
 	],
 	[
@@ -293,25 +293,25 @@ var lecturer =
 			"Name": "48",
 			"Lecture": 4,
 			"Slide": "1",
-			"Line": "Today, we\\'ll be diving into two key control structures in Ruby: if and case statements. These are essential tools that allow us to make decisions in our code and execute specific blocks of code based on certain conditions."
+			"Line": "Today, we'll be diving into two key control structures in Ruby: if and case statements. These are essential tools that allow us to make decisions in our code and execute specific blocks of code based on certain conditions."
 		},
 		{
 			"Name": "49",
 			"Lecture": 4,
 			"Slide": "2",
-			"Line": "Let\\'s begin with the if statement. The if statement is the simplest form of conditional logic. It\\'s used when you have a single condition to evaluate. If that condition is true, a particular block of code will be executed. If not, the program simply moves on without executing anything. The syntax is straightforward: if condition."
+			"Line": "Let's begin with the if statement. The if statement is the simplest form of conditional logic. It's used when you have a single condition to evaluate. If that condition is true, a particular block of code will be executed. If not, the program simply moves on without executing anything. The syntax is straightforward: if condition."
 		},
 		{
 			"Name": "50",
 			"Lecture": 4,
 			"Slide": "3",
-			"Line": "Next, we have the if-else structure. This is used when you need to handle two outcomes one for when the condition is true, and another for when it\\'s false. The if-else structure provides a way to define what should happen in both scenarios."
+			"Line": "Next, we have the if-else structure. This is used when you need to handle two outcomes one for when the condition is true, and another for when it's false. The if-else structure provides a way to define what should happen in both scenarios."
 		},
 		{
 			"Name": "51",
 			"Lecture": 4,
 			"Slide": "4",
-			"Line": "Sometimes, we need to check multiple conditions, and that\\'s where if-elsif-else comes into play. With if-elsif-else, we evaluate multiple conditions one after another, ensuring the appropriate code block is executed depending on which condition matches."
+			"Line": "Sometimes, we need to check multiple conditions, and that's where if-elsif-else comes into play. With if-elsif-else, we evaluate multiple conditions one after another, ensuring the appropriate code block is executed depending on which condition matches."
 		},
 		{
 			"Name": "52",
@@ -323,7 +323,7 @@ var lecturer =
 			"Name": "53",
 			"Lecture": 4,
 			"Slide": "6",
-			"Line": "The case statement is especially powerful when we\\'re working with ranges. We can specify a range of values and execute different blocks of code based on which range the value falls into."
+			"Line": "The case statement is especially powerful when we're working with ranges. We can specify a range of values and execute different blocks of code based on which range the value falls into."
 		},
 		{
 			"Name": "54",
@@ -361,7 +361,7 @@ var lecturer =
 			"Name": "60",
 			"Lecture": 5,
 			"Slide": "4",
-			"Line": "Here\\'s an example of how the for loop prints numbers from 1 to 5."
+			"Line": "Here's an example of how the for loop prints numbers from 1 to 5."
 		},
 		{
 			"Name": "61",
@@ -373,7 +373,7 @@ var lecturer =
 			"Name": "62",
 			"Lecture": 5,
 			"Slide": "6",
-			"Line": "Let\\'s see how the while loop increments a counter until it reaches 5."
+			"Line": "Let's see how the while loop increments a counter until it reaches 5."
 		},
 		{
 			"Name": "63",
@@ -385,7 +385,7 @@ var lecturer =
 			"Name": "64",
 			"Lecture": 5,
 			"Slide": "8",
-			"Line": "Here\\'s an example demonstrating how the until loop behaves similarly to the while loop, but in reverse."
+			"Line": "Here's an example demonstrating how the until loop behaves similarly to the while loop, but in reverse."
 		},
 		{
 			"Name": "65",
@@ -503,13 +503,13 @@ var lecturer =
 			"Name": "84",
 			"Lecture": 7,
 			"Slide": "5",
-			"Line": "To retrieve an object\\'s attributes, we define getter methods, allowing us to access its stored information."
+			"Line": "To retrieve an object's attributes, we define getter methods, allowing us to access its stored information."
 		},
 		{
 			"Name": "85",
 			"Lecture": 7,
 			"Slide": "6",
-			"Line": "Setter methods, on the other hand, enable us to modify an object\\'s attributes, making it flexible and adaptable."
+			"Line": "Setter methods, on the other hand, enable us to modify an object's attributes, making it flexible and adaptable."
 		},
 		{
 			"Name": "86",
@@ -527,13 +527,13 @@ var lecturer =
 			"Name": "88",
 			"Lecture": 7,
 			"Slide": "9",
-			"Line": "Let\\'s extend our class to include behaviour such as driving bringing our object to life."
+			"Line": "Let's extend our class to include behaviour such as driving bringing our object to life."
 		},
 		{
 			"Name": "89",
 			"Lecture": 7,
 			"Slide": "10",
-			"Line": "The initialize method is a special constructor, automatically called to set up an object\\'s initial state."
+			"Line": "The initialize method is a special constructor, automatically called to set up an object's initial state."
 		},
 		{
 			"Name": "90",
@@ -621,7 +621,7 @@ var lecturer =
 			"Name": "104",
 			"Lecture": 9,
 			"Slide": "2",
-			"Line": "When we define a subclass in Ruby using the < operator, it inherits the superclass\\'s methods and attributes, but we can also override them as needed."
+			"Line": "When we define a subclass in Ruby using the < operator, it inherits the superclass's methods and attributes, but we can also override them as needed."
 		},
 		{
 			"Name": "105",
@@ -651,7 +651,7 @@ var lecturer =
 			"Name": "109",
 			"Lecture": 9,
 			"Slide": "7",
-			"Line": "Although Ruby doesn\\'t have explicit abstract classes or interfaces, we can simulate these concepts by raising errors in methods that must be overridden in subclasses."
+			"Line": "Although Ruby doesn't have explicit abstract classes or interfaces, we can simulate these concepts by raising errors in methods that must be overridden in subclasses."
 		},
 		{
 			"Name": "110",
@@ -663,7 +663,7 @@ var lecturer =
 			"Name": "111",
 			"Lecture": 9,
 			"Slide": "9",
-			"Line": "Ruby\\'s method lookup path shows how Ruby finds methods on objects, starting from the object\\'s class and going up the inheritance chain."
+			"Line": "Ruby's method lookup path shows how Ruby finds methods on objects, starting from the object's class and going up the inheritance chain."
 		},
 		{
 			"Name": "112",
@@ -701,13 +701,13 @@ var lecturer =
 			"Name": "119",
 			"Lecture": 10,
 			"Slide": "4",
-			"Line": "If you need to search for an element that meets a specific condition, you can use Ruby\\'s .find method to retrieve the first match."
+			"Line": "If you need to search for an element that meets a specific condition, you can use Ruby's .find method to retrieve the first match."
 		},
 		{
 			"Name": "120",
 			"Lecture": 10,
 			"Slide": "5",
-			"Line": "Sorting arrays is simple with Ruby\\'s built-in .sort method, which arranges elements in ascending order by default."
+			"Line": "Sorting arrays is simple with Ruby's built-in .sort method, which arranges elements in ascending order by default."
 		},
 		{
 			"Name": "121",
@@ -719,7 +719,7 @@ var lecturer =
 			"Name": "122",
 			"Lecture": 10,
 			"Slide": "7",
-			"Line": "If you want to sort a hash by its keys, Ruby\\'s .sort method will convert it to an array, and we can convert it back to a hash using to_h."
+			"Line": "If you want to sort a hash by its keys, Ruby's .sort method will convert it to an array, and we can convert it back to a hash using to_h."
 		},
 		{
 			"Name": "123",
@@ -737,7 +737,7 @@ var lecturer =
 			"Name": "125",
 			"Lecture": 10,
 			"Slide": "10",
-			"Line": "Finally, when choosing a sorting or searching algorithm, it\\'s crucial to consider performance, as more efficient methods like binary search or custom sorting may be required for larger datasets."
+			"Line": "Finally, when choosing a sorting or searching algorithm, it's crucial to consider performance, as more efficient methods like binary search or custom sorting may be required for larger datasets."
 		},
 	],
 	[
@@ -775,7 +775,7 @@ var lecturer =
 			"Name": "131",
 			"Lecture": 11,
 			"Slide": "6'",
-			"Line": "Ruby on Rails embraces the Don\\'t Repeat Yourself (DRY) principle, encouraging the reuse of code to increase efficiency and reduce redundancy."
+			"Line": "Ruby on Rails embraces the Don't Repeat Yourself (DRY) principle, encouraging the reuse of code to increase efficiency and reduce redundancy."
 		},
 		{
 			"Name": "132",
@@ -819,7 +819,7 @@ var lecturer =
 			"Name": "139",
 			"Lecture": 12,
 			"Slide": "1'",
-			"Line": "We began by understanding Ruby\\'s syntax, laying the foundation for writing clear and concise code."
+			"Line": "We began by understanding Ruby's syntax, laying the foundation for writing clear and concise code."
 		},
 		{
 			"Name": "140",
@@ -849,7 +849,7 @@ var lecturer =
 			"Name": "144",
 			"Lecture": 12,
 			"Slide": "6'",
-			"Line": "We explored arrays, one of Ruby\\'s most useful data structures, and you learned how to store and manipulate collections of data efficiently."
+			"Line": "We explored arrays, one of Ruby's most useful data structures, and you learned how to store and manipulate collections of data efficiently."
 		},
 		{
 			"Name": "145",
@@ -885,13 +885,13 @@ var lecturer =
 			"Name": "150",
 			"Lecture": 12,
 			"Slide": "12'",
-			"Line": "As we close, remember that the concepts we\\'ve covered are just the beginning keep experimenting with Ruby, and continue building your skills as a developer."
+			"Line": "As we close, remember that the concepts we've covered are just the beginning keep experimenting with Ruby, and continue building your skills as a developer."
 		},
 		{
 			"Name": "151",
 			"Lecture": 12,
 			"Slide": "13'",
-			"Line": "To prepare for the exam, review all key concepts we\\'ve covered, practice coding exercises, and focus on understanding the core Ruby principles such as syntax, object-oriented programming, algorithms, and Ruby on Rails."
+			"Line": "To prepare for the exam, review all key concepts we've covered, practice coding exercises, and focus on understanding the core Ruby principles such as syntax, object-oriented programming, algorithms, and Ruby on Rails."
 		}
 	]
 ]

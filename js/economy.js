@@ -6,6 +6,8 @@ var economy =
     librarianTime:0,
     cash: 200,
     expenses: undefined,
+    problems:[],
+    penalties:[],
     payout: {
         messagesByStudent: new Map(), // Map<studentName, messageCount>
         bonus: 1,
@@ -14,7 +16,7 @@ var economy =
     
     init: function()
     {
-        this.expenses = new Map();
+        console.log(this.expenses);
     },
 
     add: function(name, cost)
@@ -24,7 +26,8 @@ var economy =
             {
                 "name": name,
                 "cost": cost,
-                "toggle": false
+                "toggle": false,
+                "status":""
             }
         );
     },
@@ -40,6 +43,7 @@ var economy =
     // Calculate end-of-day payout
     setPayout: function()
     {
+        
         let pay = 0;
 
         let uniqueStudents = this.payout.messagesByStudent.size;
@@ -66,6 +70,26 @@ var economy =
         this.cash += pay;
         
         this.payout.messagesByStudent.clear();
+
+        if(this.penalties.length > 0)
+        {
+            for(var i = 0; i < this.penalties.length; i++)
+            {
+                if(this.expenses.has(this.penalties[i].name))
+                {
+                    alert("Need to pay for: " + this.expenses.get(this.penalties[i].name).name + " with " + this.expenses.get(this.penalties[i].name).cost);
+                    this.cash -= this.expenses.get(this.penalties[i].name).cost;
+                }
+            }
+        }
+
+        this.cash = this.cash + (10 * this.bonus)
+
+        if(this.cash < 0)
+        {
+            alert("Game Over");
+            clock.day = 12;
+        }
 
         console.log(`End of day payout: $${pay.toFixed(2)} (Cash: $${this.cash.toFixed(2)})`);
     },
@@ -95,12 +119,13 @@ var economy =
         renderer.payText.text = "Pay: " + this.cash;
     },
 
+    addProblem:function(problem)
+    {
+        this.problems.push(problem);
+    },
+
     send:function()
     {
-        console.log(this.expenses);
-        console.log(this.cash);
-        console.log(this.lecturerTime);
-
         client.sendMessage({
             code: game.player.id,
             sendTo:"smart",
@@ -111,10 +136,10 @@ var economy =
                 expenses: Array.from(this.expenses.entries()) // convert Map → array for safe transmission
             },
             teaching: {
-                lecturerTime:this.lecturerTime,
-                narratorTime:this.narratorTime,
-                tutorTime:this.tutorTime,
-                librarianTime:this.librarianTime
+                lecturerTime:Math.floor(this.lecturerTime / 60),
+                narratorTime:Math.floor(this.narratorTime / 60),
+                tutorTime:Math.floor(this.tutorTime / 60),
+                librarianTime:Math.floor(this.librarianTime / 60)
             }
         });
 
