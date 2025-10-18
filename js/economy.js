@@ -77,18 +77,20 @@ var economy =
             {
                 if(this.expenses.has(this.penalties[i].name))
                 {
-                    alert("Need to pay for: " + this.expenses.get(this.penalties[i].name).name + " with " + this.expenses.get(this.penalties[i].name).cost);
+                    //alert("Need to pay for: " + this.expenses.get(this.penalties[i].name).name + " with " + this.expenses.get(this.penalties[i].name).cost);
+                    renderer.assignExpenses(this.penalties[i].name);
                     this.cash -= this.expenses.get(this.penalties[i].name).cost;
                 }
             }
         }
 
-        this.cash = this.cash + (10 * this.bonus)
+        if(this.bonus)
+            this.cash = this.cash + (10 * this.bonus)
 
         if(this.cash < 0)
         {
-            alert("Game Over");
-            clock.day = 12;
+            renderer.gameover();
+            
         }
 
         console.log(`End of day payout: $${pay.toFixed(2)} (Cash: $${this.cash.toFixed(2)})`);

@@ -20,7 +20,7 @@ var teachers =
             frames:1,
             speechType:"passive",
             speechCount:0,
-            speechLimit:300,
+            speechLimit:400,
             passableGrid:[
 				[1]
 			],
@@ -191,39 +191,6 @@ var teachers =
 			}
 
 			this.speechCount++;
-
-			
-			//console.log("this.speechCount: " + this.speechCount + " == " + " this.speechLimit: " + this.speechLimit);
-            // if(this.speechCount == this.speechLimit)
-            // {
-            //     this.speechCount = 0;
-			// 	//console.log(dialogue.displayLecturer(lecturer[clock.day-1][materials.list["slides" + clock.day].index]));
-			// 	//alert()
-			// 	//if(dialogue.displayLecturer(lecturer[clock.day-1][materials.list["slides" + clock.day].index]))
-			// 	//{
-			// 		//alert(dialogue.displayLecturer(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Line))
-			// 		//dialogue.displayLecturer(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Line);
-			// 		game.slides[Math.floor(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Slide)].sprite.visible = false;
-	
-			// 		if(clock.day != lecturer[clock.day-1][materials.list["slides" + clock.day].index].Lecture)
-			// 		{ 
-			// 			materials.list["slides" + clock.day].index = 0;
-			// 		}
-			// 		else
-			// 		{
-			// 			let slideIndex = Math.floor(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Slide);
-			// 			game.slides[slideIndex].sprite.visible = true;
-			// 			materials.list["slides" + clock.day].index++
-	
-			// 			if(materials.list["slides" + clock.day].index > lecturer[clock.day-1].length)
-			// 			{
-			// 				materials.list["slides" + clock.day].index = 0;
-			// 			}
-			// 		}
-			// 	//}
-            // }
-
-            // 
         },
 
 		speakNarration:function()
@@ -252,31 +219,6 @@ var teachers =
 			}
 
 			this.speechCount++;
-			// if(this.speechCount == this.speechLimit)
-            // {
-            //     this.speechCount = 0;
-				
-			// 	if(dialogue.displayLecturer(lecturer[clock.day-1][materials.list["slides" + clock.day].index]))
-			// 	{
-			// 		dialogue.displayNarrator(narrator[clock.day][materials.list["story" + clock.day].index].Line);
-
-			// 		if(clock.day != narrator[clock.day][materials.list["story" + clock.day].index].Story)
-			// 		{ 
-			// 			materials.list["story" + clock.day].index = 0;
-			// 		}
-			// 		else
-			// 		{
-			// 			materials.list["story" + clock.day].index++
-
-			// 			if(materials.list["story" + clock.day].index > narrator[clock.day].length)
-			// 			{
-			// 				materials.list["story" + clock.day].index = 0;
-			// 			}
-			// 		}
-			// 	}
-            // }
-
-            // this.speechCount++;
 		},
 
 		talkToTutor:function()

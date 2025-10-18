@@ -649,34 +649,25 @@ var students =
 		{
 			if(this.talkCount == this.talkLimit)
 			{
-				const closestConversationUid = findDistanceToClosestConversation(game.player);
+				if(conversations.get(this.conversationsUid, this.contact, {"x":this.x,"y":this.y}))
+				{
+					this.state.talking = false;
+					this.state.leaving = true;
+					this.talkCount = 0;
+					this.orders.type = "leave";
 
-				console.log(closestConversationUid, this.uid);
+					let targetUid = this.target.uid;
+					let targetIndex = lookup.get(targetUid);
+					game.items[targetIndex].state.talking = false;
+					game.items[targetIndex].state.leaving = true;
+					game.items[targetIndex].talkCount = 0;
+					game.items[targetIndex].target = undefined;
+					game.items[targetIndex].orders.type = "leave";
 
-				//if(this.uid === closestConversationUid) // ✅ Only if this NPC is the closest
-				//{
-					if(conversations.get(this.conversationsUid, this.contact, {"x":this.x,"y":this.y}))
-					{
-						console.log("end talking");
-						//conversations.locations.delete(this.uid);
-						this.state.talking = false;
-						this.state.leaving = true;
-						this.talkCount = 0;
-						this.orders.type = "leave";
+					this.target = undefined;
 
-						let targetUid = this.target.uid;
-						let targetIndex = lookup.get(targetUid);
-						game.items[targetIndex].state.talking = false;
-						game.items[targetIndex].state.leaving = true;
-						game.items[targetIndex].talkCount = 0;
-						game.items[targetIndex].target = undefined;
-						game.items[targetIndex].orders.type = "leave";
-
-						this.target = undefined;
-
-						return;
-					}
-				//}
+					return;
+				}
 
 				this.talkCount = 0;
 			}

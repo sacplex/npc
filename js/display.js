@@ -137,6 +137,24 @@ var display =
             return filename;
         }
     },
+    "expenses":
+    {
+        getFileName:function()
+        {
+            var filename = "images/expenses/expenses.png";
+
+            return filename;
+        }
+    },
+    "gameover":
+    {
+        getFileName:function()
+        {
+            var filename = "images/gameover/gameover.png";
+
+            return filename;
+        }
+    },
     "gameplayScreen":
     {
         "width":1760,

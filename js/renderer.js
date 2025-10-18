@@ -70,6 +70,8 @@ var renderer = {
     propsContainer:undefined,
     dialogueContainer:undefined,
     loginContainer:undefined,
+    expensesContainer:undefined,
+    gameoverContainer:undefined,
     resourcesContainer:undefined,
     thresholdContainer:undefined,
     lightsContainer:undefined,
@@ -84,6 +86,7 @@ var renderer = {
     gameplayContainer:undefined,
     characterContainer:undefined,
     gameInterfaceContainer:undefined,
+    narratorContainer:undefined,
     miniMapContainer:undefined,
     debugContainer:undefined,
     markersContainer:undefined,
@@ -181,6 +184,9 @@ var renderer = {
     controllerIcon:undefined,
     controllerTextures:undefined,
     theDay:1,
+    expensesCount:0,
+    expensesTexture:undefined,
+    gameoverTexture:undefined,
     itemVision:100,
     expandVision:1,
     zoom: 1,
@@ -279,6 +285,8 @@ var renderer = {
         this.propsContainer = new PIXI.Container();
         this.dialogueContainer = new PIXI.Container();
         this.loginContainer = new PIXI.Container();
+        this.expensesContainer = new PIXI.Container();
+        this.gameoverContainer = new PIXI.Container();
         this.resourcesContainer = new PIXI.Container();
         this.thresholdContainer = new PIXI.Container();
         this.lightsContainer = new PIXI.Container();
@@ -293,6 +301,7 @@ var renderer = {
         this.gameplayContainer = new PIXI.Container();
         this.characterContainer = new PIXI.Container();
         this.gameInterfaceContainer = new PIXI.Container();
+        this.narratorContainer = new PIXI.Container();
         this.miniMapContainer = new PIXI.Container();
         this.selectionBoxContainer = new PIXI.Container();
         this.debugContainer = new PIXI.Container();
@@ -568,6 +577,42 @@ var renderer = {
         });
     },
 
+    expenses:function()
+    {
+        let expensesFilename = display.expenses.getFileName();
+
+        if(!this.resourceMasterSet.has(expensesFilename))
+        {
+            PIXI.Assets.add(expensesFilename, expensesFilename);
+            this.resourceMasterSet.add(expensesFilename);
+        }
+
+        const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
+
+        texturesPromise.then((textures) =>
+        {
+            this.expensesTexture = textures;
+        });
+    },
+
+    gameover:function()
+    {
+        let gameoverFilename = display.gameover.getFileName();
+
+        if(!this.resourceMasterSet.has(gameoverFilename))
+        {
+            PIXI.Assets.add(gameoverFilename, gameoverFilename);
+            this.resourceMasterSet.add(gameoverFilename);
+        }
+
+        const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
+
+        texturesPromise.then((textures) =>
+        {
+            this.assignGameover(textures); 
+        });
+    },
+
     assignLogin:function(textures)
     {
         // --- Setup login ---
@@ -646,6 +691,181 @@ var renderer = {
         console.log("added loginContainer");
     },
 
+    removExpenses:function()
+    {
+        // --- Setup login ---
+        this.loginContainer.removeChildren();
+        this.expensesCount = 0;
+    },
+
+    assignExpenses(name)
+    {
+        const textureName = display.expenses.getFileName();
+        const expensesTexture = this.expensesTexture?.[textureName] || PIXI.Texture.from(textureName);
+
+        // Sprite setup
+        const sprite = new PIXI.Sprite(expensesTexture);
+        sprite.anchor.set(0.5);
+        sprite.x = productionWidth / 2;
+        sprite.y = productionHeight / 5 + (this.expensesCount * 120);
+
+        // Text styling
+        const textStyle = new PIXI.TextStyle({
+            fill: "#FFFFFF",
+            fontSize: 22,
+            fontWeight: "bold",
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowDistance: 2,
+        });
+
+        const unpaidPenalties = {
+            rent: "Rent's due! Better pay.",
+            aircon_heating: "It's getting a bit chilly in here.",
+            food: "You skipped a meal. Feeling hungry?",
+            social: "No hangouts lately? Feeling a bit lonely.",
+            family: "Family misses hearing from you.",
+        };
+
+        const text = new PIXI.Text(unpaidPenalties[name], textStyle);
+        text.anchor.set(0.5);
+        text.x = sprite.x;
+        text.y = sprite.y; // offset slightly below sprite
+
+        // Container for both sprite & text
+        const tempContainer = new PIXI.Container();
+        tempContainer.addChild(sprite);
+        tempContainer.addChild(text);
+        tempContainer.alpha = 0;
+
+        this.expensesContainer.addChild(tempContainer);
+        this.gameplayContainer.addChild(this.expensesContainer);
+
+        // Animation timing
+        const delay = this.expensesCount * 1000; // appear 1s apart
+        const duration = 5000; // stay for 5 seconds
+        const fadeInSpeed = 0.03;
+        const fadeOutSpeed = 0.03;
+
+        setTimeout(() =>
+        {
+            // --- Fade In ---
+            const fadeInTicker = new PIXI.Ticker();
+            fadeInTicker.add(() =>
+            {
+                tempContainer.alpha += fadeInSpeed;
+                if (tempContainer.alpha >= 1)
+                {
+                    tempContainer.alpha = 1;
+                    fadeInTicker.stop();
+                    fadeInTicker.destroy();
+
+                    // --- Wait, then Fade Out ---
+                    setTimeout(() =>
+                    {
+                        const fadeOutTicker = new PIXI.Ticker();
+                        fadeOutTicker.add(() =>
+                        {
+                            tempContainer.alpha -= fadeOutSpeed;
+                            if (tempContainer.alpha <= 0)
+                            {
+                                tempContainer.alpha = 0;
+                                fadeOutTicker.stop();
+                                fadeOutTicker.destroy();
+                                this.expensesContainer.removeChild(tempContainer);
+                            }
+                        });
+                        fadeOutTicker.start();
+                    }, duration);
+                }
+            });
+
+            fadeInTicker.start();
+        }, delay);
+
+        this.expensesCount++;
+    },
+
+    assignGameover()
+    {
+        const textureName = display.gameover.getFileName();
+        const gameoverTexture = PIXI.Texture.from(textureName);
+    
+        // --- Create sprite ---
+        const sprite = new PIXI.Sprite(gameoverTexture);
+        sprite.anchor.set(0.5);
+        sprite.x = productionWidth / 2;
+        sprite.y = productionHeight / 2;
+    
+        // --- Create text ---
+        const textStyle = new PIXI.TextStyle({
+            fill: "#FFFFFF",
+            fontSize: 48,
+            fontWeight: "bold",
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowDistance: 3,
+        });
+    
+        const text = new PIXI.Text("GAME OVER", textStyle);
+        text.anchor.set(0.5);
+        text.x = sprite.x;
+        text.y = sprite.y;
+    
+        // --- Container setup ---
+        const tempContainer = new PIXI.Container();
+        tempContainer.addChild(sprite);
+        tempContainer.addChild(text);
+        tempContainer.alpha = 0; // Start invisible
+    
+        this.gameoverContainer.addChild(tempContainer);
+        this.gameplayContainer.addChild(this.gameoverContainer);
+    
+        // --- Fade control ---
+        const fadeInSpeed = 0.02;
+        const fadeOutSpeed = 0.02;
+        const visibleDuration = 5000; // 5 seconds on screen
+    
+        let fadeInDone = false;
+        let timeVisible = 0;
+    
+        const ticker = new PIXI.Ticker();
+        ticker.add((delta) =>
+        {
+            if (!fadeInDone)
+            {
+                tempContainer.alpha += fadeInSpeed * delta;
+                if (tempContainer.alpha >= 1)
+                {
+                    tempContainer.alpha = 1;
+                    fadeInDone = true;
+                }
+            }
+            else
+            {
+                timeVisible += delta * 16.67; // Approx ms/frame
+                if (timeVisible >= visibleDuration)
+                {
+                    tempContainer.alpha -= fadeOutSpeed * delta;
+                    if (tempContainer.alpha <= 0)
+                    {
+                        tempContainer.alpha = 0;
+                        ticker.stop();
+                        ticker.destroy();
+                        this.gameoverContainer.removeChild(tempContainer);
+                        clock.day = 12;
+                        renderer.clock.reset();
+                        game.endLevel();
+                        game.nextLevel();
+                        economy.send();
+                    }
+                }
+            }
+        });
+    
+        ticker.start();
+    },
+
     level:function(savedData = undefined)
     {
         flags.GAME_OVER = false;
@@ -716,7 +936,6 @@ var renderer = {
         this.setMenu();
         this.setConversationText();
         this.setLecturerText();
-        this.setNarratorText();
 
         if(!this.resourceMasterSet.has(game.level.mapImages))
         {
@@ -818,7 +1037,7 @@ var renderer = {
 
             this.gameInterfaceContainer.addChild(this.conversationText);
             this.gameInterfaceContainer.addChild(this.lecturerText);
-            this.gameInterfaceContainer.addChild(this.narratorText);
+            this.gameInterfaceContainer.addChild(this.narratorContainer);
 
             this.assignSidebar(this.buttonImages, game.level.sidebar);
             this.assignButtons(textures, game.level.buttons);
@@ -1734,23 +1953,88 @@ var renderer = {
         this.lecturerText.visible = visible;
     },
 
-    addNarratorText:function(message)
+    addNarratorText: function(message)
     {
-        this.narratorText.text = message;
-    },
+        const words = message.split(" ");
+        const numWords = words.length;
+        const timePerWord = 6000 / numWords; // milliseconds per word
 
-    setNarratorText:function()
-    {
-        this.narratorText = new PIXI.Text("", narratorStyle);
-        this.narratorText.x = productionWidth / 2;
-        this.narratorText.y = 35;
-        this.narratorText.visible = false;
-        this.narratorText.anchor.set(0.5, 0);
+        const style = new PIXI.TextStyle({
+            fontFamily: "MedievalSharp, fantasy",
+            fontSize: 24,
+            fill: "#FFD700",
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowBlur: 4,
+            dropShadowDistance: 2,
+        });
+
+        this.narratorContainer.removeChildren();
+
+        // Create PIXI.Text for each word
+        const wordObjects = words.map(word => {
+            const t = new PIXI.Text(word, style);
+            t.anchor.set(0, 0.5);
+            this.narratorContainer.addChild(t);
+            return t;
+        });
+
+        let currentIndex = 0;
+
+        function layoutWords() {
+            const y = productionHeight / 2;
+        
+            // First, calculate total width of all words including spacing
+            let totalWidth = 0;
+            wordObjects.forEach((w, i) => {
+                const scale = (i === currentIndex ? 1.8 : 1);
+                totalWidth += w.width * scale;
+            });
+            totalWidth += (words.length - 1) * 10; // spacing between words
+        
+            // Drop sentence if too wide
+            if(totalWidth > productionWidth) {
+                // Hide all words
+                wordObjects.forEach(w => w.visible = false);
+                return;
+            } else {
+                wordObjects.forEach(w => w.visible = true);
+            }
+        
+            // Starting X for centering
+            let x = (productionWidth - totalWidth) / 2;
+        
+            wordObjects.forEach((w, i) => {
+                const scale = (i === currentIndex ? 1.8 : 1);
+                w.scale.set(scale);
+                w.x = x;
+                w.y = y;
+                x += w.width + 10; // spacing
+            });
+        }
+
+        layoutWords();
+
+        // Animate words across the sentence
+        if(this._wordTimer) clearInterval(this._wordTimer);
+        this._wordTimer = setInterval(() => {
+            currentIndex++;
+            if(currentIndex >= wordObjects.length)
+            {
+                clearInterval(this._wordTimer);
+                this._wordTimer = null;
+                // Reset all words to normal scale
+                wordObjects.forEach(w => w.scale.set(1));
+                layoutWords();
+                return;
+            }
+            layoutWords();
+        }, timePerWord);
     },
 
     showNarratorText:function(visible)
     {
-        this.narratorText.visible = visible;
+        this.narratorContainer.visible = visible;
     },
 
     assignBackground:function(textures)
@@ -4778,31 +5062,6 @@ var renderer = {
         this.textbookContainer.visible = false;
     },
 
-    gameOver:function()
-    {
-        flags.GAME_OVER = true;
-        this.pause = !this.pause;
-        triggers.clearAll();
-        narration.stop();
-        narration.clear();
-        this.hideCharacter();
-        this.toggleBlackAndWhite();
-
-        setTimeout(() => {
-            this.missionFailureText.visible = true; // Make the text visible after 2 seconds
-
-            this.menuRestartButton.x = productionWidth * 0.5 - 110;
-            this.menuRestartButton.y = productionHeight * 0.5 + 30;
-            this.menuRestartButton.visible = true;
-            this.menuRestartButton.interactive = true;
-
-            this.menuExitButton.x = productionWidth * 0.5 - 110;
-            this.menuExitButton.y = productionHeight * 0.5 + 60;
-            this.menuExitButton.visible = true;
-            this.menuExitButton.interactive = true;
-        }, 2000); // 2000ms = 2 seconds
-    },
-
     removeLoadingScreen:function()
     {
         this.app.stage.removeChild(this.blackScreen);
@@ -4882,24 +5141,6 @@ var renderer = {
     {
         this.lightsContainer.removeChildren();
         this.lightsSpxContainer.removeChildren();
-    },
-
-    removeEmitter: function(index)
-    {
-        if(game.emitters[index])
-        {
-            game.emitters[index].particles.emit = false;
-            game.emitters[index].particles.emitterLifetime = 0.5;
-        }
-    },
-
-    removeEmitters:function()
-    {
-        emitters.clear();
-        renderer.emittersContainer.x = 0;
-        renderer.emittersContainer.y = 0;
-        this.emittersContainer.removeChildren();
-        game.emitters.splice(0, game.emitters.length);
     },
 
     removeGameInterface:function()

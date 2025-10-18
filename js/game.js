@@ -81,14 +81,14 @@ var game = {
     textbook:[],
     props:[],
     lecturerStudentPositions: [
-        { x: 100, y: 72, d:0 },
-        { x: 82, y: 61, d:0 },
-        { x: 95, y: 64, d:0 }
+        { x: 89, y: 74, d:0 },
+        { x: 63, y: 71, d:0 },
+        { x: 95, y: 62, d:0 }
     ],
     narratorStudentPositions: [
-        { x: 80, y: 183, d:0 },
+        { x: 80, y: 183, d:2 },
         { x: 84, y: 183, d:0 },
-        { x: 88, y: 186, d:0 }
+        { x: 88, y: 186, d:7 }
     ],
     tutorStudentPositions: [
         { x: 243, y: 179, d:0 },
@@ -97,7 +97,7 @@ var game = {
     ],
     librarianStudentPositions: [
         { x: 257, y: 67, d:0 },
-        { x: 250, y: 75, d:0 },
+        { x: 250, y: 75, d:4 },
         { x: 243, y: 64, d:0 }
     ],
     lasers:[],
@@ -947,7 +947,6 @@ var game = {
 
     updateEnrolledStudentGroups:function(enrolled)
     {
-        console.log("updateEnrolledStudentGroups");
         const positionMap = {
             lecturer: this.lecturerStudentPositions,
             narrator: this.narratorStudentPositions,
@@ -965,8 +964,6 @@ var game = {
                 console.warn(`No positions defined for group: ${group}`);
                 continue;
             }
-
-            console.log(studentNames);
     
             for (let i = 0; i < studentNames.length; i++)
             {
@@ -1536,7 +1533,6 @@ var game = {
         renderer.removeTerrain();
         renderer.removeThreshold();
         renderer.removeLights();
-        renderer.removeEmitters();
         renderer.removeDebug();
 
         game.offsetX = 0;
