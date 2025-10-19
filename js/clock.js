@@ -2,7 +2,7 @@ const TICK_RATE = 1000 / 60 / 1000;
 
 var clock =
 {
-    timer:300,
+    timer:9999999999,
     day:0,
     days:11,
 

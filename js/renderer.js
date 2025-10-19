@@ -2119,9 +2119,24 @@ var renderer = {
         this.lecturerText.text = message;
     },
 
-    setLecturerText:function()
+    setLecturerText: function()
     {
-        this.lecturerText = new PIXI.Text("", lecturerStyle);
+        const lecturerStyleWrapped = new PIXI.TextStyle({
+            fontFamily: 'Courier',
+            fontSize: 20,               // or your preferred size
+            fill: ['#FFFFFF'],
+            fontWeight: 'bold',
+            dropShadow: true,
+            dropShadowColor: '#000000',
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 3,
+            wordWrap: true,             // enable wrapping
+            wordWrapWidth: productionWidth * 0.8, // wrap within 80% of screen width
+            align: 'center'
+        });
+    
+        this.lecturerText = new PIXI.Text("", lecturerStyleWrapped);
         this.lecturerText.x = productionWidth / 2;
         this.lecturerText.y = productionHeight - 100;
         this.lecturerText.visible = false;
@@ -2135,10 +2150,6 @@ var renderer = {
 
     addNarratorText: function(message)
     {
-        const words = message.split(" ");
-        const numWords = words.length;
-        const timePerWord = 6000 / numWords; // milliseconds per word
-
         const style = new PIXI.TextStyle({
             fontFamily: "MedievalSharp, fantasy",
             fontSize: 24,
@@ -2151,65 +2162,93 @@ var renderer = {
 
         this.narratorContainer.removeChildren();
 
-        // Create PIXI.Text for each word
-        const wordObjects = words.map(word => {
+        const words = message.split(" ");
+        const maxWidth = productionWidth - 400; // max width for a line/phrase
+        const wordSpacing = 10;
+
+        // --- Split words into phrases that fit maxWidth ---
+        const phrases = [];
+        let currentPhrase = [];
+        let currentWidth = 0;
+
+        words.forEach(word => {
             const t = new PIXI.Text(word, style);
-            t.anchor.set(0, 0.5);
-            this.narratorContainer.addChild(t);
-            return t;
+            if(currentPhrase.length > 0) currentWidth += wordSpacing;
+            currentWidth += t.width;
+
+            if(currentWidth > maxWidth) {
+                // Save current phrase and start new
+                phrases.push(currentPhrase);
+                currentPhrase = [word];
+                currentWidth = t.width;
+            } else {
+                currentPhrase.push(word);
+            }
         });
+        if(currentPhrase.length > 0) phrases.push(currentPhrase);
 
+        let phraseIndex = 0;
         let currentIndex = 0;
+        let wordObjects = [];
 
-        function layoutWords() {
+        const showPhrase = () => {
+            this.narratorContainer.removeChildren();
+            wordObjects = phrases[phraseIndex].map(word => {
+                const t = new PIXI.Text(word, style);
+                t.anchor.set(0, 0.5);
+                this.narratorContainer.addChild(t);
+                return t;
+            });
+            currentIndex = 0;
+            layoutWords();
+        };
+
+        const layoutWords = () => {
             const y = productionHeight / 2;
-        
-            // First, calculate total width of all words including spacing
+
+            // Calculate total width including scaling
             let totalWidth = 0;
             wordObjects.forEach((w, i) => {
                 const scale = (i === currentIndex ? 1.8 : 1);
                 totalWidth += w.width * scale;
             });
-            totalWidth += (words.length - 1) * 10; // spacing between words
-        
-            // Drop sentence if too wide
-            if(totalWidth > productionWidth) {
-                // Hide all words
-                wordObjects.forEach(w => w.visible = false);
-                return;
-            } else {
-                wordObjects.forEach(w => w.visible = true);
-            }
-        
+            totalWidth += (wordObjects.length - 1) * wordSpacing;
+
             // Starting X for centering
             let x = (productionWidth - totalWidth) / 2;
-        
             wordObjects.forEach((w, i) => {
                 const scale = (i === currentIndex ? 1.8 : 1);
                 w.scale.set(scale);
                 w.x = x;
                 w.y = y;
-                x += w.width + 10; // spacing
+                x += w.width + wordSpacing;
             });
-        }
+        };
 
-        layoutWords();
+        const timePerWord = 6000 / words.length;
 
-        // Animate words across the sentence
         if(this._wordTimer) clearInterval(this._wordTimer);
         this._wordTimer = setInterval(() => {
             currentIndex++;
-            if(currentIndex >= wordObjects.length)
-            {
-                clearInterval(this._wordTimer);
-                this._wordTimer = null;
-                // Reset all words to normal scale
-                wordObjects.forEach(w => w.scale.set(1));
+            if(currentIndex >= wordObjects.length) {
+                // Move to next phrase if exists
+                phraseIndex++;
+                if(phraseIndex >= phrases.length) {
+                    clearInterval(this._wordTimer);
+                    this._wordTimer = null;
+                    // Reset all words to normal scale
+                    wordObjects.forEach(w => w.scale.set(1));
+                    layoutWords();
+                    return;
+                }
+                showPhrase();
+            } else {
                 layoutWords();
-                return;
             }
-            layoutWords();
         }, timePerWord);
+
+        // Show first phrase
+        showPhrase();
     },
 
     showNarratorText:function(visible)

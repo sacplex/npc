@@ -8,7 +8,7 @@ var teachers =
             frames:1,
             speechType:"passive",
             speechCount:0,
-            speechLimit:300,
+            speechLimit:240,
             passableGrid:[
 				[1]
 			],
@@ -176,17 +176,20 @@ var teachers =
 				{
 					if(materials.list["slides" + clock.day].index >= lecturer[clock.day-1].length)
 					{
+						game.slides[lecturer[clock.day-1][materials.list["slides" + clock.day].index-1].Slide].sprite.visible = false;
 						renderer.addLecturerText("");
-						this.speechCount = this.speechLimit + 1;
-						return;
+						this.speechCount = 0;
+						materials.list["slides" + clock.day].index = 0;
 					}
-
-					game.slides[lecturer[clock.day-1][materials.list["slides" + clock.day].index-1].Slide].sprite.visible = false;
-					let slideIndex = Math.floor(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Slide);
-					game.slides[slideIndex].sprite.visible = true;
-
-					renderer.addLecturerText(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Line)
-					materials.list["slides" + clock.day].index++;					
+					else
+					{
+						game.slides[lecturer[clock.day-1][materials.list["slides" + clock.day].index-1].Slide].sprite.visible = false;
+						let slideIndex = Math.floor(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Slide);
+						game.slides[slideIndex].sprite.visible = true;
+	
+						renderer.addLecturerText(lecturer[clock.day-1][materials.list["slides" + clock.day].index].Line)
+						materials.list["slides" + clock.day].index++;					
+					}
 				}
 			}
 
@@ -209,12 +212,15 @@ var teachers =
 					if(materials.list["story" + clock.day].index >= narrator[clock.day-1].length)
 					{
 						renderer.addNarratorText("");
-						this.speechCount = this.speechLimit + 1;
-						return;
+						this.speechCount = 0;
+						materials.list["story" + clock.day].index = 0;
 					}
-
-					renderer.addNarratorText(narrator[clock.day-1][materials.list["story" + clock.day].index].Line)
-					materials.list["story" + clock.day].index++;
+					else
+					{
+						console.log(narrator[clock.day-1][materials.list["story" + clock.day].index].Line);
+						renderer.addNarratorText(narrator[clock.day-1][materials.list["story" + clock.day].index].Line)
+						materials.list["story" + clock.day].index++;
+					}
 				}
 			}
 

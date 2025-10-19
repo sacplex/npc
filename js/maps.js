@@ -28,7 +28,6 @@ var maps =
         // ],
         "clock":
         {
-            //"timer":180
             "timer":9999999999
         },
         "buttons":[
@@ -64,15 +63,15 @@ var maps =
         // "startY":80,
         //"startX":180,
         //"startY":50,
-        "startX":40,
+        "startX":180,
         "startY":40,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
         ],
         "items": [
-            {"type":"player","name":"player","x":80,"y":70,"direction":0,"team":"characters","uid":-1},
-            {"type":"teachers","name":"lecturer","x":103,"y":56,"direction":0,"team":"characters","uid":-2},
+            {"type":"player","name":"player","x":240,"y":85,"direction":0,"team":"characters","uid":-1},
+            {"type":"teachers","name":"lecturer","x":103,"y":57,"direction":0,"team":"characters","uid":-2},
             {"type":"teachers","name":"librarian","x":240,"y":58,"direction":0,"team":"characters","uid":-3},
             {"type":"teachers","name":"tutor","x":260,"y":170,"direction":0,"team":"characters","uid":-4},
             {"type":"teachers","name":"narrator","x":85.5,"y":178,"direction":0,"team":"characters","uid":-5},
@@ -106,7 +105,7 @@ var maps =
         ],
         "clock":
         {
-            "timer":180
+            "timer":120
         },
         "triggers" : [
         {
@@ -151,7 +150,7 @@ var maps =
         ],
         "clock":
         {
-            "timer":2
+            "timer":300
         },
         
         "triggers" : [
@@ -225,7 +224,7 @@ var maps =
                 economy.toggle("food");
             }},
             {"type":"buttons", "name":"social", "text":"Socialise", "x":1100, "y":600, "action":()=>{
-                renderer.toggleButton("social_friends");
+                renderer.toggleButton("social");
                 economy.toggle("social");
             }},
             {"type":"buttons", "name":"family", "text":"Family Support", "x":1100, "y":700, "action":()=>{

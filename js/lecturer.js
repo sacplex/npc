@@ -59,7 +59,7 @@ var lecturer =
 			"Name": "9",
 			"Lecture": 1,
 			"Slide": "1",
-			"Line": "You might be wondering, why Ruby? What makes it special?)"
+			"Line": "You might be wondering, why Ruby? What makes it special?"
 		},
 		{
 			"Name": "10",
@@ -134,12 +134,6 @@ var lecturer =
 			"Line": "I'm excited to see what you'll create with Ruby and how you'll apply these skills in your academic and professional life."
 		},
 		{
-			"Name": "22",
-			"Lecture": 1,
-			"Slide": "4",
-			"Line": "Welcome once again to university, to this course, and to the world of programming!)"
-		},
-		{
 			"Name": "23",
 			"Lecture": 1,
 			"Slide": "4",
@@ -155,7 +149,7 @@ var lecturer =
 			"Name": "25",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "Here's the code)"
+			"Line": "Here's the code."
 		},
 		{
 			"Name": "26",
@@ -173,7 +167,7 @@ var lecturer =
 			"Name": "28",
 			"Lecture": 1,
 			"Slide": "4",
-			"Line": "Try running this code in your Ruby environment, and you'll see how easy it is to start programming with Ruby!)"
+			"Line": "Try running this code in your Ruby environment, and you'll see how easy it is to start programming with Ruby!"
 		},
 	],
 	[
@@ -285,7 +279,13 @@ var lecturer =
 			"Name": "47",
 			"Lecture": 3,
 			"Slide": "7",
-			"Line": "By understanding functions and how they work, you can create reusable, maintainable code in Ruby. Functions help break down complex problems into smaller, manageable tasks, enhancing both readability and efficiency. Now that we've covered defining, calling, and managing methods, let's move on to practice creating and using functions effectively in our programs."
+			"Line": "By understanding functions and how they work, you can create reusable, maintainable code in Ruby. Functions help break down complex problems into smaller, manageable tasks, enhancing both readability and efficiency."
+		},
+		{
+			"Name": "47",
+			"Lecture": 3,
+			"Slide": "7",
+			"Line": "Now that we've covered defining, calling, and managing methods, let's move on to practice creating and using functions effectively in our programs."
 		},
 	],
 	[
@@ -293,19 +293,37 @@ var lecturer =
 			"Name": "48",
 			"Lecture": 4,
 			"Slide": "1",
-			"Line": "Today, we'll be diving into two key control structures in Ruby: if and case statements. These are essential tools that allow us to make decisions in our code and execute specific blocks of code based on certain conditions."
+			"Line": "Today, we'll be diving into two key control structures in Ruby: if and case statements."
+		},
+		{
+			"Name": "48",
+			"Lecture": 4,
+			"Slide": "1",
+			"Line": "These are essential tools that allow us to make decisions in our code and execute specific blocks of code based on certain conditions."
 		},
 		{
 			"Name": "49",
 			"Lecture": 4,
 			"Slide": "2",
-			"Line": "Let's begin with the if statement. The if statement is the simplest form of conditional logic. It's used when you have a single condition to evaluate. If that condition is true, a particular block of code will be executed. If not, the program simply moves on without executing anything. The syntax is straightforward: if condition."
+			"Line": "Let's begin with the if statement. The if statement is the simplest form of conditional logic. It's used when you have a single condition to evaluate."
+		},
+		{
+			"Name": "49",
+			"Lecture": 4,
+			"Slide": "2",
+			"Line": "If that condition is true, a particular block of code will be executed. If not, the program simply moves on without executing anything. The syntax is straightforward: if condition."
 		},
 		{
 			"Name": "50",
 			"Lecture": 4,
 			"Slide": "3",
-			"Line": "Next, we have the if-else structure. This is used when you need to handle two outcomes one for when the condition is true, and another for when it's false. The if-else structure provides a way to define what should happen in both scenarios."
+			"Line": "Next, we have the if-else structure. This is used when you need to handle two outcomes one for when the condition is true, and another for when it's false."
+		},
+		{
+			"Name": "50",
+			"Lecture": 4,
+			"Slide": "3",
+			"Line": "The if-else structure provides a way to define what should happen in both scenarios."
 		},
 		{
 			"Name": "51",
@@ -317,7 +335,13 @@ var lecturer =
 			"Name": "52",
 			"Lecture": 4,
 			"Slide": "5",
-			"Line": "Moving on to the case statement, which is particularly useful when dealing with multiple possible values. The case statement provides a clear and concise way to evaluate these values, offering an alternative to if-elsif-else structures. It allows us to match values against a set of conditions and execute the corresponding code block when a match is found."
+			"Line": "Moving on to the case statement, which is particularly useful when dealing with multiple possible values. The case statement provides a clear and concise way to evaluate these values, offering an alternative to if-elsif-else structures."
+		},
+		{
+			"Name": "52",
+			"Lecture": 4,
+			"Slide": "5",
+			"Line": "It allows us to match values against a set of conditions and execute the corresponding code block when a match is found."
 		},
 		{
 			"Name": "53",
@@ -397,7 +421,7 @@ var lecturer =
 			"Name": "65",
 			"Lecture": 5,
 			"Slide": "10",
-			"Line": "Let me know if you need further assistance!)"
+			"Line": "Let me know if you need further assistance!"
 		},
 		{
 			"Name": "66",
@@ -756,61 +780,61 @@ var lecturer =
 		{
 			"Name": "123",
 			"Lecture": 11,
-			"Slide": "3'",
+			"Slide": "3",
 			"Line": "Ruby on Rails follows the Model-View-Controller (MVC) architecture, making it easy to separate your application into data, user interface, and control layers."
 		},
 		{
 			"Name": "124",
 			"Lecture": 11,
-			"Slide": "4'",
+			"Slide": "4",
 			"Line": "The MVC architecture separates the logic into three key components: Model for data, View for UI, and Controller for managing user requests and interactions."
 		},
 		{
 			"Name": "125",
 			"Lecture": 11,
-			"Slide": "5'",
+			"Slide": "5",
 			"Line": "Rails follows the principle of Convention over Configuration, meaning it assumes the default behaviour for most things, saving developers time and effort in setup."
 		},
 		{
 			"Name": "126",
 			"Lecture": 11,
-			"Slide": "6'",
+			"Slide": "6",
 			"Line": "Ruby on Rails embraces the Don't Repeat Yourself (DRY) principle, encouraging the reuse of code to increase efficiency and reduce redundancy."
 		},
 		{
 			"Name": "127",
 			"Lecture": 11,
-			"Slide": "7'",
+			"Slide": "7",
 			"Line": "The directory structure in Rails is designed to be logical and consistent, making it easy to locate models, views, controllers, and configuration files."
 		},
 		{
 			"Name": "128",
 			"Lecture": 11,
-			"Slide": "8'",
+			"Slide": "8",
 			"Line": "Setting up a new Ruby on Rails project is straightforward: Install Ruby and Rails, then use the rails new command to generate a new application, followed by running rails server to start the development server."
 		},
 		{
 			"Name": "129",
 			"Lecture": 11,
-			"Slide": "9'",
+			"Slide": "9",
 			"Line": "In Rails, routes define how URLs map to controller actions, and controllers process incoming requests, sending responses to views or returning data to the user."
 		},
 		{
 			"Name": "130",
 			"Lecture": 11,
-			"Slide": "10'",
+			"Slide": "10",
 			"Line": "Active Record in Rails is the tool that allows you to interact with the database through Ruby objects, while migrations help you define and modify the database schema."
 		},
 		{
 			"Name": "131",
 			"Lecture": 11,
-			"Slide": "11'",
+			"Slide": "11",
 			"Line": "Rails views use Embedded Ruby (ERB) to inject Ruby code into HTML templates, dynamically generating content for the user interface."
 		},
 		{
 			"Name": "132",
 			"Lecture": 11,
-			"Slide": "12'",
+			"Slide": "12",
 			"Line": "Ruby on Rails benefits from a vibrant ecosystem, with an active community that contributes gems and plugins to enhance its functionality, making development faster and more flexible."
 		},
 	],
@@ -818,79 +842,79 @@ var lecturer =
 		{
 			"Name": "133",
 			"Lecture": 12,
-			"Slide": "1'",
+			"Slide": "1",
 			"Line": "We began by understanding Ruby's syntax, laying the foundation for writing clear and concise code."
 		},
 		{
 			"Name": "134",
 			"Lecture": 12,
-			"Slide": "2'",
+			"Slide": "2",
 			"Line": "Next, we explored variables and data types, which are fundamental to managing and manipulating information in your programs."
 		},
 		{
 			"Name": "135",
 			"Lecture": 12,
-			"Slide": "3'",
+			"Slide": "3",
 			"Line": "We then moved on to functions, helping you structure your code into reusable blocks that make development more efficient."
 		},
 		{
 			"Name": "136",
 			"Lecture": 12,
-			"Slide": "4'",
+			"Slide": "4",
 			"Line": "Conditional statements such as if, else, and case allowed you to control the flow of your program, guiding it to make decisions based on different conditions."
 		},
 		{
 			"Name": "137",
 			"Lecture": 12,
-			"Slide": "5'",
+			"Slide": "5",
 			"Line": "Loops, including while and each, empowered you to repeat actions, making it easier to handle repetitive tasks or process collections of data."
 		},
 		{
 			"Name": "138",
 			"Lecture": 12,
-			"Slide": "6'",
+			"Slide": "6",
 			"Line": "We explored arrays, one of Ruby's most useful data structures, and you learned how to store and manipulate collections of data efficiently."
 		},
 		{
 			"Name": "139",
 			"Lecture": 12,
-			"Slide": "7'",
+			"Slide": "7",
 			"Line": "Object-oriented programming came next, where we focused on creating classes and instances, understanding how objects communicate with each other."
 		},
 		{
 			"Name": "140",
 			"Lecture": 12,
-			"Slide": "8'",
+			"Slide": "8",
 			"Line": "We then advanced to multiple classes and explored how they can work together to build more complex systems."
 		},
 		{
 			"Name": "141",
 			"Lecture": 12,
-			"Slide": "9'",
+			"Slide": "9",
 			"Line": "Inheritance and polymorphism enabled us to write more flexible and reusable code, unlocking the power of OOP."
 		},
 		{
 			"Name": "142",
 			"Lecture": 12,
-			"Slide": "10'",
+			"Slide": "10",
 			"Line": "We also covered searching and sorting algorithms, which are vital for handling large datasets effectively in Ruby."
 		},
 		{
 			"Name": "143",
 			"Lecture": 12,
-			"Slide": "11'",
+			"Slide": "11",
 			"Line": "Finally, we ventured into Ruby on Rails, where we saw how Ruby extends its power into web development, allowing you to build dynamic, database-driven websites."
 		},
 		{
 			"Name": "144",
 			"Lecture": 12,
-			"Slide": "12'",
+			"Slide": "12",
 			"Line": "As we close, remember that the concepts we've covered are just the beginning keep experimenting with Ruby, and continue building your skills as a developer."
 		},
 		{
 			"Name": "145",
 			"Lecture": 12,
-			"Slide": "13'",
+			"Slide": "13",
 			"Line": "To prepare for the exam, review all key concepts we've covered, practice coding exercises, and focus on understanding the core Ruby principles such as syntax, object-oriented programming, algorithms, and Ruby on Rails."
 		}
 	]

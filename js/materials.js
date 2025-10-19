@@ -43,7 +43,7 @@ var materials =
         "slides3":
 		{
             index:0,
-            frames:5
+            frames:8
         },
         "story3":
 		{
@@ -62,7 +62,7 @@ var materials =
         "slides4":
 		{
             index:0,
-            frames:12
+            frames:10
         },
         "story4":
 		{
@@ -81,7 +81,7 @@ var materials =
         "slides5":
 		{
             index:0,
-            frames:5
+            frames:11
         },
         "story5":
 		{
@@ -100,7 +100,7 @@ var materials =
         "slides6":
 		{
             index:0,
-            frames:12
+            frames:13
         },
         "story6":
 		{
@@ -120,7 +120,7 @@ var materials =
         "slides7":
 		{
             index:0,
-            frames:5
+            frames:12
         },
         "story7":
 		{
@@ -158,7 +158,7 @@ var materials =
         "slides9":
 		{
             index:0,
-            frames:5
+            frames:12
         },
         "story9":
 		{
@@ -177,7 +177,7 @@ var materials =
         "slides10":
 		{
             index:0,
-            frames:12
+            frames:11
         },
         "story10":
 		{
@@ -196,7 +196,7 @@ var materials =
         "slides11":
 		{
             index:0,
-            frames:5
+            frames:13
         },
         "story11":
 		{
@@ -215,7 +215,7 @@ var materials =
         "slides12":
 		{
             index:0,
-            frames:12
+            frames:14
         },
         "story12":
 		{
