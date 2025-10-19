@@ -31,7 +31,7 @@ var maps =
             "timer":9999999999
         },
         "buttons":[
-            {"type":"buttons", "name":"start", "x":900, "y":1020, "action":()=>{
+            {"type":"buttons", "name":"start", "x":920, "y":1030, "action":()=>{
                 renderer.clock.reset();
                 game.endLevel();
                 game.nextLevel();
