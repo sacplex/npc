@@ -151,7 +151,7 @@ var maps =
         ],
         "clock":
         {
-            "timer":300
+            "timer":2
         },
         
         "triggers" : [
@@ -226,7 +226,7 @@ var maps =
             }},
             {"type":"buttons", "name":"social", "text":"Socialise", "x":1100, "y":600, "action":()=>{
                 renderer.toggleButton("social_friends");
-                economy.toggle("social_friends");
+                economy.toggle("social");
             }},
             {"type":"buttons", "name":"family", "text":"Family Support", "x":1100, "y":700, "action":()=>{
                 renderer.toggleButton("family");

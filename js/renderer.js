@@ -1331,6 +1331,89 @@ var renderer = {
         this.app.ticker.add(this.app.tickerCallback);
     },
 
+    assignFullscreenWarning: function()
+    {
+        // --- Remove old warning if exists ---
+        if (this.fullscreenWarning)
+        {
+            this.gameplayContainer.removeChild(this.fullscreenWarning);
+            this.fullscreenWarning = null;
+        }
+
+        // --- Create text style ---
+        const textStyle = new PIXI.TextStyle({
+            fill: "#FFDD00",
+            fontSize: 44,
+            fontWeight: "bold",
+            stroke: "#000000",
+            strokeThickness: 5,
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowDistance: 4,
+            align: "center",
+            wordWrap: true,
+            wordWrapWidth: productionWidth * 0.8
+        });
+
+        // --- Text content ---
+        const message = "⚠️ Fullscreen Disabled\n\nPress F11 or click below to return to fullscreen.";
+        const text = new PIXI.Text(message, textStyle);
+        text.anchor.set(0.5);
+        text.x = productionWidth / 2;
+        text.y = productionHeight / 2 - 40;
+
+        // --- Optional clickable "Return" button ---
+        const buttonStyle = new PIXI.TextStyle({
+            fill: "#FFFFFF",
+            fontSize: 36,
+            fontWeight: "bold",
+            stroke: "#000000",
+            strokeThickness: 4,
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowDistance: 3,
+        });
+
+        const buttonText = new PIXI.Text("🔁 Return to Fullscreen", buttonStyle);
+        buttonText.anchor.set(0.5);
+        buttonText.x = productionWidth / 2;
+        buttonText.y = productionHeight / 2 + 80;
+        buttonText.interactive = true;
+        buttonText.buttonMode = true;
+
+        buttonText.on("pointerdown", () =>
+        {
+            // Try to re-enter fullscreen
+            if (document.documentElement.requestFullscreen)
+                document.documentElement.requestFullscreen();
+        });
+
+        // --- Container setup ---
+        const container = new PIXI.Container();
+        container.addChild(text);
+        container.addChild(buttonText);
+        container.alpha = 0;
+
+        this.gameplayContainer.addChild(container);
+        this.fullscreenWarning = container;
+
+        // --- Fade-in animation ---
+        const fadeInSpeed = 0.03;
+        const ticker = new PIXI.Ticker();
+
+        ticker.add((delta) =>
+        {
+            if (container.alpha < 1)
+            {
+                container.alpha += fadeInSpeed * delta;
+                if (container.alpha >= 1)
+                    container.alpha = 1;
+            }
+        });
+
+        ticker.start();
+    },
+
     loadLevel:function(savedData)
     {
         this.resourceMasterSet.clear();

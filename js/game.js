@@ -795,6 +795,21 @@ var game = {
 
         tileWidthOffset = Math.ceil((screen.width - productionWidth) / game.gridSize);
         tileHeightOffset = Math.ceil((screen.height - productionHeight) / game.gridSize);
+
+        document.addEventListener("fullscreenchange", () =>
+        {
+            const isFullscreen = !!document.fullscreenElement;
+
+            if (!isFullscreen)
+            {
+                renderer.assignFullscreenWarning();
+            }
+            else if (renderer.fullscreenWarning)
+            {
+                renderer.gameplayContainer.removeChild(renderer.fullscreenWarning);
+                renderer.fullscreenWarning = null;
+            }
+        });
     },
 
     // setFullScreen: function()

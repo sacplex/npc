@@ -11,8 +11,14 @@ const conversationStyle = new PIXI.TextStyle({
 
 const lecturerStyle = new PIXI.TextStyle({
     fontFamily: 'Courier',
-    fontSize: 14,
-    fill: ['#FFFFFF'], // gradient
+    fontSize: 20,           // increased size
+    fill: ['#FFFFFF'],      // gradient or solid white
+    fontWeight: 'bold',
+    dropShadow: true,        // enable shadow
+    dropShadowColor: '#000000', // shadow color (black)
+    dropShadowBlur: 4,       // blur radius for softer shadow
+    dropShadowAngle: Math.PI / 6, // shadow angle
+    dropShadowDistance: 3,   // shadow offset
 });
 
 const narratorStyle = new PIXI.TextStyle({

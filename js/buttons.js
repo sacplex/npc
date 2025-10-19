@@ -55,35 +55,35 @@ var buttons =
             name:"rent",
             frames:2,
             visible:0,
-            cost:40
+            cost:30
         },
         "aircon_heating":
         {
             name:"aircon_heating",
             frames:2,
             visible:0,
-            cost:10
+            cost:5
         },
         "food":
         {
             name:"food",
             frames:2,
             visible:0,
-            cost:5
+            cost:3
         },
         "social":
         {
             name:"social",
             frames:2,
             visible:0,
-            cost:15
+            cost:10
         },
         "family":
         {
             name:"family",
             frames:2,
             visible:0,
-            cost:20
+            cost:15
         }
     }
 }
