@@ -97,7 +97,7 @@ var economy =
         // --- Bonus ---
         if (this.bonus)
         {
-            const bonusPay = 10 * this.bonus;
+            const bonusPay = 40 * Math.round(this.bonus * 10) / 10;
             this.cash += bonusPay;
 
             console.log(`[BONUS] Applying performance bonus: +$${bonusPay.toFixed(2)} (Bonus factor: ${this.bonus})`);
