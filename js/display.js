@@ -155,6 +155,15 @@ var display =
             return filename;
         }
     },
+    "bonus":
+    {
+        getFileName:function()
+        {
+            var filename = "images/bonus/bonus.png";
+
+            return filename;
+        }
+    },
     "gameplayScreen":
     {
         "width":1760,

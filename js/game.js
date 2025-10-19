@@ -250,9 +250,10 @@ var game = {
     sendCommand:function(uids,orders)
     {
         if(game.mode == "singleplayer")
+        {            
+            singleplayer.scaleOrders(orders);
             singleplayer.sendCommand(uids,orders);
-        else if(game.mode == "multiplayer")
-            multiplayer.sendCommand(uids,orders,orders.from);            
+        }
     },
 
     processCommand:function(uids,orders)

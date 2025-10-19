@@ -72,6 +72,7 @@ var renderer = {
     loginContainer:undefined,
     expensesContainer:undefined,
     gameoverContainer:undefined,
+    bonusContainer:undefined,
     resourcesContainer:undefined,
     thresholdContainer:undefined,
     lightsContainer:undefined,
@@ -287,6 +288,7 @@ var renderer = {
         this.loginContainer = new PIXI.Container();
         this.expensesContainer = new PIXI.Container();
         this.gameoverContainer = new PIXI.Container();
+        this.bonusContainer = new PIXI.Container();
         this.resourcesContainer = new PIXI.Container();
         this.thresholdContainer = new PIXI.Container();
         this.lightsContainer = new PIXI.Container();
@@ -613,6 +615,24 @@ var renderer = {
         });
     },
 
+    bonus:function(message)
+    {
+        let bonusFilename = display.bonus.getFileName();
+
+        if(!this.resourceMasterSet.has(bonusFilename))
+        {
+            PIXI.Assets.add(bonusFilename, bonusFilename);
+            this.resourceMasterSet.add(bonusFilename);
+        }
+
+        const texturesPromise = PIXI.Assets.load(Array.from(this.resourceMasterSet));
+
+        texturesPromise.then((textures) =>
+        {
+            this.assignBonus(message); 
+        });
+    },
+
     assignLogin:function(textures)
     {
         // --- Setup login ---
@@ -698,7 +718,7 @@ var renderer = {
         this.expensesCount = 0;
     },
 
-    assignExpenses(name)
+    assignExpenses:function(name)
     {
         const textureName = display.expenses.getFileName();
         const expensesTexture = this.expensesTexture?.[textureName] || PIXI.Texture.from(textureName);
@@ -786,7 +806,7 @@ var renderer = {
         this.expensesCount++;
     },
 
-    assignGameover()
+    assignGameover:function()
     {
         const textureName = display.gameover.getFileName();
         const gameoverTexture = PIXI.Texture.from(textureName);
@@ -820,6 +840,7 @@ var renderer = {
     
         this.gameoverContainer.addChild(tempContainer);
         this.gameplayContainer.addChild(this.gameoverContainer);
+        this.gameplayContainer.addChild(this.bonusContainer);
     
         // --- Fade control ---
         const fadeInSpeed = 0.02;
@@ -858,6 +879,82 @@ var renderer = {
                         game.endLevel();
                         game.nextLevel();
                         economy.send();
+                    }
+                }
+            }
+        });
+    
+        ticker.start();
+    },
+
+    assignBonus:function(message)
+    {
+        const textureName = display.bonus.getFileName();
+        const bonusTexture = PIXI.Texture.from(textureName);
+    
+        // --- Create sprite ---
+        const sprite = new PIXI.Sprite(bonusTexture);
+        sprite.anchor.set(0.5);
+        sprite.x = productionWidth / 2;
+        sprite.y = productionHeight / 2;
+    
+        // --- Create text ---
+        const textStyle = new PIXI.TextStyle({
+            fill: "#FFFFFF",
+            fontSize: 48,
+            fontWeight: "bold",
+            dropShadow: true,
+            dropShadowColor: "#000000",
+            dropShadowDistance: 3,
+        });
+    
+        const text = new PIXI.Text(message, textStyle);
+        text.anchor.set(0.5);
+        text.x = sprite.x;
+        text.y = sprite.y;
+    
+        // --- Container setup ---
+        const tempContainer = new PIXI.Container();
+        tempContainer.addChild(sprite);
+        tempContainer.addChild(text);
+        tempContainer.alpha = 0; // Start invisible
+    
+        this.bonusContainer.addChild(tempContainer);
+        this.gameplayContainer.addChild(this.bonusContainer);
+    
+        // --- Fade control ---
+        const fadeInSpeed = 0.02;
+        const fadeOutSpeed = 0.02;
+        const visibleDuration = 5000; // 5 seconds on screen
+    
+        let fadeInDone = false;
+        let timeVisible = 0;
+    
+        const ticker = new PIXI.Ticker();
+        ticker.add((delta) =>
+        {
+            if (!fadeInDone)
+            {
+                tempContainer.alpha += fadeInSpeed * delta;
+                if (tempContainer.alpha >= 1)
+                {
+                    tempContainer.alpha = 1;
+                    fadeInDone = true;
+                }
+            }
+            else
+            {
+                timeVisible += delta * 16.67; // Approx ms/frame
+                if (timeVisible >= visibleDuration)
+                {
+                    tempContainer.alpha -= fadeOutSpeed * delta;
+                    if (tempContainer.alpha <= 0)
+                    {
+                        tempContainer.alpha = 0;
+                        ticker.stop();
+                        ticker.destroy();
+                        this.bonusContainer.removeChild(tempContainer);
+                        economy.bonus = undefined;
                     }
                 }
             }

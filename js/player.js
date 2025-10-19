@@ -644,14 +644,6 @@ var player =
 				return;
 			}
 
-			this.orders.to.y = this.orders.to.y - display.maininterface.mapImageYOffset * productionRatio;
-
-			this.orders.to.x = this.orders.to.x * productionInverseRatio + game.offsetX;
-			this.orders.to.y = this.orders.to.y * productionInverseRatio + game.offsetY;
-
-			this.orders.to.x = this.orders.to.x / game.gridSize;
-			this.orders.to.y = this.orders.to.y / game.gridSize;
-
 			if(game.currentTerrainMapPassableGrid[
                 Math.floor(this.orders.to.y)][Math.floor(this.orders.to.x)]
                  == flags.CELL_COLLISION_MODE_FULL)
@@ -749,11 +741,6 @@ var player =
 					destination.target = this.target;			
 				}
 			}
-
-			// destination.y -= display.maininterface.mapImageYOffset * productionRatio;
-
-			// destination.x *= productionInverseRatio / game.gridSize;
-			// destination.y *= productionInverseRatio / game.gridSize;
 
 			this.spreadDestination(destination);
 

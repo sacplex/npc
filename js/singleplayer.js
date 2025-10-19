@@ -71,6 +71,18 @@ var singleplayer =
 
 		game.processCommand(uids,orders);
     },  
+
+    scaleOrders:function(orders)
+    {
+        if(orders.to)
+        {
+            orders.to.x = orders.to.x * productionInverseRatioX + game.offsetX;
+            orders.to.y = orders.to.y * productionInverseRatio + game.offsetY;
+
+            orders.to.x = orders.to.x / game.gridSize;
+            orders.to.y = orders.to.y / game.gridSize;
+        }
+    },
     
     generateCurrentMapGrid:function(mapObstructedTerrain)
     {

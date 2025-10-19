@@ -42,14 +42,14 @@ var economy =
 
     // Calculate end-of-day payout
     setPayout: function()
-    {
-        
+    {   
         let pay = 0;
 
         let uniqueStudents = this.payout.messagesByStudent.size;
 
         // Breadth bonus: encourage talking to more people
         let breadthMultiplier = 1 + (Math.min(uniqueStudents, 5)); // max +50%
+        console.log(`[PAYOUT] Unique students: ${uniqueStudents}, Breadth Multiplier: x${breadthMultiplier}`);
 
         for (let [name, count] of this.payout.messagesByStudent.entries())
         {
@@ -58,42 +58,65 @@ var economy =
             {
                 pay += this.getMessageValue(i);
             }
+            console.log(`[PAYOUT] Student "${name}" -> ${count} messages, total value so far: $${pay.toFixed(2)}`);
         }
 
         // Apply breadth bonus and any global bonus
         pay = pay * breadthMultiplier * this.payout.bonus;
-
-        // Add to cash & reset daily record
         pay = Math.ceil(pay);
 
+        console.log(`[PAYOUT] Base pay after multipliers: $${pay.toFixed(2)} (Bonus Multiplier: x${this.payout.bonus})`);
+
+        // Apply the pay
         this.payout.pay += pay;
         this.cash += pay;
-        
+
+        // Reset daily record
         this.payout.messagesByStudent.clear();
 
-        if(this.penalties.length > 0)
+        // --- Penalties ---
+        if (this.penalties.length > 0)
         {
-            for(var i = 0; i < this.penalties.length; i++)
+            console.log(`[PENALTY] Applying ${this.penalties.length} penalties...`);
+            for (var i = 0; i < this.penalties.length; i++)
             {
-                if(this.expenses.has(this.penalties[i].name))
+                if (this.expenses.has(this.penalties[i].name))
                 {
-                    //alert("Need to pay for: " + this.expenses.get(this.penalties[i].name).name + " with " + this.expenses.get(this.penalties[i].name).cost);
+                    const penaltyCost = this.expenses.get(this.penalties[i].name).cost;
                     renderer.assignExpenses(this.penalties[i].name);
-                    this.cash -= this.expenses.get(this.penalties[i].name).cost;
+                    this.cash -= penaltyCost;
+                    console.log(`[PENALTY] ${this.penalties[i].name}: -$${penaltyCost.toFixed(2)} (Cash: $${this.cash.toFixed(2)})`);
                 }
             }
         }
-
-        if(this.bonus)
-            this.cash = this.cash + (10 * this.bonus)
-
-        if(this.cash < 0)
+        else
         {
-            renderer.gameover();
-            
+            console.log("[PENALTY] No penalties applied today.");
         }
 
-        console.log(`End of day payout: $${pay.toFixed(2)} (Cash: $${this.cash.toFixed(2)})`);
+        // --- Bonus ---
+        if (this.bonus)
+        {
+            const bonusPay = 10 * this.bonus;
+            this.cash += bonusPay;
+
+            console.log(`[BONUS] Applying performance bonus: +$${bonusPay.toFixed(2)} (Bonus factor: ${this.bonus})`);
+            if (this.bonus > 0.0)
+                renderer.bonus("Good work bonus: " + bonusPay);
+        }
+        else
+        {
+            console.log("[BONUS] No additional performance bonus applied.");
+        }
+
+        // --- Final Check ---
+        if (this.cash < 0)
+        {
+            console.log("[GAMEOVER] Player cash below $0 — triggering game over.");
+            renderer.gameover();
+        }
+
+        console.log(`[SUMMARY] End of day payout: $${pay.toFixed(2)} | Cash after penalties/bonuses: $${this.cash.toFixed(2)}`);
     },
 
     getMessageValue: function(messageIndex)

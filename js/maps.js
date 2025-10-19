@@ -106,7 +106,7 @@ var maps =
         ],
         "clock":
         {
-            "timer":2
+            "timer":180
         },
         "triggers" : [
         {
@@ -151,8 +151,7 @@ var maps =
         ],
         "clock":
         {
-            //"timer":180
-            "timer":2
+            "timer":300
         },
         
         "triggers" : [
