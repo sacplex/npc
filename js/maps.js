@@ -63,14 +63,14 @@ var maps =
         // "startY":80,
         //"startX":180,
         //"startY":50,
-        "startX":180,
-        "startY":40,
+        "startX":120,
+        "startY":100,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
         ],
         "items": [
-            {"type":"player","name":"player","x":240,"y":85,"direction":0,"team":"characters","uid":-1},
+            {"type":"player","name":"player","x":166,"y":130,"direction":4,"team":"characters","uid":-1},
             {"type":"teachers","name":"lecturer","x":103,"y":57,"direction":0,"team":"characters","uid":-2},
             {"type":"teachers","name":"librarian","x":240,"y":58,"direction":0,"team":"characters","uid":-3},
             {"type":"teachers","name":"tutor","x":260,"y":170,"direction":0,"team":"characters","uid":-4},
@@ -105,7 +105,7 @@ var maps =
         ],
         "clock":
         {
-            "timer":120
+            "timer":12
         },
         "triggers" : [
         {
@@ -121,14 +121,14 @@ var maps =
         "numberOfVerticalTiles":8,
         "backgroundWidth":6400,
         "backgroundHeight":4800,
-        "startX":80,
-        "startY":80,
+        "startX":120,
+        "startY":100,
         "mapGridWidth":320,
         "mapGridHeight":240,
         "additional_requirements":[
         ],
         "items": [
-            {"type":"player","name":"player","x":120,"y":120,"direction":0,"team":"characters","uid":-1},
+            {"type":"player","name":"player","x":166,"y":130,"direction":4,"team":"characters","uid":-1},
             {"type":"students","name":"adam","x":190,"y":110,"direction":0,"team":"characters","uid":-2},
             {"type":"students","name":"max","x":150,"y":150,"direction":4,"team":"characters","uid":-3},
             {"type":"students","name":"alice","x":190,"y":140,"direction":0,"team":"characters","uid":-4},
