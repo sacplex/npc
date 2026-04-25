@@ -271,18 +271,21 @@ var maps =
         // ],
         "buttons":[
             {"type":"buttons", "name":"first_survey", "x":900, "y":550, "action":()=>{
-                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_cx7YYDMo3zBF5Nc", "_blank")
+                //window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_cx7YYDMo3zBF5Nc", "_blank")
+                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_3dCd78vTp1qu90y", "_blank")
             }},
             {"type":"buttons", "name":"first_survey_qr", "x":900, "y":600},
             {"type":"buttons", "name":"return_survey", "x":600, "y":550, "action":()=>{
-                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_6QXm5X7OtB01You", "_blank")
+                // window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_6QXm5X7OtB01You", "_blank")
+                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_3vAyW0S35MtvviC", "_blank")
             }},
             {"type":"buttons", "name":"return_survey_qr", "x":600, "y":600},
             {"type":"buttons", "name":"last_survey", "x":1200, "y":550, "action":()=>{
-                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_eFZzdAMiQYWY74y", "_blank")
+                // window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_eFZzdAMiQYWY74y", "_blank")
+                window.open("https://rmit.au1.qualtrics.com/jfe/form/SV_6QljkdORsw1ITr0", "_blank")
             }},
             {"type":"buttons", "name":"last_survey_qr", "x":1200, "y":600},
-        ],    
+        ], 
         "triggers" : [
         {
             "type":"conditional",
