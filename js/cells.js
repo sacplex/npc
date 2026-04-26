@@ -359,7 +359,7 @@ var cells =
         if(this.tactical_uids_grid.has(uid))
         {
             console.log("%cwarning try to add tactical uids, already have uid",'background: #000; color: #bcbf27');
-            alert("try to add tactical uids, already have uid");
+            //alert("try to add tactical uids, already have uid");
             
             return;
         }

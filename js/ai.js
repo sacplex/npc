@@ -266,12 +266,12 @@ var ai =
                 if(!this.dependents.has(this.additionalDetails[0].dependent[0].name))
                 {
                     if(debug.logAIDebug)
-                        alert("needs " + this.additionalDetails[0].name)
+                        //alert("needs " + this.additionalDetails[0].name)
                     
                     this.additionalDetails[0] = this.additionalDetails[0].dependent[0];
                     
                     if(debug.logAIDebug)
-                        alert("dependent on " + this.additionalDetails[0].name)
+                        //alert("dependent on " + this.additionalDetails[0].name)
                     
                     return;
                 }
@@ -390,7 +390,7 @@ var ai =
         }
 
         if(debug.logAIDebug)
-            alert('length of placement: ' + placements.length)
+            //alert('length of placement: ' + placements.length)
 
         var newCash = this.aiObjects.get(team).cash_total - payment;
 
@@ -445,7 +445,7 @@ var ai =
                 console.log("%c" + additionalDetails, 'background: #000; color: #00bb33');
 
                 if(debug.logAIDebug)
-                    alert(this.additionalDetails[0].name + " is pending a successful build")
+                    //alert(this.additionalDetails[0].name + " is pending a successful build")
 
                 //this.removePlacement(); <<< --- Do not include here
 

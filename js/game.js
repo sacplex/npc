@@ -786,7 +786,7 @@ var game = {
                 const scaleFactorX = window.innerWidth / productionWidth;
                 const scaleFactorY = window.innerHeight / productionHeight;
 
-                //alert(window.innerWidth + " " + productionWidth + " " + window.innerHeight + " " + productionHeight)
+                ////alert(window.innerWidth + " " + productionWidth + " " + window.innerHeight + " " + productionHeight)
                 // renderer.app.renderer.resolution = dpr;
 				renderer.app.renderer.resize(window.innerWidth, window.innerHeight);
                 renderer.app.stage.scale.set(scaleFactorX, scaleFactorY);
@@ -1376,8 +1376,8 @@ var game = {
             {
                 if(mapObstructed[0].length != 0)
                 {
-                    alert("Obstruction is not correct");
-                    alert("mapObstructedTerrain length is " + mapObstructed[0].length);
+                    //alert("Obstruction is not correct");
+                    //alert("mapObstructedTerrain length is " + mapObstructed[0].length);
                     break;
                 }
             }

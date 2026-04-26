@@ -205,7 +205,7 @@ var nav =
                 {
                     //this.wayPoints[i-1][j-1] = undefined;
                     
-                    //alert()
+                    ////alert()
                     continue;
                 }
 
@@ -331,7 +331,7 @@ var nav =
     lockTheShipToWayPoints:function(shipX, shipY, direction, locked)
     {
         // if(locked != flags.LAYER_SURFACE_LOCKED)
-        //     alert(direction)
+        //     //alert(direction)
 
         if(direction == 0 || direction == 4)
         {
@@ -354,13 +354,13 @@ var nav =
     lockWayPoints:function(shipX, shipY, x1, y1, x2, y2, locked)
     {
         // if(locked != flags.LAYER_SURFACE_LOCKED)
-        //     alert(shipX + " " + shipY)
+        //     //alert(shipX + " " + shipY)
 
         shipX = Math.round(shipX / 5) - 1;
         shipY = Math.round(shipY / 5) - 1;
 
         // if(locked != flags.LAYER_SURFACE_LOCKED)
-        //     alert(shipX + " " + shipY + " " + x1 + " " + y1)
+        //     //alert(shipX + " " + shipY + " " + x1 + " " + y1)
         if(this.wayPoints[shipY][shipX])
             this.wayPoints[shipY][shipX].locked = locked;
         
@@ -368,7 +368,7 @@ var nav =
         shipY = Math.max(0, shipY + y1);
 
         // if(locked != flags.LAYER_SURFACE_LOCKED)
-        //     alert(shipX + " " + shipY)
+        //     //alert(shipX + " " + shipY)
 
         console.log(this.wayPoints[shipY][shipX]);
 
@@ -380,13 +380,13 @@ var nav =
         shipY -= y1;
 
         // if(locked != flags.LAYER_SURFACE_LOCKED)
-        //     alert(shipX + " " + shipY)
+        //     //alert(shipX + " " + shipY)
 
         shipX = Math.min(this.wayPoints.length - 1, shipX + x2);
         shipY = Math.min(this.wayPoints[0].length - 1, shipY + y2);
 
         // if(locked != flags.LAYER_SURFACE_LOCKED)
-        //     alert(shipX + " " + shipY)
+        //     //alert(shipX + " " + shipY)
 
         if(this.wayPoints[shipY][shipX])
             this.wayPoints[shipY][shipX].locked = locked;

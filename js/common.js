@@ -761,7 +761,7 @@ function toTitleCase(str)
 function pause(message, lineNumber, team, name)
 {
 	if(debug.pauseDebug)
-		alert(message + "\n" + lineNumber + "\n" + team+ "\n" + name)
+		//alert(message + "\n" + lineNumber + "\n" + team+ "\n" + name)
 }
 
 function log(message, lineNumber, team, name)

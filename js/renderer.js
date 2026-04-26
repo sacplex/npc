@@ -2565,7 +2565,7 @@ var renderer = {
             if(this.debugUIDs.has(items[i].uid))
             {
                 console.log(this.debugUIDs);
-                alert("duplicate uid has been discovered in this level, uid: " + items[i].uid);
+                //alert("duplicate uid has been discovered in this level, uid: " + items[i].uid);
                 return;
             }
 
@@ -2671,7 +2671,7 @@ var renderer = {
                 this.addEmitter(item);
                 //items[i].emitterIndex = game.emitters.length-1;
                 item.emitterIndex = game.emitters.length-1;
-                //alert(items[i].emitterIndex);
+                ////alert(items[i].emitterIndex);
             }
 
             item.sprite.scale.x = 1;
@@ -4180,7 +4180,7 @@ var renderer = {
 
         this.debugContainer.visible = !this.debugContainer.visible;
 
-        //alert(this.debugContainer.visible)
+        ////alert(this.debugContainer.visible)
 
         for(var i = 0; i < game.items.length; i++)
         {
@@ -4691,7 +4691,7 @@ var renderer = {
         }
 
         // if(itemDetails.type == "ships")
-        //     alert("4978 orders.to.y: " + item.orders.to.y)
+        //     //alert("4978 orders.to.y: " + item.orders.to.y)
 
         item.state = {
             searching:false,
@@ -4917,7 +4917,7 @@ var renderer = {
         console.log(item.orders);
 
         // if(itemDetails.type == "ships")
-        //     alert("4978 orders.to.y: " + item.orders.to.y)
+        //     //alert("4978 orders.to.y: " + item.orders.to.y)
     },
 
     setOrder:function(item, itemDetails)

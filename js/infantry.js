@@ -644,7 +644,7 @@ var infantry =
 
 			if(this.target.team == this.team)
 			{
-				alert("this target is the same team")
+				//alert("this target is the same team")
 				this.state.attacking = false;
 				this.target = undefined;
 				this.orders.type = "standing";

@@ -708,7 +708,7 @@ var ships =
 		 */
 		move:function()
 		{
-			//alert("this.orders.to.y: " + this.orders.to.y)
+			////alert("this.orders.to.y: " + this.orders.to.y)
 
 			this.orders.to.y = this.orders.to.y - display.maininterface.mapImageYOffset * productionRatio;
 
@@ -872,7 +872,7 @@ var ships =
 						this.orders.path.length = 0;
 						this.nextStep = undefined;
 						this.orders.type = "standing";
-						//alert("otherShips[i].orders.type == standing || otherShips[i].orders.type == stand")
+						////alert("otherShips[i].orders.type == standing || otherShips[i].orders.type == stand")
 	
 						return;
 					}				
@@ -1006,7 +1006,7 @@ var ships =
 
 				this.state.attacking = false;
 				
-				//alert("this.nextStep == undefined")
+				////alert("this.nextStep == undefined")
 				this.orders.type = "standing";
 				return;
 			}
@@ -1096,7 +1096,7 @@ var ships =
 					else
 					{
 						this.state.attacking = false;
-						//alert("var i = 0; i < collidedSkinItems.length; i++")
+						////alert("var i = 0; i < collidedSkinItems.length; i++")
 						this.orders.type = "standing";
 						return;
 					}
@@ -1115,7 +1115,7 @@ var ships =
 							{
 								this.state.attacking = false;
 
-								//alert("collidedSkinItems[i].orders.to")
+								////alert("collidedSkinItems[i].orders.to")
 								this.orders.type = "standing";
 								
 								if(debug.logMultiplayerStats)
@@ -1207,9 +1207,9 @@ var ships =
 		 */
 		standing:function()
 		{
-			//alert("standing")
+			////alert("standing")
 			// Add the cells to the grid
-			//alert(this.x + " " + this.y + " " + this.direction + " " + flags.LAYER_SURFACE_LOCKED)
+			////alert(this.x + " " + this.y + " " + this.direction + " " + flags.LAYER_SURFACE_LOCKED)
 			nav.lockTheShipToWayPoints(this.x, this.y, this.direction, flags.LAYER_SURFACE_LOCKED);
 
 			if(debug.logSync)

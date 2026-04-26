@@ -9,7 +9,7 @@ var clock =
     update:function()
     {
         //console.log(this.timer);
-        //alert()
+        ////alert()
         this.timer = this.timer - TICK_RATE;
         
     },
